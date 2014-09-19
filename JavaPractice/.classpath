@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="Networking"/>
+	<classpathentry kind="src" path="Cocncurrency"/>
+	<classpathentry kind="src" path="Generics"/>
+	<classpathentry kind="src" path="InnerClasses"/>
+	<classpathentry kind="src" path="Enums"/>
+	<classpathentry kind="src" path="Interfaces"/>
+	<classpathentry kind="src" path="NIO"/>
+	<classpathentry kind="src" path="Basics"/>
+	<classpathentry kind="src" path="Collections"/>
+	<classpathentry kind="src" path="Exception"/>
+	<classpathentry kind="src" path="Questions"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

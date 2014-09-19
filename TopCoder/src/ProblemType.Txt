@@ -1,0 +1,34 @@
+Brute Force
+    Division 2 Level 1
+       	LotteryTicket 	        SRM 466 
+
+Iteration
+    Division 2 Level 2
+    
+Math
+    Division 2 Level 2
+        Zoo 	                SRM 511
+
+Recursion
+   Division 2 Level 1
+       	LotteryTicket 	        SRM 466 
+       	DerivativeSequence 	    SRM 322
+       	Truckloads 	            SRM 284  
+   Division 2 Level 2
+        Zoo 	                SRM 511 
+        OddDivisors 	        SRM 449  
+        
+
+Simple Math
+    Division 2 Level 1
+        Truckloads 	            SRM 284  
+    Division 2 Level 2
+        OddDivisors 	        SRM 449  
+        
+Simple Search
+     Division 2 Level 2
+
+Simulation
+    Division 2 Level 1
+        DerivativeSequence 	    SRM 322
+

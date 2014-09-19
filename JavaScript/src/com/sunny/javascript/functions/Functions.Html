@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>This example calls a function which performs a calculation, and returns the result:</p>
+
+<p id="demo"></p>
+
+<script>
+function myFunction(a, b) { //Creating a function
+    return a * b;
+}
+
+var x = function(a, b) {return a * b}; //Creating a function and assigning it to variable
+
+var myFunction = new Function("a", "b", "return a * b"); //Creating function using Function constructor
+
+document.getElementById("demo").innerHTML = myFunction(4, 3);
+document.getElementById("demo").innerHTML = x(4, 3);
+document.getElementById("demo").innerHTML = myFunction(4, 3);
+document.getElementById("demo").innerHTML = myFunction.call(this, 4, 3); //using the call to call function
+document.getElementById("demo").innerHTML = myFunction.apply(this, [10,2]); //uisng apply to call function
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<powershell>
+#constant for Infa home
+$INFA_HOME = '_infa_home'
+
+#Properties required to define a gateway node
+$DatabaseAdress = '_db_address'
+$DbUsername = '_db_username'
+$DbPassword = '_db_password'
+$DbType = '_db_type'
+$DbServiceName = '_db_servicename'
+$NodeName = '_nodename'
+$NodeAddress = '_node_address'
+$LogDirectory = '_log_directory'
+$DomainName = '_domainname'
+
+#Checks if the node exists
+$NodeExists = Test-Path $INFA_HOME'\isp\config\nodemeta.xml'
+
+#Defines the node if it does not exists
+if (-Not $NodeExists) {
+   cd $INFA_HOME'\isp\bin'
+   .\infasetup.bat defineGatewayNode -da $DatabaseAdress -du $DbUsername -dp $DbPassword -dt $DbType -ds $DbServiceName -nn $NodeName -na $NodeAddress -ld $LogDirectory -rf nodeoptions.xml -dn $DomainName
+    
+   #Sleep and let the define node command complete
+   Start-Sleep -s 20	
+}
+
+#Start the node
+cd $INFA_HOME'\tomcat\bin'
+Start-Process .\infaservice.bat startup
+</powershell>
+<persist>true</persist>

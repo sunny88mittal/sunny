@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo"></p>
+
+<script>
+var person = {
+    firstname:"John",
+    lastname:"Doe",
+    age:50,
+    eyecolor:"blue"
+};
+delete person.age; //Deleted a property
+person.gender = "male"; //Added a property
+document.getElementById("demo").innerHTML =
+person.firstname + " is " + person.age + " years old." + "and is " + person.gender;
+</script>
+
+</body>
+</html>
