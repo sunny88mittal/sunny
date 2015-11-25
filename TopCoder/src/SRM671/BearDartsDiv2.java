@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//Improve time it runs slow
 public class BearDartsDiv2 {
 
 	public long count(int[] w) {
