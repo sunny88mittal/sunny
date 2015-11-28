@@ -1,5 +1,7 @@
 package SRM655;
 
+//Better solution at http://apps.topcoder.com/wiki/display/tc/SRM+655
+//Just check for both the cases using simple equation
 public class BichromeBoard {
 
 	public String ableToDraw(String[] board) {
