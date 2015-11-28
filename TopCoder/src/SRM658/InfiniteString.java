@@ -1,5 +1,7 @@
 package SRM658;
 
+//Simpler solution at http://apps.topcoder.com/wiki/display/tc/SRM+658
+//No need to get the GCD just keep on increasing the smaller string until both are equal
 public class InfiniteString {
 
 	public String equal(String s, String t) {
