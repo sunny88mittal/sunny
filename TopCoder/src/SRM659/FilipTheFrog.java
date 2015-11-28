@@ -2,6 +2,7 @@ package SRM659;
 
 import java.util.Arrays;
 
+//Slightly simple solution at http://apps.topcoder.com/wiki/display/tc/SRM+659
 public class FilipTheFrog {
 
 	public int countReachableIslands(int[] positions, int L) {
