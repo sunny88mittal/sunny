@@ -3,15 +3,24 @@ package SRM666;
 public class GoodString {
 
 	public String isGood(String s) {
-	   while (true) {
-		   String temp = s.replaceAll("ab", "");
-		   if (temp.length() == 0) {
-			   return "Good";
-		   } else if (s.length() == temp.length()) {
-			   return "Bad";
+	   char ch[] = s.toCharArray();
+	   int count = 0;
+	   for (char c : ch){
+		   if (c == 'a') {
+			   count++;
+		   } else {
+			   if (count == 0) {
+				   return "Bad";
+			   }
+			   count--;
 		   }
-		   s = temp;
 	   }
+	   
+	   if (count !=0) {
+		   return "Bad";
+	   }
+	   
+	   return "Good";
 	}
 	
 	public static void main (String args[]) {
