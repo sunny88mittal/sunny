@@ -4,20 +4,30 @@ package SRM663;
 public class ABBA {
 
 	public String canObtain(String initial, String target) {
-		while(target.length() != initial.length()) {
-			int n = target.length();
-			char ch = target.charAt(n-1);
-			target = target.substring(0, n-1);
-			if (ch == 'B') {
-				target = reverseString(target);
+		int start = 0;
+		int end = target.length();
+		boolean reverse = false;
+		char[] ts = target.toCharArray();
+		while (end - start > initial.length()) {
+			if (!reverse) {
+				if (ts[end-1] == 'B') {
+					reverse = true;
+				}
+				end--;
+			} else {
+				if (ts[start] == 'B') {
+					reverse = false;
+				}
+				start++;
 			}
 		}
 		
-		if (initial.equals(target)) {
-			return "Possible";
+		target = target.substring(start, end);
+		if (reverse) {
+			target = reverseString(target);
 		}
 		
-		return "Impossible";
+		return initial.equals(target) ? "Possible" : "Impossible";
 	}
 	
 	private String reverseString(String s) {
