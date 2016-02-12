@@ -11,7 +11,7 @@ public class RabinKarpAlgorithm {
 
 	public static void main(String args[]) {
 		String pattern = "ABABAC";
-		String text = "AABABACAABCABABAC";
+		String text = "ABABACAABCABABAC";
 		findMatches(pattern, text);
 	}
 
@@ -28,7 +28,12 @@ public class RabinKarpAlgorithm {
 		int pMod = 0;
 		int tMod = 0;
 		int pl = pattern.length();
-		int exp = findExp(pl - 1);
+
+		// Calculate d^(pl-1)%q
+		int exp = 1;
+		for (int i = 0; i < pl - 1; i++) {
+			exp = (exp * d) % q;
+		}
 
 		// Calculate initial values
 		for (int i = 0; i < pl; i++) {
@@ -51,13 +56,5 @@ public class RabinKarpAlgorithm {
 				tMod = (tMod * d + tc[s + pl]) % q;
 			}
 		}
-	}
-
-	private static int findExp(int pow) {
-		int result = 1;
-		for (int i = 0; i < pow; i++) {
-			result = (result * d) % q;
-		}
-		return result;
 	}
 }
