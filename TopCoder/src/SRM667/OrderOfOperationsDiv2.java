@@ -3,62 +3,40 @@ package SRM667;
 public class OrderOfOperationsDiv2 {
 
 	public int minTime(String[] s) {
+		int fmask = 0;
 		int n = s.length;
 		int m = s[0].length();
-		int count = 0;
-		int executec = 0;
-		boolean[] accesed = new boolean[m];
-		boolean[] executed = new boolean[n];
+		int[] inst = new int[n];
 
-		while (executec < n) {
-			int min = -1;
-			int minc = Integer.MAX_VALUE;
-			for (int i = 0; i < n; i++) {
-				if (!executed[i]) {
-					int tcount = 0;
-					char[] ch = s[i].toCharArray();
-					for (int j = 0; j < m; j++) {
-						if (ch[j] == '1' && !accesed[j]) {
-							tcount++;
-						}
-					}
-					if (tcount < minc) {
-						min = i;
-						minc = tcount;
-					}
-				}
-			}
-
-			char[] ch = s[min].toCharArray();
+		// Convert the string to integer mask
+		for (int i = 0; i < n; i++) {
+			int insti = 0;
 			for (int j = 0; j < m; j++) {
-				if (ch[j] == '1' && !accesed[j]) {
-					accesed[j] = true;
+				if (s[i].charAt(j) == '1') {
+					insti |= 1 << j;
 				}
 			}
-
-			executed[min] = true;
-			count += minc * minc;
-			executec++;
+			inst[i] = insti;
+			fmask |= insti;
 		}
 
-		return count;
+		// Find the min time taken
+		int length = 1 << m;
+		int dp[] = new int[length];
+		for (int i = 0; i < length; i++) {
+			dp[i] = Integer.MAX_VALUE / 2;
+		}
+		dp[0] = 0;
+
+		for (int mask = 0; mask < length; mask++) {
+			for (int j = 0; j < n; j++) {
+				int nmask = mask | inst[j];
+				int changes = nmask - mask;
+				int k = Integer.bitCount(changes);
+				dp[nmask] = Math.min(dp[nmask], dp[mask] + k * k);
+			}
+		}
+
+		return dp[fmask];
 	}
-
-	public static void main(String args[]) {
-		OrderOfOperationsDiv2 obj = new OrderOfOperationsDiv2();
-		System.out.println(obj.minTime(new String[] { "111", "001", "010" }));
-		System.out.println(obj.minTime(new String[] { "11101", "00111",
-				"10101", "00000", "11000" }));
-		System.out.println(obj.minTime(new String[]
-
-		{ "11111111111111111111" }));
-		System.out.println(obj.minTime(new String[]
-
-		{ "1000", "1100", "1110" }));
-
-		System.out.println(obj.minTime(new String[]
-
-		{ "111", "111", "110", "100" }));
-	}
-
 }
