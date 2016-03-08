@@ -32,6 +32,7 @@ public class AhoCorasick {
 		private class Node {
 			T value;
 			List<Node> nodes;
+			List<T> suffixValues = new ArrayList<T>();
 			Node suffixLink;
 
 			public Node() {
@@ -149,7 +150,12 @@ public class AhoCorasick {
 					Node iNode = node.nodes.get(i);
 					if (iNode != null) {
 						queue.add(iNode);
-						iNode.suffixLink = findSuffixLink(node.suffixLink, i);
+						Node suffixLink = findSuffixLink(node.suffixLink, i);
+						iNode.suffixLink = suffixLink;
+						iNode.suffixValues.addAll(suffixLink.suffixValues);
+						if (suffixLink.value != null){
+							iNode.suffixValues.add(suffixLink.value);
+						}
 					}
 				}
 			}
@@ -173,12 +179,8 @@ public class AhoCorasick {
                 	System.out.println(node.value);
                 }
                 
-                Node temp = node.suffixLink;
-                while (temp != null) {
-                	if (temp.value != null) {
-                		System.out.println(temp.value);
-                	}
-                	temp = temp.suffixLink;
+                for (T t: node.suffixValues) {
+                	System.out.println(t);
                 }
 			}
 		}
