@@ -7,13 +7,13 @@ import java.util.List;
 public class AhoCorasick {
 
 	public static void main(String args[]) {
-		String[] dict = new String[] { "a", "ab", "bab", "bc", "bca", "c", "caa" };
+		String[] dict = new String[] { "e", "h", "she", "he" };
 		RWayTrie<String> trie = new RWayTrie<String>();
 		for (String str : dict) {
 			trie.put(str, str);
 		}
 		trie.createDictSuffixLinks();
-		trie.printSuffixes("abccab");
+		trie.printSuffixes("she");
 	}
 
 	private static class RWayTrie<T> {
@@ -164,12 +164,21 @@ public class AhoCorasick {
                 } else if (node.suffixLink != null) {
                 	node = node.suffixLink;
                 	i--;
+                	continue;
                 } else {
                 	continue;
                 }
                 
                 if (node.value != null) {
                 	System.out.println(node.value);
+                }
+                
+                Node temp = node.suffixLink;
+                while (temp != null) {
+                	if (temp.value != null) {
+                		System.out.println(temp.value);
+                	}
+                	temp = temp.suffixLink;
                 }
 			}
 		}
