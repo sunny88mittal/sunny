@@ -21,7 +21,7 @@ public class Template {
 		PrintWriter pw = new PrintWriter(new FileWriter(input.replace("practice", "solution")));
 		int testCases = Integer.parseInt(br.readLine());
 		for (int i = 0; i < testCases; i++) {
-			
+			pw.println("Case #" + (i + 1) + ": ");
 		}
 
 		br.close();
