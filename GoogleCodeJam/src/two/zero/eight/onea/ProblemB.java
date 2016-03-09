@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProblemB {
 
@@ -56,96 +58,100 @@ public class ProblemB {
 
 	private static int[] toPrepare(int[][] customerLikes, int flavours, int customers) {
 		int[] toPrepare = new int[flavours];
-		int happyCount = 0;
+		Set<Integer> processedFlavour = new HashSet<Integer>();
+		Set<Integer> processedCustomer = new HashSet<Integer>();
+		processedFlavour.add(0);
 
-		// Clear customers who can be satisfied with un malted flavors
-		boolean changed = true;
-		while (changed) {
-			int maxColumn = -1;
-			int maxCount = 0;
-			changed = false;
+		while (true) {
+			// Clear customers who can be satisfied with un malted flavors
+			tryType(customerLikes, flavours, customers, processedFlavour, processedCustomer, toPrepare, 1);
 
-			// Find the flavor with maximum un malted likes
-			for (int i = 0; i < flavours; i++) {
-				int count = 0;
-				for (int j = 0; j < customers; j++) {
-					if (customerLikes[j][i] == 2) {
-						count = 0;
-						break;
-					}
+			// Try un malted and then malted for remaining customers
+			tryType(customerLikes, flavours, customers, processedFlavour, processedCustomer, toPrepare, 2);
 
-					if (customerLikes[j][i] == 1) {
-						count++;
-					}
-				}
-
-				if (count > maxCount) {
-					maxCount = count;
-					maxColumn = i;
-				}
+			// Force Unmalted
+			boolean changed = forcedTry(customerLikes, flavours, customers, processedFlavour, processedCustomer, toPrepare, 1);
+			if (changed) {
+				continue;
 			}
 
-			// Clear all the satisfied customers
-			if (maxColumn != -1) {
-				changed = true;
-				toPrepare[maxColumn] = 0;
-				for (int i = 0; i < customers; i++) {
-					if (customerLikes[i][maxColumn] == 1) {
-						happyCount++;
-						for (int j = 0; j < flavours; j++) {
-							customerLikes[i][j] = 0;
-						}
-					}
-				}
+			// Force Malted
+			changed = forcedTry(customerLikes, flavours, customers, processedFlavour, processedCustomer, toPrepare, 2);
+			if (!changed) {
+				break;
 			}
 		}
 
-		// Clear customers who can be satisfied with un malted flavors
-		changed = true;
-		while (changed) {
-			int maxColumn = -1;
-			int maxCount = 0;
-			changed = false;
-
-			// Find the flavor with maximum un malted likes
-			for (int i = 0; i < flavours; i++) {
-				int count = 0;
-				for (int j = 0; j < customers; j++) {
-					if (customerLikes[j][i] == 1) {
-						count = 0;
-						break;
-					}
-
-					if (customerLikes[j][i] == 2) {
-						count++;
-					}
-				}
-
-				if (count > maxCount) {
-					maxCount = count;
-					maxColumn = i;
-				}
-			}
-
-			// Clear all the satisfied customers
-			if (maxColumn != -1) {
-				changed = true;
-				toPrepare[maxColumn] = 1;
-				for (int i = 0; i < customers; i++) {
-					if (customerLikes[i][maxColumn] == 2) {
-						happyCount++;
-						for (int j = 0; j < flavours; j++) {
-							customerLikes[i][j] = 0;
-						}
-					}
-				}
-			}
-		}
-
-		if (happyCount != customers) {
+		if (processedCustomer.size() != customers) {
 			return null;
 		}
 
 		return toPrepare;
+	}
+
+	private static void tryType(int[][] customerLikes, int flavours, int customers, Set<Integer> processedFlavour,
+			Set<Integer> processedCustomer, int[] toPrepare, int toTry) {
+		boolean changed = true;
+		while (changed) {
+			changed = false;
+			for (int i = 0; i < flavours; i++) {
+				if (!processedFlavour.contains(i)) {
+					int count = 0;
+					for (int j = 0; j < customers; j++) {
+						if (!processedCustomer.contains(j)) {
+							if (customerLikes[j][i] == toTry) {
+								count++;
+								continue;
+							}
+
+							if (customerLikes[j][i] > 0) {
+								count = 0;
+								break;
+							}
+						}
+					}
+
+					if (count > 0) {
+						toPrepare[i] = toTry - 1;
+						changed = true;
+						processedFlavour.add(i);
+						for (int k = 0; k < customers; k++) {
+							if (customerLikes[k][i] == toTry) {
+								processedCustomer.add(k);
+								for (int j = 0; j < flavours; j++) {
+									customerLikes[k][j] = 0;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private static boolean forcedTry(int[][] customerLikes, int flavours, int customers, Set<Integer> processedFlavour,
+			Set<Integer> processedCustomer, int[] toPrepare, int toTry) {
+		boolean changed = false;
+		for (int i = 0; i < customers; i++) {
+			if (!processedCustomer.contains(i)) {
+				for (int j = 0; j < flavours; j++) {
+					if (!processedFlavour.contains(j) && customerLikes[i][j] == toTry) {
+						changed = true;
+						processedFlavour.add(j);
+						processedCustomer.add(i);
+						toPrepare[j] = toTry - 1;
+						break;
+					}
+				}
+			}
+
+			if (changed) {
+				for (int j = 0; j < flavours; j++) {
+					customerLikes[i][j] = 0;
+				}
+				break;
+			}
+		}
+		return changed;
 	}
 }
