@@ -118,9 +118,6 @@ public class ProblemB {
 						for (int k = 0; k < customers; k++) {
 							if (customerLikes[k][i] == toTry) {
 								processedCustomer.add(k);
-								for (int j = 0; j < flavours; j++) {
-									customerLikes[k][j] = 0;
-								}
 							}
 						}
 					}
@@ -146,9 +143,6 @@ public class ProblemB {
 			}
 
 			if (changed) {
-				for (int j = 0; j < flavours; j++) {
-					customerLikes[i][j] = 0;
-				}
 				break;
 			}
 		}
