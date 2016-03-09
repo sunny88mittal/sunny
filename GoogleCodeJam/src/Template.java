@@ -20,7 +20,9 @@ public class Template {
 		BufferedReader br = new BufferedReader(new FileReader(input));
 		PrintWriter pw = new PrintWriter(new FileWriter(input.replace("practice", "solution")));
 		int testCases = Integer.parseInt(br.readLine());
-		
+		for (int i = 0; i < testCases; i++) {
+			
+		}
 
 		br.close();
 		pw.flush();
