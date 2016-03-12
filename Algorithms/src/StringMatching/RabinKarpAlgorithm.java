@@ -37,23 +37,23 @@ public class RabinKarpAlgorithm {
 
 		// Calculate initial values
 		for (int i = 0; i < pl; i++) {
-			pMod = (pMod + pc[i] * d) % q;
-			tMod = (tMod + tc[i] * d) % q;
+			pMod = (pMod * d + pc[i]) % q;
+			tMod = (tMod * d + tc[i]) % q;
 		}
 
 		// Check the pattern in the text
 		for (int s = 0; s <= text.length() - pl; s++) {
 			// Validate if the match is correct
 			if (pMod == tMod) {
-				if (pattern.equals(text.substring(s, pl))) {
+				if (pattern.equals(text.substring(s, s + pl))) {
 					System.out.println("Match found at :" + s);
 				}
 			}
 
-			// Shift to next characters in text
 			if (s < text.length() - pl) {
-				tMod = (tMod + q - exp * tc[s] % q) % q;
-				tMod = (tMod * d + tc[s + pl]) % q;
+				tMod = (tMod + q - exp * tc[s] % q) % q; // Remove first character
+				tMod = (tMod * d) % q; // Raise all characters power by 1
+				tMod = (tMod + tc[pl + s]) % q; // Add the last character
 			}
 		}
 	}
