@@ -35,6 +35,16 @@ public class BoyerMoore {
 		return skipTable;
 	}
 
+	/**
+	 * Skip Logic
+	 * 1. Skip for pattern length m if char not in pattern
+	 * 2. Align with the rightmost char corresponding to text if mismatch occurred
+	 * 3. Shift by 1 if alignment is causing left shift of pattern
+	 * @param text
+	 * @param pattern
+	 * @param skipTable
+	 * @return
+	 */
 	private static List<Integer> getMatches(String text, String pattern, int[] skipTable) {
 		List<Integer> matchList = new ArrayList<Integer>();
 		char[] textc = text.toCharArray();
