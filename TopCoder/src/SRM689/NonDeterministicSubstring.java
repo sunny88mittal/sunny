@@ -19,6 +19,6 @@ public class NonDeterministicSubstring {
 			}
 		}
 
-		return countSet.size();
+		return (long)countSet.size();
 	}
 }
