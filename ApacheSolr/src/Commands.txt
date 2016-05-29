@@ -1,0 +1,9 @@
+###Starting and Stopping
+./solr start
+./solr stop
+
+###Help
+./solr -help
+
+###Status
+./solr status

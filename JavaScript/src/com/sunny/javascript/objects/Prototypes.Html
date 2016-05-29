@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo"></p>
+
+<script>
+function person(first, last, age, eye) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eye;
+}
+
+var myFather = new person("John", "Doe", 50, "blue");
+var myMother = new person("Sally", "Rally", 48, "green");
+
+myFather.nationality = "English"; //Adding a property to an object
+myFather.name = function() {   //Adding a method to an object
+    return this.firstName + " " + this.lastName;
+};
+
+person.prototype.nationality = "English"; //Adding a property to the prototype
+person.prototype.name = function() { //Adding a method to the prototype
+    return this.firstName + " " + this.lastName;
+};
+
+document.getElementById("demo").innerHTML =
+"My father is " + myFather.age + ". My mother is " + myMother.age + "\n" +
+"My father is " + myFather.nationality + "\n" +
+"My father is " + myFather.name() + "\n" +
+"My Mother is " + myMother.nationality + "\n" +
+"My Mother is " + myMother.name() + "\n"
+</script>
+
+</body>
+</html>

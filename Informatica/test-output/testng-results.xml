@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="1" passed="1">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="16" started-at="2014-07-10T18:39:10Z" finished-at="2014-07-10T18:39:10Z">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="16" started-at="2014-07-10T18:39:10Z" finished-at="2014-07-10T18:39:10Z">
+      <class name="com.infa.amazon.CommandsTest">
+        <test-method status="PASS" signature="createDefineGatewayNodeCommand()[pri:0, instance:com.infa.amazon.CommandsTest@1da59fa]" name="createDefineGatewayNodeCommand" duration-ms="16" started-at="2014-07-11T00:09:10Z" finished-at="2014-07-11T00:09:10Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- createDefineGatewayNodeCommand -->
+      </class> <!-- com.infa.amazon.CommandsTest -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>

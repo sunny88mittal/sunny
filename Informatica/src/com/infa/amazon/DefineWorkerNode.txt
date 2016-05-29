@@ -1,0 +1,29 @@
+<powershell>
+#constant for Infa home
+$INFA_HOME = '_infa_home'
+
+#Properties required to define a worker node
+$NodeName = '_nodename'
+$NodeAddress = '_node_address'
+$DomainName = '_domainname'
+$DomainGateway = '_domain_gateway'
+$AdministratorName = '_administrator_name'
+$AdministratorPassword = '_administrator_password'
+
+#Checks if the node exists
+$NodeExists = Test-Path $INFA_HOME'\isp\config\nodemeta.xml'
+
+#Defines the node if it does not exists
+if (-Not $NodeExists) {
+   cd $INFA_HOME'\isp\bin'
+   .\infasetup.bat defineWorkerNode -dn testdomain -nn $NodeName -na $NodeAddress -dg $DomainGateway -un $AdministratorName -pd $AdministratorPassword -mi 4000 -ma 15000 -rf nodeoptions.xml
+    
+   #Sleep and let the define node command complete
+   Start-Sleep -s 20	
+}
+
+#Start the node
+cd $INFA_HOME'\tomcat\bin'
+Start-Process .\infaservice.bat startup
+</powershell>
+<persist>true</persist>
