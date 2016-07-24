@@ -9,35 +9,35 @@ public class MirrorImage {
         
         TreeNode node = new TreeNode();
         node.value = 12;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 35;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 6;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 14;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 30;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 40;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         System.out.println("Original Tree");
-        TreeUtil.traverseLevelOrder(root1);
+        BinarySearchTreeUtil.traverseLevelOrder(root1);
         
         mirrorImage(root1);
         
         System.out.println("Mirror image of Tree");
-        TreeUtil.traverseLevelOrder(root1);
+        BinarySearchTreeUtil.traverseLevelOrder(root1);
 	}
 	
 	private static void mirrorImage(TreeNode tree) {

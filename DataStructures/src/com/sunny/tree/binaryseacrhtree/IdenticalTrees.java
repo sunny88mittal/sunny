@@ -9,27 +9,27 @@ public class IdenticalTrees {
         
         TreeNode node = new TreeNode();
         node.value = 12;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 35;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 6;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 14;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 30;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         node = new TreeNode();
         node.value = 40;
-        TreeUtil.addChildren(root1, node);
+        BinarySearchTreeUtil.addChildren(root1, node);
         
         //Tree2
         TreeNode root2 = new TreeNode();
@@ -37,27 +37,27 @@ public class IdenticalTrees {
         
         node = new TreeNode();
         node.value = 12;
-        TreeUtil.addChildren(root2, node);
+        BinarySearchTreeUtil.addChildren(root2, node);
         
         node = new TreeNode();
         node.value = 35;
-        TreeUtil.addChildren(root2, node);
+        BinarySearchTreeUtil.addChildren(root2, node);
         
         node = new TreeNode();
         node.value = 6;
-        TreeUtil.addChildren(root2, node);
+        BinarySearchTreeUtil.addChildren(root2, node);
         
         node = new TreeNode();
         node.value = 14;
-        TreeUtil.addChildren(root2, node);
+        BinarySearchTreeUtil.addChildren(root2, node);
         
         node = new TreeNode();
         node.value = 30;
-        TreeUtil.addChildren(root2, node);
+        BinarySearchTreeUtil.addChildren(root2, node);
         
         node = new TreeNode();
         node.value = 40;
-        TreeUtil.addChildren(root2, node);
+        BinarySearchTreeUtil.addChildren(root2, node);
         
         System.out.println("Trees are same:" + compareTrees(root1, root2));
 	}

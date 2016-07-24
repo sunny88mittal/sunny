@@ -23,61 +23,7 @@ public class LevelOrderTraversalSpiralForm {
 		TreeNode root1 = new TreeNode();
         root1.value = 25;
         
-        TreeNode node = new TreeNode();
-        node.value = 12;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 35;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 6;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 14;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 30;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 40;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 5;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 7;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 13;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 15;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 28;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 32;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 38;
-        TreeUtil.addChildren(root1, node);
-        
-        node = new TreeNode();
-        node.value = 42;
-        TreeUtil.addChildren(root1, node);
+		int[] nodes = new int[] { 12, 35, 6, 14, 30, 40, 5, 7, 13, 15, 28, 32, 38, 42 };
         
         traverseLevelOrderSpiralForm(root1);
 	}

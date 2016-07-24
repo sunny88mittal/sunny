@@ -28,31 +28,31 @@ public class TestBinarySearchTree {
         
         TreeNode node = new TreeNode();
         node.value = 12;
-        TreeUtil.addChildren(root, node);
+        BinarySearchTreeUtil.addChildren(root, node);
         
         node = new TreeNode();
         node.value = 35;
-        TreeUtil.addChildren(root, node);
+        BinarySearchTreeUtil.addChildren(root, node);
         
         node = new TreeNode();
         node.value = 6;
-        TreeUtil.addChildren(root, node);
+        BinarySearchTreeUtil.addChildren(root, node);
         
         node = new TreeNode();
         node.value = 14;
-        TreeUtil.addChildren(root, node);
+        BinarySearchTreeUtil.addChildren(root, node);
         
         node = new TreeNode();
         node.value = 30;
-        TreeUtil.addChildren(root, node);
+        BinarySearchTreeUtil.addChildren(root, node);
         
         node = new TreeNode();
         node.value = 40;
-        TreeUtil.addChildren(root, node);
+        BinarySearchTreeUtil.addChildren(root, node);
         
-        TreeUtil.traversePreOrder(root);
-        TreeUtil.traverseInOrder(root);
-        TreeUtil.traversePostOrder(root);
-        TreeUtil.traverseLevelOrder(root);
+        BinarySearchTreeUtil.traversePreOrder(root);
+        BinarySearchTreeUtil.traverseInOrder(root);
+        BinarySearchTreeUtil.traversePostOrder(root);
+        BinarySearchTreeUtil.traverseLevelOrder(root);
     }
 }
