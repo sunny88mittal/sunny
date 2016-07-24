@@ -16,8 +16,6 @@ public class BinarySearchTreeUtil {
 	
 	/**
 	 * Creates a binary search tree from the values assuming first node as root
-	 * @param values
-	 * @return
 	 */
 	public static TreeNode getBinarySearchTree(int[] values){
 		TreeNode root = new TreeNode();

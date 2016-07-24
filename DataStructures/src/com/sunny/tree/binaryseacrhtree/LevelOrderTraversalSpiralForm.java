@@ -20,11 +20,8 @@ public class LevelOrderTraversalSpiralForm {
 	
 	public static void main (String args[]) {
 		//Tree 1
-		TreeNode root1 = new TreeNode();
-        root1.value = 25;
-        
-		int[] nodes = new int[] { 12, 35, 6, 14, 30, 40, 5, 7, 13, 15, 28, 32, 38, 42 };
-        
+		int[] values = new int[] { 25, 12, 35, 6, 14, 30, 40, 5, 7, 13, 15, 28, 32, 38, 42 };
+		TreeNode root1 = BinarySearchTreeUtil.getBinarySearchTree(values);
         traverseLevelOrderSpiralForm(root1);
 	}
 	
