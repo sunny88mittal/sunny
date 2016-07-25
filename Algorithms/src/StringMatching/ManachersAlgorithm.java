@@ -51,6 +51,6 @@ public class ManachersAlgorithm {
 
 	public static void main(String args[]) {
 		System.out.println(longestPlaindrome("banana"));
-		System.out.println(longestPlaindrome("kiomaramol"));
+		//System.out.println(longestPlaindrome("kiomaramol"));
 	}
 }
