@@ -1,8 +1,8 @@
 package datastrcutures.tree.lca;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 public class LowestCommonAncestor {
 
@@ -28,27 +28,29 @@ public class LowestCommonAncestor {
 			nodes[i] = Integer.parseInt(tokens[i].trim());
 		}
 
-		Set<Integer> cParents = new HashSet<Integer>();
+		Map<Integer, Integer> cParents = new HashMap<Integer, Integer>();
 		int temp = nodes[0];
 		int lowestParent = temp;
-		cParents.add(temp);
+		int count = 0;
+		cParents.put(temp, count);
 		while (temp != 0) {
 			temp = parents[temp];
-			cParents.add(temp);
+			count++;
+			cParents.put(temp, count);
 		}
 
 		for (int i = 1; i < nodes.length; i++) {
-            temp = nodes[i];
-            while (true) {
-            	if (cParents.contains(temp)) {
-            		lowestParent = temp;
-            		break;
-            	} else {
-            		temp = parents[temp];
-            	}
-            }
+			temp = nodes[i];
+			while (true) {
+				if (cParents.get(temp)!= null && cParents.get(temp) >= cParents.get(lowestParent)) {
+					lowestParent = temp;
+					break;
+				} else {
+					temp = parents[temp];
+				}
+			}
 		}
-		
+
 		System.out.println(lowestParent);
 	}
 }
