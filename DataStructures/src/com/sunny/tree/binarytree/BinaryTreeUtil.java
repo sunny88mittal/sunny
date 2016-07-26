@@ -10,7 +10,7 @@ public class BinaryTreeUtil {
 
 	/**
 	 * Get binary tree by giving the input as in level order as works only for
-	 * Separate nodes at a level by -
+	 * Separate levels by -
 	 * Separate nodes at same level by ,
 	 * complete trees 1-2,3-4,5,6,7-8,9,10,11,12,13,14,15 
 	 */
