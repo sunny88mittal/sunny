@@ -1,14 +1,12 @@
 package concurrency.practice;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConnectionPool {
 
-	private List<String> activeConnections = new LinkedList<String>();
+	private BlockingQueue<String> activeConnections = new LinkedBlockingQueue<String>();
 
 	private BlockingQueue<String> idleConnections = new LinkedBlockingQueue<String>();
 
