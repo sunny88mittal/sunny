@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ConnectionPool {
 
@@ -15,8 +13,6 @@ public class ConnectionPool {
 	private BlockingQueue<String> idleConnections = new LinkedBlockingQueue<String>();
 
 	private int size;
-
-	private Lock lock = new ReentrantLock();
 
 	private AtomicInteger activeCount = new AtomicInteger(0);
 
