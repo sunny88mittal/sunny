@@ -29,6 +29,7 @@ public class ConnectionPool {
 			if (activeCount.get() < size) {
 				if (activeCount.incrementAndGet() <= size) {
 					conn = "newConenction";
+					activeConnections.offer(conn);
 				} else {
 					activeCount.decrementAndGet();
 				}
