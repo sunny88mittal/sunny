@@ -29,6 +29,7 @@ public class TTLBasedCache<K, V> {
 	public TTLBasedCache(int size, long ttl) {
 		this.size = size;
 		this.ttl = ttl;
+		cleaupThread.setDaemon(true);
 		cleaupThread.start();
 	}
 
@@ -94,9 +95,9 @@ public class TTLBasedCache<K, V> {
 	}
 
 	public static void main(String args[]) {
-		TTLBasedCache<String, Integer> cache = new TTLBasedCache<>(10, 2000);
+		TTLBasedCache<String, Integer> cache = new TTLBasedCache<>(20, 20000);
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 20; i++) {
 			cache.put(('a' + i) + "", i);
 			try {
 				Thread.sleep(50);
@@ -105,10 +106,10 @@ public class TTLBasedCache<K, V> {
 			}
 		}
 
-		for (int i = 9; i >= 0; i--) {
+		for (int i = 19; i >= 0; i--) {
 			System.out.println(cache.get(('a' + i) + ""));
 			try {
-				Thread.sleep(400);
+				Thread.sleep(4000);
 			} catch (InterruptedException e) {
 
 			}
