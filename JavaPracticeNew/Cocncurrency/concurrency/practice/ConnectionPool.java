@@ -36,6 +36,10 @@ public class ConnectionPool {
 				}
 			}
 
+			if (conn == null) {
+				//throw Exception
+			}
+			
 			synchronized (conn) {
 				// Do if something is to be done
 			}
