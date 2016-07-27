@@ -1,61 +1,91 @@
 package Collections;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class HashSetPractice<T> {
 
-	private List<T>[] entries;
+	private Queue<T>[] entries;
 
 	public HashSetPractice(int size) {
-		entries = (List<T>[]) new List[size / 10];
-		for (int i = 0; i < size / 10; i++) {
-			entries[i] = new LinkedList<T>();
+		entries = (Queue<T>[]) new Queue[1];
+		for (int i = 0; i < 1; i++) {
+			entries[i] = new ConcurrentLinkedQueue<T>();
 		}
 	}
 
 	public void add(T t) {
 		int hashCode = t.hashCode();
 		int bucket = hashCode % entries.length;
-		List<T> list = entries[bucket];
-		synchronized (list) {
-			for (T tt : list) {
-				if (tt.equals(t)) {
-					return;
-				}
-			}
-			list.add(t);
+		Queue<T> queue = entries[bucket];
+		if (!queue.contains(t)) {
+			queue.add(t);
 		}
 	}
 
 	public void remove(T t) {
 		int hashCode = t.hashCode();
 		int bucket = hashCode % entries.length;
-		List<T> list = entries[bucket];
-		synchronized (list) {
-			int i = -1;
-			for (T tt : list) {
-				++i;
-				if (tt.equals(t)) {
-					break;
-				}
-			}
-			if (i >= 0)
-				list.remove(i);
-		}
+		Queue<T> queue = entries[bucket];
+		queue.remove(t);
 	}
 
 	public boolean contains(T t) {
 		int hashCode = t.hashCode();
 		int bucket = hashCode % entries.length;
-		List<T> list = entries[bucket];
-		synchronized (list) {
-			for (T tt : list) {
-				if (tt.equals(t)) {
-					return true;
-				}
+		Queue<T> queue = entries[bucket];
+		return queue.contains(t);
+	}
+
+	public static void main(String args[]) throws InterruptedException {
+		HashSetPractice<String> set = new HashSetPractice<>(20);
+
+		Thread th = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				set.add("abc");
+				set.add("cde");
+				set.add("efg");
+				set.add("ghi");
 			}
-		}
-		return false;
+		});
+
+		Thread th1 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println(set.contains("abc"));
+				System.out.println(set.contains("cde"));
+				System.out.println(set.contains("efg"));
+				System.out.println(set.contains("ghi"));
+			}
+		});
+
+		Thread th2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				set.remove("abc");
+				set.remove("efg");
+			}
+		});
+
+		Thread th3 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				System.out.println(set.contains("abc"));
+				System.out.println(set.contains("cde"));
+				System.out.println(set.contains("efg"));
+				System.out.println(set.contains("ghi"));
+			}
+		});
+
+		th.start();
+		th1.start();
+		th2.start();
+		th3.start();
+
+		th.join();
+		th1.join();
+		th2.join();
+		th3.join();
 	}
 }
