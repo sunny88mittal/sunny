@@ -28,7 +28,7 @@ public class IteratingAList {
   		//Braces can be omitted for single paramter case
   	    friends.forEach(name -> System.out.println(name));
   	    
-  	    //Even more concise code
+  	    //Using method reference
   	    friends.forEach(System.out :: println);
 	}
 }
