@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 
 public class IteratingAList {
 
+	//Print all elements in the list
 	public static void main(String args[]) {
 		final List<String> friends = Arrays.asList("Brian", "Nate", "Neal", "Raju", "Sara", "Scott");
 

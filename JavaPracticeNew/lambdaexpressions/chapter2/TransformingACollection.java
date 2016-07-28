@@ -6,6 +6,7 @@ import java.util.List;
 
 public class TransformingACollection {
 
+	//Convert the names to upercase
 	public static void main(String args[]) {
 		final List<String> friends = Arrays.asList("Brian", "Nate", "Neal", "Raju", "Sara", "Scott");
 		
