@@ -6,32 +6,6 @@ import java.util.stream.Collectors;
 
 public class ImplementingComparator {
 
-	private static class Person {
-		private final String name;
-		private final int age;
-
-		public Person(final String theName, final int theAge) {
-			name = theName;
-			age = theAge;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public int getAge() {
-			return age;
-		}
-
-		public int ageDifference(final Person other) {
-			return age - other.age;
-		}
-
-		public String toString() {
-			return String.format("%s - %d", name, age);
-		}
-	}
-
 	public static void main(String args[]) {
 		final List<Person> people = Arrays.asList(new Person("John", 20), 
 				new Person("Sara", 21),
