@@ -1,0 +1,38 @@
+-----------Networking ---------------
+There are various parts in our system where the components interact with each other.
+Below it is described using which component they will interact with each other
+1. Interaction between clients (IOS, Android, Web, RabbitMQ) and NIO Cluster
+   //TODO :: Need to check which clients to use
+   We will send response in the JSON format to the clients and we can use Google gson library
+   https://github.com/google/gson
+   Servers in NIO cluster will mantain a map of user id and web socket connections list
+2. For Interaction between Redis and Game Server (aka Spring) we will use the library at
+   http://projects.spring.io/spring-data-redis/
+3. For Intercation between Game Servers and RabbitMQ
+   https://spring.io/guides/gs/messaging-rabbitmq/
+4. Clients (IOS, Android, Web) will interact with the game server by making REST calls
+   IOS -- Not sure of the exact mechanism
+   Android -- Not sure of the exact mechanism
+   Web -- Form Submissions and Ajax Calls
+
+
+-----------Database------------------
+1. For intercation between Mysql database and Spring we will interacting with it through hibernate
+
+-----------Threads Management--------
+1. We can use Spring Scheduler to run scheduled tasks. Spring scheduler automatically
+   manages the thread based upon a thread pool configured for it. No explicit action needed
+   except tunning it occasionally based upon our needs.
+2. NIO clsuter will use NIO based connections so it can handle lots of connections simultaneously.
+3. Game Server will recieve notifications in a thread from the RabbitMQ queue and proces requests.
+   Processing requests will include
+     a. Reading/Writing things from Redis
+     b. Running the game logic
+     c. Writing back response to the RabbitMQ
+     d. Read/Write to MySql server if needed 
+4. For normal REST calls tomcat will use threads from its thread pool and handle the requests.
+5. Tomcat will use a connection pool to interact with the database.
+
+-----------Event Dispatcher----------
+1. It would have a thread which will listen for the events and an executor to process those events
+2. It will dispatch events using multiple threads so that we can push lot of events to the queue simultaneously.

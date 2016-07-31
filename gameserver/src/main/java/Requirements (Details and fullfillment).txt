@@ -1,0 +1,59 @@
+----------------------------------------------
+---------Functional Requirements--------------
+----------------------------------------------
+
+1. Serve the static content like images,css,html etc
+2. Serve the following requests
+   1. Register User
+   2. Login
+   3. Buy game artifacts
+   4. See his stats like Rank, Money, Stars etc
+   5. Scheduled tasks 
+      a. To send emails to users
+      b. Send notifications based upon game state
+3. Allow the users to play game which could involve
+   1. Joining a table
+   2. Getting updates of other user activities
+   3. Getting updates of game state changes
+   4. Taking actions to update game state
+
+----------------------------------------------
+---------Tehnical Fullfillment----------------
+----------------------------------------------
+Below we will list the responsibilites handled by each kind of server
+(Refer to the Architetcure diagram for intercation between components)
+
+---Game Server (Spring, Hibernate, Java, Apache Tomcat)--
+1. It will serve the static content like images,css,html etc
+   (We can cache this stuff on CDN like Akamai also to imporve performance)
+2. It will handle all the requests as mentioned in point 2 above.
+3. It will listen for notiofications from the RabbitMQ queue cluster and
+   reply back based upon the request type.
+4. Run the scheduled tasks and send emails / notifications to the users
+
+---Tomcat NIO Cluster---
+1. Handle the websocket connections from all the clients
+2. Listen on websocket connection to get requests from clients
+3. Pass on process request responses from Game Servers to the Clients
+4. Process Requests
+Sample code
+http://svn.apache.org/viewvc/tomcat/trunk/webapps/examples/WEB-INF/classes/websocket/chat/ChatAnnotation.java?view=markup
+
+---RabbitMQ Cluster-----
+1. To act as a messgae broker bwteen the Gaming Servers and NIO Cluster
+
+---Distributed Lock Service ---
+1. To allow only thread to modify the table at a time we will need it
+
+---MySQL Server---
+1. Maintain the data of registered users, their moeny count, games played etc
+
+---Mongo Server---
+We may keep an instance of Mongo server if we want to store detaialed information
+regarding each activity in game which the palyers might be interested in checking
+laetr.
+
+--Redis Cache Cluster (In Memory)---
+1. This will maintain the state of the current running games.
+2. This will also help in providing a locking mechanism so that
+   only one server can update the game table at a time
