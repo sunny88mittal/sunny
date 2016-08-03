@@ -3,7 +3,6 @@ package com.sunny.tree.binarytree;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.sunny.tree.binaryseacrhtree.BinarySearchTreeUtil;
 import com.sunny.tree.binaryseacrhtree.TreeNode;
 
 public class BinaryTreeUtil {
