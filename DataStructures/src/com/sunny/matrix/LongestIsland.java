@@ -49,7 +49,7 @@ public class LongestIsland {
 				if (tr >= 0 && tr < m && tc >= 0 && tc < n) {
 					if (grid[tr][tc] == 1 && !visited[tr][tc]) {
 						visited[tr][tc] = true;
-						size = 1 + getSize(grid, visited, tr, tc, m ,n);
+						size = size + 1 + getSize(grid, visited, tr, tc, m ,n);
 					}
 				}
 			}	
