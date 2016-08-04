@@ -1,6 +1,7 @@
 package com.sunny.matrix;
 
 //http://www.geeksforgeeks.org/count-zeros-in-a-row-wise-and-column-wise-sorted-matrix/
+//http://www.geeksforgeeks.org/search-in-row-wise-and-column-wise-sorted-matrix/
 public class ZerosInSortedMatrix {
 
 	public static void main(String[] args) {
