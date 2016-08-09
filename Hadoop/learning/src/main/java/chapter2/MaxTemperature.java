@@ -1,3 +1,4 @@
+package chapter2;
 
 
 import org.apache.hadoop.fs.Path;
