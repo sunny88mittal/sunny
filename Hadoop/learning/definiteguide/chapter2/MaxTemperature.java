@@ -15,15 +15,20 @@ public class MaxTemperature {
 			System.exit(-1);
 		}
 		
+		//Creates a job
 		Job job = new Job();
 		job.setJarByClass(MaxTemperature.class);
 		job.setJobName("Max temperature");
 		
+		//Specifies paths from where to read input and produce output
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		
+		//Set the map and reduce classes
 		job.setMapperClass(MaxTemperatureMapper.class);
 		job.setReducerClass(MaxTemperatureReducer.class);
+		
+		
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
 		
