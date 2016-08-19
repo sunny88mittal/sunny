@@ -4,17 +4,14 @@ import java.util.Scanner;
 
 public class XsquareAndTwoArrays {
 
-	private static long[] query1 = new long[100001];
-	private static long[] query2 = new long[100001];
-
 	public static void main(String args[]) {
 		Scanner scan = new Scanner(System.in);
 		String tokens[] = scan.nextLine().split(" ");
 		int N = Integer.parseInt(tokens[0]);
 		int Q = Integer.parseInt(tokens[0]);
 
-		int A[] = new int[N];
-		int B[] = new int[N];
+		long A[] = new long[N];
+		long B[] = new long[N];
 
 		tokens = scan.nextLine().split(" ");
 		for (int i = 0; i < N; i++) {
@@ -26,6 +23,19 @@ public class XsquareAndTwoArrays {
 			B[i] = Integer.parseInt(tokens[i]);
 		}
 
+		long[] query1 = new long[N + 1];
+		long[] query2 = new long[N + 1];
+
+		for (int i = 1; i <= N; i++) {
+			if (i % 2 == 0) {
+				query1[i] = query1[i - 1] + B[i - 1];
+				query2[i] = query2[i - 1] + A[i - 1];
+			} else {
+				query1[i] = query1[i - 1] + A[i - 1];
+				query2[i] = query2[i - 1] + B[i - 1];
+			}
+		}
+
 		for (int i = 0; i < Q; i++) {
 			tokens = scan.nextLine().split(" ");
 			int type = Integer.parseInt(tokens[0]);
@@ -33,40 +43,10 @@ public class XsquareAndTwoArrays {
 			int r = Integer.parseInt(tokens[2]);
 
 			if (type == 1) {
-				System.out.println(solveQuery1(r, A, B) - solveQuery1(l - 1, A, B));
+				System.out.println(query1[r] - query1[l - 1]);
 			} else {
-				System.out.println(solveQuery2(r, A, B) - solveQuery2(l - 1, A, B));
+				System.out.println(query2[r] - query2[l - 1]);
 			}
 		}
-	}
-
-	private static long solveQuery1(int n, int[] A, int[] B) {
-		if (query1[n] == 0) {
-			if (n <= 0) {
-				return 0;
-			}
-
-			if (n % 2 == 0) {
-				query1[n] = B[n - 1] + solveQuery1(n - 1, A, B);
-			} else {
-				query1[n] = A[n - 1] + solveQuery1(n - 1, A, B);
-			}
-		}
-		return query1[n];
-	}
-
-	private static long solveQuery2(int n, int[] A, int[] B) {
-		if (query2[n] == 0) {
-			if (n <= 0) {
-				return 0;
-			}
-
-			if (n % 2 == 0) {
-				query2[n] = A[n - 1] + solveQuery2(n - 1, A, B);
-			} else {
-				query2[n] = B[n - 1] + solveQuery2(n - 1, A, B);
-			}
-		}
-		return query2[n];
 	}
 }
