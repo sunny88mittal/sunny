@@ -9,9 +9,11 @@ class TheLeadGame {
 		int n = sc.nextInt();
 		int w = 0;
 		int l = 0;
+		int p1 = 0;
+		int p2 = 0;
 		for (int i = 0; i < n; i++) {
-			int p1 = sc.nextInt();
-			int p2 = sc.nextInt();
+			p1 += sc.nextInt();
+			p2 += sc.nextInt();
 			if (p1 > p2) {
 				if (p1 - p2 > l) {
 					l = p1 - p2;
