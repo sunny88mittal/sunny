@@ -1,0 +1,6 @@
+=====Instructions for standalone mode ====
+
+
+
+
+====Instructions for replicated mode ====
