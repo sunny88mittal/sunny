@@ -1,23 +1,22 @@
 package com.sunny.indicators.impl;
 
+import com.sunny.indicators.base.BaseIndicator;
 import com.sunny.indicators.base.IIndicator;
 
-public class MovingAverage implements IIndicator {
+public class MovingAverage extends BaseIndicator implements IIndicator {
 
 	private MovingAverageType type;
 
 	private int noOfPoints;
-	
-	private String[][] data;
 
 	public static enum MovingAverageType {
 		SIMPLE, EXPONENTIAL
 	}
 
-	public MovingAverage(MovingAverageType type, int noOfPoints, String [][] data) {
+	public MovingAverage(MovingAverageType type, int noOfPoints, String[][] data) {
+		super(data);
 		this.type = type;
 		this.noOfPoints = noOfPoints;
-		this.data = data;
 	}
 
 	public MovingAverageType getType() {
@@ -29,7 +28,7 @@ public class MovingAverage implements IIndicator {
 	}
 
 	public float getValue(String date) {
-		float data[] = new float[]{};
+		float data[] = getClosingPriceForLastXDays(date, noOfPoints);
 		float movingAvergae = 0;
 		switch (type) {
 		case SIMPLE:

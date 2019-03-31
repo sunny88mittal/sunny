@@ -19,7 +19,7 @@ public class BaseFileReader {
 	}
 
 	protected String[] getDataRows() {
-		return getLines(2, Integer.MAX_VALUE);
+		return getLines(1, Integer.MAX_VALUE);
 	}
 
 	private String[] getLines(int start, int end) {
