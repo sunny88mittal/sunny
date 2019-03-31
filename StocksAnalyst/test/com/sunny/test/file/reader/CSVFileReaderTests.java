@@ -17,8 +17,8 @@ public class CSVFileReaderTests {
 		assert (header.length != 0);
 		assert (dataRows.length != 0);
 
-		/*for (String str : header) {
+		for (String str : dataRows[0]) {
 			System.out.println(str);
-		}*/
+		}
 	}
 }
