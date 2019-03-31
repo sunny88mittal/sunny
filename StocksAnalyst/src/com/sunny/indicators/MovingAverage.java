@@ -12,7 +12,7 @@ public class MovingAverage {
 		this.type = type;
 	}
 
-	public float getValue(Float[] data) {
+	public float getValue(float[] data) {
 		float movingAvergae = 0;
 		switch (type) {
 		case SIMPLE:
