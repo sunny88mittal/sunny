@@ -5,7 +5,7 @@ import java.util.List;
 
 import zookeeper.base.Constants;
 
-public class NodeCreator {
+public class NodesOrchestrator {
 
 	public static void main(String args[]) throws InterruptedException {
 		int count = 20;

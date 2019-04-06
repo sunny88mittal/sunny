@@ -14,9 +14,9 @@ import org.apache.zookeeper.ZooDefs;
 import zookeeper.base.Base;
 import zookeeper.base.Constants;
 
-public class NodeManager extends Base {
+public class MembershipObserver extends Base {
 
-	public NodeManager(String connectionString) {
+	public MembershipObserver(String connectionString) {
 		super(connectionString);
 	}
 
@@ -38,7 +38,7 @@ public class NodeManager extends Base {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException, KeeperException {
-		NodeManager nodeManager = new NodeManager(Constants.CONNECTION_STRING);
+		MembershipObserver nodeManager = new MembershipObserver(Constants.CONNECTION_STRING);
 		nodeManager.connect();
 		nodeManager.createNodeIfNotExists(Constants.MEMEBER_NODE, 
 				"Members nodes root".getBytes(),
