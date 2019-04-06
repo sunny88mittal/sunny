@@ -9,7 +9,6 @@ import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.Watcher.Event.KeeperState;
-import org.apache.zookeeper.ZooDefs;
 import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.data.ACL;
 
@@ -59,14 +58,16 @@ public class Base {
 	 * @throws KeeperException
 	 * @throws InterruptedException
 	 */
-	protected void createNodeIfNotExists(String path, byte[] data, ArrayList<ACL> acl, CreateMode createMode)
+	protected String createNodeIfNotExists(String path, byte[] data, ArrayList<ACL> acl, CreateMode createMode)
 			throws KeeperException, InterruptedException {
+		String returnValue = path;
 		if (connection.exists(path, false) == null) {
-			connection.create(path, data, acl, createMode);
+			returnValue = connection.create(path, data, acl, createMode);
 			System.out.println("Node created at:" + path);
 		} else {
 			System.out.println(path + "Already exists");
 		}
+		return returnValue;
 	}
 
 	/**
