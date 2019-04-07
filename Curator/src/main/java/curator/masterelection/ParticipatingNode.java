@@ -32,24 +32,23 @@ public class ParticipatingNode implements Runnable {
 		CuratorFramework client = CuratorFrameworkFactory.newClient(connectionStirng, retryPolicy);
 		client.start();
 
-		// Create latch
-		LeaderLatch leaderLatch = new LeaderLatch(client, masterNodePath, nodeName);
-
 		// Participate in election
-		try {
-			leaderLatch.start();
-			leaderLatch.await();
-			if (leaderLatch.hasLeadership()) {
-				System.out.println("Current leader is:" + nodeName);
-			}
-			Thread.sleep(10000);
-			leaderLatch.close();
-		} catch (Exception e) {
-			System.out.println("Exception in " + nodeName + e.getMessage());
-		} finally {
-			// Close client
-			client.close();
+		for (int i = 0; i < 10; i++) {
+			LeaderLatch leaderLatch = new LeaderLatch(client, masterNodePath, nodeName);
+			try {
+				leaderLatch.start();
+				leaderLatch.await();
+				if (leaderLatch.hasLeadership()) {
+					System.out.println("Current leader is:" + nodeName);
+				}
+				Thread.sleep(1000);
+				leaderLatch.close();
+			} catch (Exception e) {
+				System.out.println("Exception in " + nodeName + e.getMessage());
+			} 
 		}
+		
+		client.close();
 	}
 
 	public static void main(String args[]) throws InterruptedException {
