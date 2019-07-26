@@ -2,6 +2,12 @@ package Entities;
 
 public class CandleStickData {
 
+	@Override
+	public String toString() {
+		return "CandleStickData [timestamp=" + timestamp + ", open=" + open + ", high=" + high + ", low=" + low
+				+ ", close=" + close + ", volume=" + volume + "]";
+	}
+
 	public CandleStickData(String timestamp, float open, float high, float low, float close, float volume) {
 		this.timestamp = timestamp;
 		this.open = open;

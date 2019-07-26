@@ -45,7 +45,9 @@ public class FileReader {
 	}
 
 	public static void main(String args[]) {
-		String file = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Data\\BAJFINANCE\\day.json";
-		getCandeStickData(file);
+		String file = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Data\\BAJFINANCE\\3minute.json";
+		List<CandleStickData> candleStickDataList = getCandeStickData(file);
+		System.out.println(candleStickDataList.get(10));
+		
 	}
 }
