@@ -27,7 +27,7 @@ public class MovingAverage {
 		return noOfPoints;
 	}
 
-	public float getValue(String date, List<CandleStickData> candleSticksData) {
+	public float getValue(String timestamp, List<CandleStickData> candleSticksData) {
 		float data[] = null;
 		float movingAvergae = 0;
 		switch (type) {
