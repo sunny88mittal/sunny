@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.ta4j.core.TimeSeries;
+
 import com.google.gson.Gson;
 
 import Entities.CandleStickData;
@@ -48,6 +50,7 @@ public class FileReader {
 		String file = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Data\\BAJFINANCE\\3minute.json";
 		List<CandleStickData> candleStickDataList = getCandeStickData(file);
 		System.out.println(candleStickDataList.get(10));
-		
+		TimeSeries series = FileReaderUtil.convertToTimeseries(candleStickDataList);
+		System.out.println(series.getBarCount());
 	}
 }
