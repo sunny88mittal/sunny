@@ -1,6 +1,7 @@
 package DataDownloader;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,6 +19,7 @@ public class DataDownloader {
 			+ "access_token=&" + "from=2014-01-01" + "&to=2019-07-28&" + "ciqrandom=1564301727399";
 
 	public static void getData(String stockName, String stockSymbol, String interval) throws IOException {
+		createDirIfReq(stockName);
 		String url = URL.replace("SYMBOL", stockSymbol).replace("INTERVAL", interval);
 		String fileLocation = FileConstants.FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
 		String data = makeGetRequest(url);
@@ -54,6 +56,14 @@ public class DataDownloader {
 		fileWriter.close();
 	}
 	
+	private static void createDirIfReq(String stockName) {
+		String fileLocation = FileConstants.FILE_BASE_PATH + "\\" + stockName;
+		File file = new File(fileLocation);
+		if (!file.exists()) {
+			file.mkdir();
+		}
+	}
+	
 	private static void getDataForStock(String stockName, String stockSymbol) throws IOException {
 		getData(stockName, stockSymbol, CandleStickInterval.MINUTE_3);
 		getData(stockName, stockSymbol, CandleStickInterval.MINUTE_5);
@@ -65,10 +75,6 @@ public class DataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException {
-		getDataForStock(StockSymbols.AXIS_BANK, "1510401");
-		getDataForStock(StockSymbols.ICICI_BANK, "1270529");
-		getDataForStock(StockSymbols.YES_BANK, "3050241");
-		getDataForStock(StockSymbols.RBL_BANK, "4708097");
-		getDataForStock(StockSymbols.INDUSIND_BANK, "1346049");
+		getDataForStock(StockSymbols.SBI_BANK, "779521");
 	}
 }
