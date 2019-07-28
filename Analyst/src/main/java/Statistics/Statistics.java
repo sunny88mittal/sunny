@@ -50,14 +50,14 @@ public class Statistics {
 		Map<String, String> statsAsMap = new LinkedHashMap<String, String>();
 		statsAsMap.put(TOTAL_TRADES, totalTrades + "");
 		statsAsMap.put(PROFITABLE_TRADES, profitableTrades + "");
-		statsAsMap.put(PROFITABLE_TRADES_PERCENTAGE, ((profitableTrades * 1.0) / (totalTrades * 1.0)) * 100 + "");
-		statsAsMap.put(LOOSING_TRADES, loosingtrades + "");
-		statsAsMap.put(LOOSING_TRADES_PERCENTAGE, ((loosingtrades * 1.0) / (totalTrades * 1.0)) * 100 + "");
-		statsAsMap.put(FROM_PROFITABLE_TRADES, onlyProft + "");
-		statsAsMap.put(FROM_LOOSING_TRADES, onlyLoss + "");
-		statsAsMap.put(GROSS_PROFIT, grossProfit + "");
-		statsAsMap.put(CHARGES, charges + "");
-		statsAsMap.put(NET_PROFIT, (grossProfit - charges) + "");
+		statsAsMap.put(PROFITABLE_TRADES_PERCENTAGE, (int)(((profitableTrades * 1.0) / (totalTrades * 1.0)) * 100) + "");
+		statsAsMap.put(LOOSING_TRADES, (int)loosingtrades + "");
+		statsAsMap.put(LOOSING_TRADES_PERCENTAGE, (int)(((loosingtrades * 1.0) / (totalTrades * 1.0)) * 100) + "");
+		statsAsMap.put(FROM_PROFITABLE_TRADES, (int)onlyProft + "");
+		statsAsMap.put(FROM_LOOSING_TRADES, (int)onlyLoss + "");
+		statsAsMap.put(GROSS_PROFIT, (int)grossProfit + "");
+		statsAsMap.put(CHARGES, (int)charges + "");
+		statsAsMap.put(NET_PROFIT, (int)(grossProfit - charges) + "");
 		return statsAsMap;
 	}
 }

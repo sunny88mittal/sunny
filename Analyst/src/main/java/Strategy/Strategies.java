@@ -1,5 +1,11 @@
 package Strategy;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.ta4j.core.Bar;
 import org.ta4j.core.Rule;
 import org.ta4j.core.TimeSeries;
@@ -9,10 +15,11 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.trading.rules.CrossedDownIndicatorRule;
 import org.ta4j.core.trading.rules.CrossedUpIndicatorRule;
 
-import Constants.CandlsestickInterval;
+import Constants.CandleStickInterval;
 import Constants.StockSymbols;
-import FileReader.FileReader;
-import FileReader.FileReaderUtil;
+import File.FileReader;
+import File.FileReaderUtil;
+import File.XLSCreator;
 import Statistics.StatisticsCollector;
 
 public class Strategies {
@@ -24,6 +31,12 @@ public class Strategies {
 	}
 
 	public static StatisticsCollector EMA(String stock, String interval, int shortInterval, int longInterval) {
+		Map<String, String> statsMeta = new LinkedHashMap<String, String>();
+		statsMeta.put("Stock", stock);
+		statsMeta.put("Interval", interval);
+		statsMeta.put("EMA-Short", shortInterval + "");
+		statsMeta.put("EMA-Long", longInterval + "");
+
 		TimeSeries timeSeries = getTimeSeries(stock, interval);
 		ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(timeSeries);
 
@@ -34,6 +47,7 @@ public class Strategies {
 		Rule sellingRule = new CrossedDownIndicatorRule(shortSma, longSma);
 
 		StatisticsCollector statsCollector = new StatisticsCollector();
+		statsCollector.statsMeta = statsMeta;
 		int barsCount = timeSeries.getBarCount();
 
 		Bar startBar = null;
@@ -50,9 +64,6 @@ public class Strategies {
 			}
 		}
 
-		System.out.println();
-		System.out.println("----Results for " + interval + " ----");
-		statsCollector.statistics.printStats();
 		return statsCollector;
 	}
 
@@ -87,39 +98,67 @@ public class Strategies {
 			}
 		}
 
-		System.out.println();
-		System.out.println("----Results for " + interval + " ----");
-		statsCollector.statistics.printStats();
 		return statsCollector;
 	}
 
-	public static void main(String args[]) {
-		String stock = StockSymbols.BAJAJ_FINANCE;
-		int sma = 4;
-		int lma = 10;
+	public static StatisticsCollector findEMASetting(String stock, String interval) {
+		int maxProfiti = 0;
+		int maxProfitj = 0;
+		StatisticsCollector statsCollectorMax = null;
+		for (int i = 8; i <= 8; i++) {
+			for (int j = 20; j <= 20; j++) {
+				StatisticsCollector statsCollector = EMA(stock, interval, i, j);
+				float netProfit = statsCollector.statistics.grossProfit - statsCollector.statistics.charges;
+				float maxProfit = 0;
+				if (statsCollectorMax != null) {
+					maxProfit = statsCollectorMax.statistics.grossProfit - statsCollectorMax.statistics.charges;
+				}
+				if (netProfit > maxProfit) {
+					maxProfiti = i;
+					maxProfitj = j;
+					statsCollectorMax = statsCollector;
+				}
+			}
+		}
+		System.out.println();
+		System.out.println(
+				"Stock :" + stock + " Interval : " + interval + " " + " EMA : " + maxProfiti + "-" + maxProfitj);
+		if (statsCollectorMax != null) {
+			statsCollectorMax.printStats(false);
+		}
+		return statsCollectorMax;
+	}
 
-		int macdSignal = 7;
-		int macdShort = 10;
-		int macdLong = 21;
+	public static List<StatisticsCollector> getEMASettingForStockAllIntervals(String stock) {
+		List<StatisticsCollector> statsCollectorList = new ArrayList<StatisticsCollector>();
+		statsCollectorList.add(findEMASetting(stock, CandleStickInterval.MINUTE_3));
+		statsCollectorList.add(findEMASetting(stock, CandleStickInterval.MINUTE_5));
+		statsCollectorList.add(findEMASetting(stock, CandleStickInterval.MINUTE_10));
+		statsCollectorList.add(findEMASetting(stock, CandleStickInterval.MINUTE_15));
+		statsCollectorList.add(findEMASetting(stock, CandleStickInterval.MINUTE_30));
+		statsCollectorList.add(findEMASetting(stock, CandleStickInterval.MINUTE_60));
+		statsCollectorList.add(findEMASetting(stock, CandleStickInterval.DAY));
+		while (statsCollectorList.contains(null)) {
+			statsCollectorList.remove(null);
+		}
+		return statsCollectorList;
+	}
 
-		EMA(stock, CandlsestickInterval.MINUTE_3, sma, lma);
-		EMA(stock, CandlsestickInterval.MINUTE_5, sma, lma);
-		EMA(stock, CandlsestickInterval.MINUTE_10, sma, lma);
-		EMA(stock, CandlsestickInterval.MINUTE_15, sma, lma);
-		EMA(stock, CandlsestickInterval.MINUTE_30, sma, lma);
-		EMA(stock, CandlsestickInterval.MINUTE_60, sma, lma);
-		EMA(stock, CandlsestickInterval.DAY, sma, lma);
-
-		/*
-		 * EMAMACD(StockSymbols.BAJAJ_FINANCE, CandlsestickInterval.MINUTE_3, sma, lma,
-		 * macdSignal, macdShort, macdLong); EMAMACD(StockSymbols.BAJAJ_FINANCE,
-		 * CandlsestickInterval.MINUTE_5, sma, lma, macdSignal, macdShort, macdLong);
-		 * EMAMACD(StockSymbols.BAJAJ_FINANCE, CandlsestickInterval.MINUTE_10, sma, lma,
-		 * macdSignal, macdShort, macdLong); EMAMACD(StockSymbols.BAJAJ_FINANCE,
-		 * CandlsestickInterval.MINUTE_30, sma, lma, macdSignal, macdShort, macdLong);
-		 * EMAMACD(StockSymbols.BAJAJ_FINANCE, CandlsestickInterval.MINUTE_60, sma, lma,
-		 * macdSignal, macdShort, macdLong); EMAMACD(StockSymbols.BAJAJ_FINANCE,
-		 * CandlsestickInterval.DAY, sma, lma, macdSignal, macdShort, macdLong);
-		 */
+	public static void main(String args[]) throws IOException {
+		List<StatisticsCollector> statsCollectorList = getEMASettingForStockAllIntervals(StockSymbols.BANK_NIFTY);
+		XLSCreator.generateXLS(statsCollectorList, "test");
+		/*getEMASettingForStockAllIntervals(StockSymbols.NIFTY);
+		getEMASettingForStockAllIntervals(StockSymbols.HDFC_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.BAJAJ_FINANCE);
+		getEMASettingForStockAllIntervals(StockSymbols.KOTAK_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.RELIANCE);
+		getEMASettingForStockAllIntervals(StockSymbols.INDUSIND_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.MARUTI_SUZUKI);
+		getEMASettingForStockAllIntervals(StockSymbols.YES_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.RBL_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.AXIS_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.ICICI_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.SBI_BANK);
+		getEMASettingForStockAllIntervals(StockSymbols.HDFC);*/
 	}
 }
