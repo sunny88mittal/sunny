@@ -42,7 +42,7 @@ public class FileReader {
 			CandleStickData candleStickData = new CandleStickData(timestamp, open, high, low, close, volume);
 			candleStickDataList.add(candleStickData);
 		}
-
+		
 		return candleStickDataList;
 	}
 

@@ -1,6 +1,7 @@
 package Statistics;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.ta4j.core.Bar;
@@ -27,5 +28,34 @@ public class StatisticsCollector {
 		statistics.charges += charges;
 		statistics.grossProfit += profit;
 		++statistics.totalTrades;
+	}
+	
+	public void printStats() {
+		statistics.printStats();
+		
+		List<Float> profits = new ArrayList<Float>();
+		List<Float> losses = new ArrayList<Float>();
+		for (DataPoint dataPoint : dataPoints) {
+			float startAt = dataPoint.startBar.getClosePrice().floatValue();
+			float endAt = dataPoint.endBar.getClosePrice().floatValue();
+			float profit = endAt - startAt;
+			if (profit > 0) {
+				profits.add(profit);
+			} else {
+				losses.add(profit);
+			}
+		}
+		
+		Collections.sort(profits);
+		Collections.sort(losses);
+		System.out.println();
+		System.out.println(profits);
+		System.out.println();
+		System.out.println(losses);
+		
+		for (DataPoint dataPoint : dataPoints) {
+			System.out.println();
+			dataPoint.print();
+		}
 	}
 }
