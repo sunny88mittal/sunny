@@ -1,6 +1,6 @@
 package Constants;
 
-public class CandlsestickInterval {
+public class CandleStickInterval {
 
 	public static String MINUTE_3 = "3minute";
 
