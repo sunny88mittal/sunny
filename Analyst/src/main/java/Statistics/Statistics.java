@@ -13,7 +13,9 @@ public class Statistics {
 	public void printStats() {
 		System.out.println("Total no. of trades : " + totalTrades);
 		System.out.println("Profitable trades : " + profitableTrades);
+		System.out.println("Profitable trades %age : " + ((profitableTrades * 1.0) / (totalTrades * 1.0)) * 100);
 		System.out.println("Loosing trades : " + loosingtrades);
+		System.out.println("Loosing trades %age : " + ((loosingtrades * 1.0) /(totalTrades * 1.0)) * 100);
 		System.out.println("From Profitable Trades : " + onlyProft);
 		System.out.println("From Loosing Trades : " + onlyLoss);
 		System.out.println("Gross profit : " + grossProfit);
