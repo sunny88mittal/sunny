@@ -1,2 +1,4 @@
+===== EMA Strategy =====
 BUY : EMA(Small) > EMA(Large)
 SELL : EMA(Small) > EMA(Large)
+
