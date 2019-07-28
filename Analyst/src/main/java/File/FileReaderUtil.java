@@ -1,4 +1,4 @@
-package FileReader;
+package File;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
