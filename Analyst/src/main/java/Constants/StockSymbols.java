@@ -27,6 +27,8 @@ public class StockSymbols {
 	public static String YES_BANK = "YESBANK";
 
 	public static String RBL_BANK = "RBLBANK";
+	
+	public static String SBI_BANK = "SBIN";
 
 	public static String BANK_NIFTY = "BANKNIFTY";
 
