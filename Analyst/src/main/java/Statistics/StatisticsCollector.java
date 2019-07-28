@@ -2,13 +2,17 @@ package Statistics;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ta4j.core.Bar;
 
 public class StatisticsCollector {
 
 	public List<DataPoint> dataPoints = new ArrayList<DataPoint>();
+
+	public Map<String, String> statsMeta = new LinkedHashMap<String, String>();
 
 	public Statistics statistics = new Statistics();
 
