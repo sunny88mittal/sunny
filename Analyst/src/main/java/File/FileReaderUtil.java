@@ -13,7 +13,7 @@ import Entities.CandleStickData;
 public class FileReaderUtil {
 
 	public static String getFileLocation(String stock, String candleStickInterval) {
-		String fileLocation = FileConstants.FILE_BASE_PATH + "//" + stock + "//" + candleStickInterval + ".json";
+		String fileLocation = FileConstants.DATA_FILE_BASE_PATH + "//" + stock + "//" + candleStickInterval + ".json";
 		return fileLocation;
 	}
 

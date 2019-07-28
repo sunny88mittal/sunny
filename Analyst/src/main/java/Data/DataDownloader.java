@@ -21,7 +21,7 @@ public class DataDownloader {
 	public static void getData(String stockName, String stockSymbol, String interval) throws IOException {
 		createDirIfReq(stockName);
 		String url = URL.replace("SYMBOL", stockSymbol).replace("INTERVAL", interval);
-		String fileLocation = FileConstants.FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
+		String fileLocation = FileConstants.DATA_FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
 		String data = makeGetRequest(url);
 		writeToFile(fileLocation, data);
 	}
@@ -57,7 +57,7 @@ public class DataDownloader {
 	}
 	
 	private static void createDirIfReq(String stockName) {
-		String fileLocation = FileConstants.FILE_BASE_PATH + "\\" + stockName;
+		String fileLocation = FileConstants.DATA_FILE_BASE_PATH + "\\" + stockName;
 		File file = new File(fileLocation);
 		if (!file.exists()) {
 			file.mkdir();
