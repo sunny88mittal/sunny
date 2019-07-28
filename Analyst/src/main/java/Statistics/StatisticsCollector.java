@@ -20,7 +20,7 @@ public class StatisticsCollector {
 		float charges = ((startAt + endAt) / 10000) * 3;
 		if (profit >= 0.0) {
 			++statistics.profitableTrades;
-			statistics.onlyProft +=  profit;
+			statistics.onlyProft += profit;
 		} else {
 			++statistics.loosingtrades;
 			statistics.onlyLoss += profit;
@@ -29,33 +29,35 @@ public class StatisticsCollector {
 		statistics.grossProfit += profit;
 		++statistics.totalTrades;
 	}
-	
-	public void printStats() {
+
+	public void printStats(boolean printDetails) {
 		statistics.printStats();
-		
-		List<Float> profits = new ArrayList<Float>();
-		List<Float> losses = new ArrayList<Float>();
-		for (DataPoint dataPoint : dataPoints) {
-			float startAt = dataPoint.startBar.getClosePrice().floatValue();
-			float endAt = dataPoint.endBar.getClosePrice().floatValue();
-			float profit = endAt - startAt;
-			if (profit > 0) {
-				profits.add(profit);
-			} else {
-				losses.add(profit);
+
+		if (printDetails) {
+			List<Float> profits = new ArrayList<Float>();
+			List<Float> losses = new ArrayList<Float>();
+			for (DataPoint dataPoint : dataPoints) {
+				float startAt = dataPoint.startBar.getClosePrice().floatValue();
+				float endAt = dataPoint.endBar.getClosePrice().floatValue();
+				float profit = endAt - startAt;
+				if (profit > 0) {
+					profits.add(profit);
+				} else {
+					losses.add(profit);
+				}
 			}
-		}
-		
-		Collections.sort(profits);
-		Collections.sort(losses);
-		System.out.println();
-		System.out.println(profits);
-		System.out.println();
-		System.out.println(losses);
-		
-		for (DataPoint dataPoint : dataPoints) {
+
+			Collections.sort(profits);
+			Collections.sort(losses);
 			System.out.println();
-			dataPoint.print();
+			System.out.println(profits);
+			System.out.println();
+			System.out.println(losses);
+
+			for (DataPoint dataPoint : dataPoints) {
+				System.out.println();
+				dataPoint.print();
+			}
 		}
 	}
 }
