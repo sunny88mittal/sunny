@@ -27,7 +27,7 @@ public class XLSCreator {
 		}
 
 		// File Location
-		String fileLocation = FileConstants.FILE_BASE_PATH + "\\" + fileName + ".xlsx";
+		String fileLocation = FileConstants.ANALYSIS_FILE_BASE_PATH + "\\" + fileName + ".xlsx";
 
 		// Create Workbook
 		Workbook workbook = new XSSFWorkbook();
