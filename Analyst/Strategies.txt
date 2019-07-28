@@ -1,4 +1,11 @@
+===== Indicators =======
+EMA
+MACD
+Momentum
+ZigZag
+ATR
+Pivot Charts
+
 ===== EMA Strategy =====
 BUY : EMA(Small) > EMA(Large)
 SELL : EMA(Small) > EMA(Large)
-
