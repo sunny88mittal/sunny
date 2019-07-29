@@ -1,3 +1,10 @@
+== Indicators Criteria ==
+Trend
+Mean Reversion
+Relative Strength
+Momentum
+Volume
+
 ===== Indicators =======
 EMA
 MACD
