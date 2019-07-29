@@ -5,6 +5,7 @@ Momentum
 ZigZag
 ATR
 Pivot Charts
+Bollinger Bands
 Candlestick Analysis
 
 ===== EMA Strategy =====
