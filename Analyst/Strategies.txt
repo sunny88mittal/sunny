@@ -1,9 +1,8 @@
 == Indicators Criteria ==
 Trend
-Mean Reversion
-Relative Strength
 Momentum
 Volume
+Volatility
 
 ===== Indicators =======
 EMA
