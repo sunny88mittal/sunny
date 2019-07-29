@@ -7,6 +7,7 @@ ATR
 Pivot Charts
 Bollinger Bands
 Candlestick Analysis
+Parabaolic SAR
 
 ===== EMA Strategy =====
 BUY : EMA(Small) > EMA(Large)
