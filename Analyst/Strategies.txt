@@ -5,7 +5,12 @@ Momentum
 ZigZag
 ATR
 Pivot Charts
+Candlestick Analysis
 
 ===== EMA Strategy =====
 BUY : EMA(Small) > EMA(Large)
 SELL : EMA(Small) > EMA(Large)
+
+===== EMA Stochastic Strategy =====
+BUY : EMA(Small) > EMA(Large) AND Stochastic <= 20
+SELL : EMA(Small) > EMA(Large) AND Stochastic >= 80
