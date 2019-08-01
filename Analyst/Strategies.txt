@@ -1,19 +1,23 @@
-== Indicators Criteria ==
-Trend
-Momentum
-Volume
-Volatility
-
 ===== Indicators =======
+
+--Trend
 EMA
 MACD
+Parabolic SAR
+
+--Momentum
+Stochastic
 Momentum
-ZigZag
+
+--Volatility
 ATR
-Pivot Charts
 Bollinger Bands
-Candlestick Analysis
-Parabaolic SAR
+Super Trend
+
+--Volume
+
+--Support & Resistance
+Pivot Charts
 
 ===== EMA Strategy =====
 BUY : EMA(Small) > EMA(Large)
