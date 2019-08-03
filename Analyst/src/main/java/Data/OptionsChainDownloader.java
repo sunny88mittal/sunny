@@ -33,6 +33,6 @@ public class OptionsChainDownloader {
 	}
 
 	public static void main(String args[]) throws IOException {
-		getOptionsChain(StockSymbols.BANK_NIFTY.name, "1AUG2019");
+		getOptionsChain(StockSymbols.BANKNIFTY.name, "1AUG2019");
 	}
 }
