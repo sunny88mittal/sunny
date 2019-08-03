@@ -6,7 +6,7 @@ import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.MACDIndicator;
 import org.ta4j.core.num.Num;
 
-public class MACDIndicatorWithSignal extends CachedIndicator<Num> {
+public class MACDWithSignalIndicator extends CachedIndicator<Num> {
 
 	private static final long serialVersionUID = 3319328601246281474L;
 
@@ -14,11 +14,11 @@ public class MACDIndicatorWithSignal extends CachedIndicator<Num> {
 
 	private EMAIndicator emaMacd;
 
-	public MACDIndicatorWithSignal(Indicator<Num> indicator) {
+	public MACDWithSignalIndicator(Indicator<Num> indicator) {
 		this(indicator, 12, 26, 9);
 	}
 
-	public MACDIndicatorWithSignal(Indicator<Num> indicator, int shortEma, int longEma, int signalLine) {
+	public MACDWithSignalIndicator(Indicator<Num> indicator, int shortEma, int longEma, int signalLine) {
 		super(indicator);
 		macd = new MACDIndicator(indicator, shortEma, longEma);
 		emaMacd = new EMAIndicator(macd, 9);
