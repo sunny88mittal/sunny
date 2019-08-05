@@ -1,4 +1,11 @@
-Find Stock to trade for Option/Future for positional
-	Using Volatility, PSAR, MACD, Pramod Sir's Criteria
+Find Stock to trade for Option/Future for positional Strategy
+	Using Volatility, PSAR, MACD
+	Using Pramod Sir's Criteria
+	Using both of the above
+	
 Integrate with Kite API to get intraday trades
 	Using VWAP, MACD, PSAR
+	
+Test hedged strategies 
+	Banknifty - Sell Put of HDFCBank, ICICI Bank and Kotak Bank. Buy 3 lot of Banknifty put
+	Nifty - Buy 1 lot of Future of good stocks and sell equivalent amount (8 lots) of Nifty
