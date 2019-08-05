@@ -3,9 +3,9 @@ Find Stock to trade for Option/Future for positional Strategy
 	Using Pramod Sir's Criteria
 	Using both of the above
 	
-Integrate with Kite API to get intraday trades
+Integrate with Kite API to get Intraday trades
 	Using VWAP, MACD, PSAR
 	
 Test hedged strategies 
-	Banknifty - Sell Put of HDFCBank, ICICI Bank and Kotak Bank. Buy 3 lot of Banknifty put
+	BankNifty - Sell Put of HDFCBank, ICICI Bank and Kotak Bank. Buy 3 lot of BankNifty put
 	Nifty - Buy 1 lot of Future of good stocks and sell equivalent amount (8 lots) of Nifty
