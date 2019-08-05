@@ -1,0 +1,4 @@
+Find Stock to trade for Option/Future for positional
+	Using Volatility, PSAR, MACD, Pramod Sir's Criteria
+Integrate with Kite API to get intraday trades
+	Using VWAP, MACD, PSAR
