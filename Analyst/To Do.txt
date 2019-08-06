@@ -5,6 +5,8 @@ Find Stock to trade for Option/Future for positional Strategy
 	
 Integrate with Kite API to get Intraday trades
 	Using VWAP, MACD, PSAR
+	Some way to figure out which stock can give big move for day
+	Some way to figure which move is going to be big for intraday
 	
 Test hedged strategies 
 	BankNifty - Sell Put of HDFCBank, ICICI Bank and Kotak Bank. Buy 3 lot of BankNifty put
