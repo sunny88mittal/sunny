@@ -49,9 +49,9 @@ public class StocksDataDownloader {
 		return simpleDateFormat.format(date);
 	}
 
-	private static void getDataForStock(String stockName, String stockSymbol) throws IOException {
+	private static void getDataForStock(StockSymbols stockSymbol) throws IOException {
 		for (String interval : CandleStickInterval.getAllIntervals()) {
-			getData(stockName, stockSymbol, interval);
+			getData(stockSymbol.name, stockSymbol.code, interval);
 		}
 	}
 	
@@ -67,12 +67,13 @@ public class StocksDataDownloader {
 		List<StockSymbols> stocks = StockSymbols.getAllStocksList();
 		for (StockSymbols stock : stocks) {
 			System.out.println("Updating data for : " + stock.name);
-			getDataForStock(stock.name, stock.code);
+			getDataForStock(stock);
 			System.out.println("Data Updated for :" + stock.name);
 		}
 	}
 
 	public static void main(String args[]) throws IOException {
-		updateAllDataAllStocks();
+		getDataForStock(StockSymbols.VIX);
+		//updateAllDataAllStocks();
 	}
 }

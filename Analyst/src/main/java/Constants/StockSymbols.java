@@ -1,5 +1,6 @@
 package Constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,7 @@ public enum StockSymbols {
     
 	NIFTY("NIFTY", "256265"), 
 	BANKNIFTY("BANKNIFTY", "260105"),
+	VIX("VIX", "264969"),
 	TORNTPOWER("TORNTPOWER", "3529217"),
 	TORNTPHARM("TORNTPHARM", "900609"),
 	TATASTEEL("TATASTEEL", "895745"),
@@ -180,5 +182,20 @@ public enum StockSymbols {
 	
 	public static List<StockSymbols> getAllStocksList() {
 		return Arrays.asList(StockSymbols.values());
+	}
+	
+	public static List<StockSymbols> getBankNiftyStocksList() {
+		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
+		stocksList.add(HDFCBANK);
+		stocksList.add(ICICIBANK);
+		stocksList.add(KOTAKBANK);
+		stocksList.add(AXISBANK);
+		stocksList.add(SBIN);
+		stocksList.add(INDUSINDBK);
+		stocksList.add(FEDERALBNK);
+		stocksList.add(YESBANK);
+		stocksList.add(RBLBANK);
+		stocksList.add(BANKBARODA);
+		return stocksList;
 	}
 }
