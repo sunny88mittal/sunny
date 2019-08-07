@@ -2,8 +2,6 @@ package File;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,11 +15,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import Constants.FileConstants;
-import Statistics.StatisticsCollector;
+import Entities.ExcelSheet;
 
 public class XLSCreator {
 
-	public static void generateXLS(List<StatisticsCollector> statsCollectorList, String fileName) throws IOException {
+	public static void generateXLS1(List<ExcelSheet> excelSheets, String fileName) throws IOException {
 		if (fileName == null) {
 			fileName = System.currentTimeMillis() + "";
 		}
@@ -32,50 +30,45 @@ public class XLSCreator {
 		// Create Workbook
 		Workbook workbook = new XSSFWorkbook();
 
-		// Create a Sheet
-		Sheet sheet = workbook.createSheet("Statistics");
-
-		// Create a CellStyle with the font
+		// Create header CellStyle with the font
 		CellStyle headerCellStyle = workbook.createCellStyle();
 		headerCellStyle.setAlignment(HorizontalAlignment.CENTER);
 		headerCellStyle.setFont(getHeaderFont(workbook));
 
-		// Create a Row
-		Row headerRow = sheet.createRow(0);
-		List<String> headerCells = getHeader(statsCollectorList);
-		for (int i = 0; i < headerCells.size(); i++) {
-			Cell cell = headerRow.createCell(i);
-			cell.setCellValue(headerCells.get(i));
-			cell.setCellStyle(headerCellStyle);
-		}
-
-		// Add data
+		// Data Cells Style
 		CellStyle dataCellStyle = workbook.createCellStyle();
 		dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
-		for (int i = 0; i < statsCollectorList.size(); i++) {
-			StatisticsCollector statisticsCollector = statsCollectorList.get(i);
 
-			Row row = sheet.createRow(i + 1);
+		int sheetIndex = 0;
+		for (ExcelSheet excelSheet : excelSheets) {
+			int rowIndex = 0;
 
-			int j = 0;
-			Collection<String> statsMetaValues = statisticsCollector.statsMeta.values();
-			for (String value : statsMetaValues) {
-				Cell cell = row.createCell(j++);
-				cell.setCellValue(value);
-				cell.setCellStyle(dataCellStyle);
+			// Create a Sheet
+			Sheet sheet = workbook.createSheet("Sheet" + sheetIndex++);
+
+			// Create a Row
+			Row headerRow = sheet.createRow(rowIndex++);
+			List<String> headerCells = excelSheet.header;
+			for (int j = 0; j < headerCells.size(); j++) {
+				Cell cell = headerRow.createCell(j);
+				cell.setCellValue(headerCells.get(j));
+				cell.setCellStyle(headerCellStyle);
 			}
 
-			Collection<String> statisticsVales = statisticsCollector.statistics.getStatsAsMap().values();
-			for (String value : statisticsVales) {
-				Cell cell = row.createCell(j++);
-				cell.setCellValue(value);
-				cell.setCellStyle(dataCellStyle);
+			// Add Columns
+			for (List<String> row : excelSheet.rows) {
+				Row contentRow = sheet.createRow(rowIndex++);
+				for (int i = 0; i < row.size(); i++) {
+					Cell cell = contentRow.createCell(i);
+					cell.setCellValue(row.get(i));
+					cell.setCellStyle(dataCellStyle);
+				}
 			}
-		}
 
-		// Resize all columns to fit the content size
-		for (int i = 0; i < headerCells.size(); i++) {
-			sheet.autoSizeColumn(i);
+			// Resize all columns to fit the content size
+			for (int i = 0; i < headerCells.size(); i++) {
+				sheet.autoSizeColumn(i);
+			}
 		}
 
 		// Write the output to a file
@@ -94,13 +87,5 @@ public class XLSCreator {
 		headerFont.setFontHeightInPoints((short) 11);
 		headerFont.setColor(IndexedColors.BLACK.getIndex());
 		return headerFont;
-	}
-
-	private static List<String> getHeader(List<StatisticsCollector> statsCollectorList) {
-		List<String> headerColumns = new ArrayList<String>();
-		StatisticsCollector statisticsCollector = statsCollectorList.get(0);
-		headerColumns.addAll(statisticsCollector.statsMeta.keySet());
-		headerColumns.addAll(statisticsCollector.statistics.getStatsAsMap().keySet());
-		return headerColumns;
 	}
 }
