@@ -17,6 +17,18 @@ public class StocksDataDownloader {
 	private static final String URL = "https://kitecharts-aws.zerodha.com" + "/api/chart/SYMBOL/INTERVAL?"
 			+ "public_token=px7RlNQX3W7rg9Vm2WOUDbGzo6WBxUqy&" + "user_id=YF3210&oi=1" + "&api_key=kitefront&"
 			+ "access_token=&" + "from=2014-01-01" + "&to=TODATE&" + "ciqrandom=1564301727399";
+	
+	private static final String REAL_TIME_URL = "https://kitecharts-aws.zerodha.com" + "/api/chart/SYMBOL/INTERVAL?"
+			+ "public_token=px7RlNQX3W7rg9Vm2WOUDbGzo6WBxUqy&" + "user_id=YF3210&oi=1" + "&api_key=kitefront&"
+			+ "access_token=&" + "from=TODATE" + "&to=TODATE&" + "ciqrandom=1564301727399";
+	
+	public static String getRealTimeData(StockSymbols stock, String interval) throws IOException {
+		String url = REAL_TIME_URL.replaceAll("SYMBOL", stock.code).
+				replaceAll("INTERVAL", interval).
+				replaceAll("TODATE", getTodaysDate());
+		String data = NetworkHelper.makeGetRequest(url);
+		return data;
+	}
 
 	private static void getData(String stockName, String stockSymbol, String interval) throws IOException {
 		IOHelper.createDirIfReq(FileConstants.DATA_FILE_BASE_PATH, stockName);
@@ -73,7 +85,7 @@ public class StocksDataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException {
-		getDataForStock(StockSymbols.VIX);
+		getDataForStock(StockSymbols.BANKNIFTY);
 		//updateAllDataAllStocks();
 	}
 }
