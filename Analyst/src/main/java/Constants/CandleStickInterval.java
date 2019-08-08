@@ -5,7 +5,13 @@ import java.util.List;
 
 public class CandleStickInterval {
 
+	public static String MINUTE_1 = "1minute";
+
+	public static String MINUTE_2 = "2minute";
+
 	public static String MINUTE_3 = "3minute";
+
+	public static String MINUTE_4 = "4minute";
 
 	public static String MINUTE_5 = "5minute";
 
@@ -18,7 +24,7 @@ public class CandleStickInterval {
 	public static String MINUTE_60 = "60minute";
 
 	public static String DAY = "day";
-	
+
 	public static List<String> getAllIntervals() {
 		List<String> allIntervals = new ArrayList<String>();
 		allIntervals.add(MINUTE_3);

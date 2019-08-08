@@ -198,4 +198,21 @@ public enum StockSymbols {
 		stocksList.add(BANKBARODA);
 		return stocksList;
 	}
+	
+	public static List<StockSymbols> getNiftyHeavyStocksList() {
+		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
+		stocksList.add(HDFCBANK);
+		stocksList.add(RELIANCE);
+		stocksList.add(HDFC);
+		stocksList.add(INFY);
+		stocksList.add(ICICIBANK);
+		stocksList.add(ITC);
+		stocksList.add(TCS);
+		stocksList.add(KOTAKBANK);
+		stocksList.add(LT);
+		stocksList.add(AXISBANK);
+		
+		return stocksList;
+	}
+	
 }

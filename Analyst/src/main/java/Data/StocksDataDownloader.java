@@ -85,7 +85,7 @@ public class StocksDataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException {
-		getDataForStock(StockSymbols.BANKNIFTY);
+		getDataForStock(StockSymbols.AXISBANK);
 		//updateAllDataAllStocks();
 	}
 }

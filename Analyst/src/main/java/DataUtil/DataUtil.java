@@ -12,6 +12,8 @@ import com.google.gson.Gson;
 
 import Entities.CandleStickData;
 import Entities.DataFile;
+import File.FileReader;
+import File.FileReaderUtil;
 
 public class DataUtil {
 
@@ -49,5 +51,12 @@ public class DataUtil {
 		}
 
 		return series;
+	}
+
+	public static TimeSeries getTimeSeries(String stock, String interval) {
+		String fileLocation = FileReaderUtil.getFileLocation(stock, interval);
+		TimeSeries timeSeries = DataUtil
+				.convertToTimeseries(DataUtil.getCandeStickData(FileReader.getCandeStickData(fileLocation)));
+		return timeSeries;
 	}
 }
