@@ -1,14 +1,14 @@
-package Statistics;
+package Trading;
 
 import org.ta4j.core.Bar;
 
-public class DataPoint {
+public class Trade {
 
 	public Bar startBar;
 	
 	public Bar endBar;
 	
-	public DataPoint(Bar startBar, Bar endBar) {
+	public Trade(Bar startBar, Bar endBar) {
 		this.startBar = startBar;
 		this.endBar = endBar;
 	}

@@ -18,7 +18,7 @@ public class RealTimeTracker {
 
 	public static void trackRealTime(StockSymbols stockSymbol, String candleStickInterval)
 			throws IOException, InterruptedException {
-		int sleepFor = 1000;
+		int sleepFor = 1000 * 40;
 		int lastCheckedAt = -1;
 		while (true) {
 			int currentMinute = getCurrentMinute();
@@ -59,6 +59,6 @@ public class RealTimeTracker {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		trackRealTime(StockSymbols.BAJFINANCE, CandleStickInterval.MINUTE_3);
+		trackRealTime(StockSymbols.IBULHSGFIN, CandleStickInterval.MINUTE_3);
 	}
 }

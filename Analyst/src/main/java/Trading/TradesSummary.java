@@ -1,9 +1,9 @@
-package Statistics;
+package Trading;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Statistics {
+public class TradesSummary {
 
 	public int totalTrades = 0;
 	public int profitableTrades = 0;

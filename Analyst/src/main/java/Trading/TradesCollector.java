@@ -1,4 +1,4 @@
-package Statistics;
+package Trading;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,16 +8,16 @@ import java.util.Map;
 
 import org.ta4j.core.Bar;
 
-public class StatisticsCollector {
+public class TradesCollector {
 
-	public List<DataPoint> dataPoints = new ArrayList<DataPoint>();
+	public List<Trade> dataPoints = new ArrayList<Trade>();
 
 	public Map<String, String> statsMeta = new LinkedHashMap<String, String>();
 
-	public Statistics statistics = new Statistics();
+	public TradesSummary statistics = new TradesSummary();
 
 	public void addDataPoint(Bar startBar, Bar endBar) {
-		dataPoints.add(new DataPoint(startBar, endBar));
+		dataPoints.add(new Trade(startBar, endBar));
 		float startAt = startBar.getClosePrice().floatValue();
 		float endAt = endBar.getClosePrice().floatValue();
 		float profit = endAt - startAt;
@@ -40,7 +40,7 @@ public class StatisticsCollector {
 		if (printDetails) {
 			List<Float> profits = new ArrayList<Float>();
 			List<Float> losses = new ArrayList<Float>();
-			for (DataPoint dataPoint : dataPoints) {
+			for (Trade dataPoint : dataPoints) {
 				float startAt = dataPoint.startBar.getClosePrice().floatValue();
 				float endAt = dataPoint.endBar.getClosePrice().floatValue();
 				float profit = endAt - startAt;
@@ -58,7 +58,7 @@ public class StatisticsCollector {
 			System.out.println();
 			System.out.println(losses);
 
-			for (DataPoint dataPoint : dataPoints) {
+			for (Trade dataPoint : dataPoints) {
 				System.out.println();
 				dataPoint.print();
 			}
