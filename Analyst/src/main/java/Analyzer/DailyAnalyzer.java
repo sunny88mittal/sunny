@@ -37,6 +37,7 @@ public class DailyAnalyzer {
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyHeavyStocksList()), "Nifty"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList()), "BankNifty"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getAllStocksList()), "All"));
+		System.out.println("All Stock Lists Analyzed");
 		
 		// Create file location
 		LocalDate date = LocalDate.now();
@@ -44,6 +45,7 @@ public class DailyAnalyzer {
 
 		// Print the sheet
 		XLSCreator.generateXLS(sheets, fileLocation);
+		System.out.println("Analysis Created");
 	}
 	
 	
@@ -89,7 +91,7 @@ public class DailyAnalyzer {
 	}
 
 	private static DailyAnalysis checkDaily(StockSymbols stockSymbol, String candleStickInterval) throws IOException {
-		int backBy = 9;
+		int backBy = 0;
 		
 		DailyAnalysis dailyAnalysis = new DailyAnalysis();
 		
