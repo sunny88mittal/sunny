@@ -20,7 +20,7 @@ public class TradeUtil {
 			rows.add(row);
 		}
 
-		ExcelSheet sheet = new ExcelSheet(header, rows);
+		ExcelSheet sheet = new ExcelSheet("TradeStats", header, rows);
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
 		sheets.add(sheet);
 		return sheets;
