@@ -14,18 +14,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import Constants.FileConstants;
 import Entities.ExcelSheet;
 
 public class XLSCreator {
 
-	public static void generateXLS1(List<ExcelSheet> excelSheets, String fileName) throws IOException {
-		if (fileName == null) {
-			fileName = System.currentTimeMillis() + "";
-		}
-
+	public static void generateXLS(List<ExcelSheet> excelSheets, String fileLocation) throws IOException {
 		// File Location
-		String fileLocation = FileConstants.ANALYSIS_FILE_BASE_PATH + "\\" + fileName + ".xlsx";
+		fileLocation = fileLocation + ".xlsx";
 
 		// Create Workbook
 		Workbook workbook = new XSSFWorkbook();
@@ -39,12 +34,11 @@ public class XLSCreator {
 		CellStyle dataCellStyle = workbook.createCellStyle();
 		dataCellStyle.setAlignment(HorizontalAlignment.CENTER);
 
-		int sheetIndex = 0;
 		for (ExcelSheet excelSheet : excelSheets) {
 			int rowIndex = 0;
 
 			// Create a Sheet
-			Sheet sheet = workbook.createSheet("Sheet" + sheetIndex++);
+			Sheet sheet = workbook.createSheet(excelSheet.name);
 
 			// Create a Row
 			Row headerRow = sheet.createRow(rowIndex++);

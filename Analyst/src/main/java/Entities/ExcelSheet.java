@@ -4,12 +4,14 @@ import java.util.List;
 
 public class ExcelSheet {
 
+	public String name;
+	
 	public List<String> header;
 
 	public List<List<String>> rows;
 
-	public ExcelSheet(List<String> header, List<List<String>> rows) {
-		super();
+	public ExcelSheet(String name, List<String> header, List<List<String>> rows) {
+		this.name = name;
 		this.header = header;
 		this.rows = rows;
 	}

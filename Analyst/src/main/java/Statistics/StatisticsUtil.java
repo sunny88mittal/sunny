@@ -14,14 +14,14 @@ public class StatisticsUtil {
 
 	private static DecimalFormat df = new DecimalFormat("#.##");
 
-	public static double getVolatilityLastNIntervals(TimeSeries series, int intervals) {
+	public static double getVolatilityLastNIntervals(TimeSeries series, int intervals, int backBy) {
 		double[] dailyReturn = new double[intervals];
 
 		// Prepare daily returns
 		int seriesLength = series.getBarCount();
 		for (int i = 0; i < intervals; i++) {
-			Bar previousar = series.getBar(seriesLength - intervals - (i - 1));
-			Bar currentBar = series.getBar(seriesLength - intervals - (i));
+			Bar previousar = series.getBar(seriesLength - intervals - (i - 1 - backBy));
+			Bar currentBar = series.getBar(seriesLength - intervals - (i - backBy));
 
 			double previousClose = previousar.getClosePrice().doubleValue();
 			double currentClose = currentBar.getClosePrice().doubleValue();
@@ -35,9 +35,9 @@ public class StatisticsUtil {
 		return (Double.parseDouble(df.format(standardDeviation)));
 	}
 
-	public static double getReturnsLastNIntervals(TimeSeries series, int intervals) {
-		Bar currentBar = series.getLastBar();
-		Bar startBar = series.getBar(series.getBarCount() - intervals);
+	public static double getReturnsLastNIntervals(TimeSeries series, int intervals, int backBy) {
+		Bar currentBar = series.getBar(series.getBarCount() - backBy - 1);
+		Bar startBar = series.getBar(series.getBarCount() - intervals - 1 - backBy);
 
 		double startClosePrice = startBar.getClosePrice().doubleValue();
 		double currentClosePrice = currentBar.getClosePrice().doubleValue();
@@ -47,6 +47,7 @@ public class StatisticsUtil {
 	}
 
 	public static void main(String args[]) {
-		System.out.println(getReturnsLastNIntervals(DataUtil.getTimeSeries(StockSymbols.IBULHSGFIN.name, CandleStickInterval.DAY), 20));
+		System.out.println(getReturnsLastNIntervals(
+				DataUtil.getTimeSeries(StockSymbols.IBULHSGFIN.name, CandleStickInterval.DAY), 20, 0));
 	}
 }

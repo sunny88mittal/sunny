@@ -4,19 +4,23 @@ public class DailyAnalysis {
 
 	public String stock;
 
+	public int closePrice;
+	
+	public String signal;
+
 	public float psar;
 
 	public float macd;
+	
+	public double monthlyReturn;
 
-	public float monthlyReturn;
+	public double weeklyReturn;
 
-	public float weeklyReturn;
+	public double vol1Month;
 
-	public float volYear;
+	public double vol3Months;
 
-	public float vol6months;
+	public double vol6Months;
 
-	public float vol3months;
-
-	public float vol1months;
+	public double volYear;
 }
