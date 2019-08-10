@@ -34,7 +34,7 @@ public class DailyAnalyzer {
 		
 		//Generate Sheets
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
-		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyHeavyStocksList()), "Nifty"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList()), "Nifty"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList()), "BankNifty"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getAllStocksList()), "All"));
 		System.out.println("All Stock Lists Analyzed");
