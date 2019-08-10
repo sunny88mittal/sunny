@@ -20,8 +20,8 @@ public class StatisticsUtil {
 		// Prepare daily returns
 		int seriesLength = series.getBarCount();
 		for (int i = 0; i < intervals; i++) {
-			Bar previousar = series.getBar(seriesLength - intervals - (i - 1 - backBy));
-			Bar currentBar = series.getBar(seriesLength - intervals - (i - backBy));
+			Bar previousar = series.getBar(seriesLength - intervals - (i - 1) - backBy);
+			Bar currentBar = series.getBar(seriesLength - intervals - (i) - backBy);
 
 			double previousClose = previousar.getClosePrice().doubleValue();
 			double currentClose = currentBar.getClosePrice().doubleValue();
