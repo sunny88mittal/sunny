@@ -194,7 +194,9 @@ public enum StockSymbols {
 	}
 	
 	public static List<StockSymbols> getAllStocksList() {
-		return Arrays.asList(StockSymbols.values());
+		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
+		stocksList.addAll(Arrays.asList(StockSymbols.values()));
+		return stocksList;
 	}
 	
 	public static List<StockSymbols> getBankNiftyStocksList() {
@@ -215,56 +217,63 @@ public enum StockSymbols {
 	public static List<StockSymbols> getNiftyStocksList() {
 		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
 		stocksList.add(HDFCBANK);
-		stocksList.add(RELIANCE);
-		stocksList.add(HDFC);
-		stocksList.add(INFY);
-		stocksList.add(ICICIBANK);
-		stocksList.add(ITC);
-		stocksList.add(TCS);
 		stocksList.add(KOTAKBANK);
-		stocksList.add(LT);
+		stocksList.add(ICICIBANK);
 		stocksList.add(AXISBANK);
-		stocksList.add(TORNTPOWER);
-		stocksList.add(TATASTEEL);
-		stocksList.add(TATAMOTORS);
+		stocksList.add(INDUSINDBK);
 		stocksList.add(SBIN);
-		stocksList.add(MM);
-		stocksList.add(JSWSTEEL);
-		stocksList.add(MARUTI);
-		stocksList.add(GAIL);
-		stocksList.add(BAJFINANCE);
-		stocksList.add(BAJAJAUTO);
-		stocksList.add(INFRATEL);
-		stocksList.add(ASIANPAINT);
-		stocksList.add(ADANIPORTS);
-		stocksList.add(EICHERMOT);
-		stocksList.add(DRREDDY);
-		stocksList.add(WIPRO);
-		stocksList.add(ZEEL);
 		stocksList.add(YESBANK);
-		stocksList.add(VEDL);
-		stocksList.add(UPL);
-		stocksList.add(TECHM);
-		stocksList.add(SUNPHARMA);
-		stocksList.add(ONGC);
+		stocksList.add(BAJFINANCE);
+		stocksList.add(BAJAJFINSV);
 		stocksList.add(IBULHSGFIN);
-		stocksList.add(IOC);
+		stocksList.add(HDFC);
+		
+		stocksList.add(INFY);
+		stocksList.add(TCS);
+		stocksList.add(WIPRO);
+		stocksList.add(TECHM);
+		stocksList.add(HCLTECH);
+		
+		stocksList.add(TATAMOTORS);
+		stocksList.add(MM);
+		stocksList.add(MARUTI);
+		stocksList.add(EICHERMOT);
+		stocksList.add(BAJAJAUTO);
 		stocksList.add(HEROMOTOCO);
+		
+		stocksList.add(CIPLA);
+		stocksList.add(SUNPHARMA);
+		stocksList.add(DRREDDY);
+		
+		stocksList.add(ITC);
 		stocksList.add(BRITANNIA);
+		stocksList.add(HINDUNILVR);
+		
+		stocksList.add(RELIANCE);
+		stocksList.add(LT);
+		
+		stocksList.add(TATASTEEL);
+		stocksList.add(JSWSTEEL);
+		stocksList.add(HINDALCO);
+		stocksList.add(VEDL);
+		stocksList.add(ONGC);
+		stocksList.add(IOC);
+		stocksList.add(BPCL);
+		stocksList.add(GAIL);
+		stocksList.add(NTPC);
+		stocksList.add(COALINDIA);
+		stocksList.add(POWERGRID);
+		stocksList.add(ASIANPAINT);
+		
+		stocksList.add(INFRATEL);
+		stocksList.add(ADANIPORTS);
+		stocksList.add(ZEEL);
+		stocksList.add(UPL);
 		stocksList.add(TITAN);
 		stocksList.add(ULTRACEMCO);
 		stocksList.add(BHARTIARTL);
-		stocksList.add(BAJAJFINSV);
-		stocksList.add(HINDUNILVR);
-		stocksList.add(HINDALCO);
 		stocksList.add(GRASIM);
-		stocksList.add(NTPC);
-		stocksList.add(CIPLA);
-		stocksList.add(COALINDIA);
-		stocksList.add(POWERGRID);
-		stocksList.add(HCLTECH);
-		stocksList.add(INDUSINDBK);
-		stocksList.add(BPCL);
+		stocksList.add(TORNTPOWER);
 		return stocksList;
 	}
 }

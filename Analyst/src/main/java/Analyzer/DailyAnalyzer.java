@@ -33,10 +33,14 @@ public class DailyAnalyzer {
 		StocksDataDownloader.updateDailyDataAllStocks();
 		
 		//Generate Sheets
+		List<StockSymbols> remainingSymbols = StockSymbols.getAllStocksList();
+		remainingSymbols.removeAll(StockSymbols.getNiftyStocksList());
+		remainingSymbols.removeAll(StockSymbols.getBankNiftyStocksList());
+		
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList()), "Nifty"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList()), "BankNifty"));
-		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getAllStocksList()), "All"));
+		sheets.add(generateExcelSheet(analyzeList(remainingSymbols), "All"));
 		System.out.println("All Stock Lists Analyzed");
 		
 		// Create file location
