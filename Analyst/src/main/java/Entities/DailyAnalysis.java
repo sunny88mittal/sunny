@@ -1,6 +1,6 @@
 package Entities;
 
-public class DailyAnalyzerOutput {
+public class DailyAnalysis {
 
 	public String stock;
 
