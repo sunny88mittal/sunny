@@ -38,7 +38,7 @@ public class StocksDataDownloader {
 				replace("TODATE", getTodaysDate());
 		String fileLocation = FileConstants.DATA_FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
 		
-		if (isDataAlreadyUpdated(fileLocation)) {
+		if (IOHelper.isDataAlreadyUpdated(fileLocation)) {
 			System.out.println("Data already updated for " + stockName + " with interval " + interval);
 			return;
 		}
@@ -46,12 +46,6 @@ public class StocksDataDownloader {
 		String data = NetworkHelper.makeGetRequest(url);
 		IOHelper.writeToFile(fileLocation, data);
 		System.out.println("Data updated for " + stockName + " with interval " + interval);
-	}
-	
-	private static boolean isDataAlreadyUpdated(String fileLocation) {
-		File file = new File (fileLocation);
-		long lastModfiedTime = file.lastModified();
-		return DateUtils.isSameDay(new Date(), new Date(lastModfiedTime));
 	}
 	
 	private static String getTodaysDate() {

@@ -14,6 +14,7 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import Constants.CandleStickInterval;
 import Constants.FileConstants;
 import Constants.StockSymbols;
+import Data.FNODataDownloader;
 import Data.StocksDataDownloader;
 import DataUtil.DataUtil;
 import Entities.DailyAnalysis;
@@ -23,26 +24,29 @@ import Indicators.MACDWithSignalIndicator;
 import Statistics.StatisticsUtil;
 
 public class DailyAnalyzer {
-	
+
 	private static int WEEK = 5;
-	
+
 	private static int MONTH = 21;
 
 	public static void main(String args[]) throws IOException, IllegalArgumentException, IllegalAccessException {
 		// Update Stocks Data
 		StocksDataDownloader.updateDailyDataAllStocks();
-		
-		//Generate Sheets
+
+		// Update FNO Data
+		FNODataDownloader.updateFNOData();
+
+		// Generate Sheets
 		List<StockSymbols> remainingSymbols = StockSymbols.getAllStocksList();
 		remainingSymbols.removeAll(StockSymbols.getNiftyStocksList());
 		remainingSymbols.removeAll(StockSymbols.getBankNiftyStocksList());
-		
+
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList()), "Nifty"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList()), "BankNifty"));
 		sheets.add(generateExcelSheet(analyzeList(remainingSymbols), "All"));
 		System.out.println("All Stock Lists Analyzed");
-		
+
 		// Create file location
 		LocalDate date = LocalDate.now();
 		String fileLocation = FileConstants.DAILY_ANALYSIS_FILE_BASE_PATH + date.toString();
@@ -51,15 +55,14 @@ public class DailyAnalyzer {
 		XLSCreator.generateXLS(sheets, fileLocation);
 		System.out.println("Analysis Created");
 	}
-	
-	
+
 	private static List<DailyAnalysis> analyzeList(List<StockSymbols> stocksList)
 			throws IOException, IllegalArgumentException, IllegalAccessException {
 		List<DailyAnalysis> dailyOutput = new ArrayList<DailyAnalysis>();
 		for (StockSymbols stockSymbol : stocksList) {
 			dailyOutput.add(checkDaily(stockSymbol, CandleStickInterval.DAY));
 		}
-		
+
 		return dailyOutput;
 	}
 
@@ -71,7 +74,7 @@ public class DailyAnalyzer {
 			header.add(field.getName().toUpperCase());
 		}
 
-		//Collect Data
+		// Collect Data
 		List<List<String>> dataRows = new ArrayList<List<String>>();
 		for (DailyAnalysis dailyAnalysis : dailyOutput) {
 			List<String> dataRow = new ArrayList<String>();
@@ -88,17 +91,17 @@ public class DailyAnalyzer {
 			dataRow.add(dailyAnalysis.volYear + "");
 			dataRows.add(dataRow);
 		}
-		
-		//Prepare excel sheets
+
+		// Prepare excel sheets
 		ExcelSheet sheet = new ExcelSheet(sheetName, header, dataRows);
 		return sheet;
 	}
 
 	private static DailyAnalysis checkDaily(StockSymbols stockSymbol, String candleStickInterval) throws IOException {
 		int backBy = 0;
-		
+
 		DailyAnalysis dailyAnalysis = new DailyAnalysis();
-		
+
 		TimeSeries series = DataUtil.getTimeSeries(stockSymbol.name, candleStickInterval);
 		ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
@@ -114,28 +117,31 @@ public class DailyAnalyzer {
 		String signal = "WAIT";
 
 		if ((psarValue < closePrice) && (macdValue > (float) 0.0)) {
-			/*System.out.println(stockSymbol.name + " " + bar.getSimpleDateName() + ": Buy " + " Close Price : "
-					+ bar.getClosePrice());*/
+			/*
+			 * System.out.println(stockSymbol.name + " " + bar.getSimpleDateName() +
+			 * ": Buy " + " Close Price : " + bar.getClosePrice());
+			 */
 			signal = "BUY";
 		} else if ((psarValue > closePrice) && (macdValue < (float) 0.0)) {
-			/*System.out.println(stockSymbol.name + " " + bar.getSimpleDateName() + " : Sell " + " Close Price : "
-					+ bar.getClosePrice());*/
+			/*
+			 * System.out.println(stockSymbol.name + " " + bar.getSimpleDateName() +
+			 * " : Sell " + " Close Price : " + bar.getClosePrice());
+			 */
 			signal = "SELL";
 		}
-		
-		
+
 		dailyAnalysis.stock = stockSymbol.name;
 		dailyAnalysis.signal = signal;
 		dailyAnalysis.closePrice = closePrice;
 		dailyAnalysis.psar = psarValue;
 		dailyAnalysis.macd = macdValue;
 		dailyAnalysis.monthlyReturn = StatisticsUtil.getReturnsLastNIntervals(series, MONTH, backBy);
-		dailyAnalysis.weeklyReturn = StatisticsUtil.getReturnsLastNIntervals(series, WEEK,backBy);
+		dailyAnalysis.weeklyReturn = StatisticsUtil.getReturnsLastNIntervals(series, WEEK, backBy);
 		dailyAnalysis.vol1Month = StatisticsUtil.getVolatilityLastNIntervals(series, MONTH, backBy);
 		dailyAnalysis.vol3Months = StatisticsUtil.getVolatilityLastNIntervals(series, 3 * MONTH, backBy);
 		dailyAnalysis.vol6Months = StatisticsUtil.getVolatilityLastNIntervals(series, 6 * MONTH, backBy);
 		dailyAnalysis.volYear = StatisticsUtil.getVolatilityLastNIntervals(series, 12 * MONTH, backBy);
-		
+
 		return dailyAnalysis;
 	}
 }
