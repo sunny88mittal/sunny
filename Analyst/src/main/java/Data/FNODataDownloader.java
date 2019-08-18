@@ -41,6 +41,7 @@ public class FNODataDownloader {
 		if (!IOHelper.isDataAlreadyUpdated(fileLocation.replace(".zip", ""))) {
 			byte[] data = NetworkHelper.makeGetRequestBytes(url);
 			IOHelper.writeToZipFile(fileLocation, data);
+			IOHelper.extractZipFile(fileLocation);
 			System.out.println("Data updated for : " + fileName);
 		} else {
 			System.out.println("Data already updated for : " + fileName);
