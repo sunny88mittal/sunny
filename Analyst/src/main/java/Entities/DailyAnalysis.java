@@ -8,19 +8,17 @@ public class DailyAnalysis {
 	
 	public String signal;
 
-	public float psar;
+	public double psar;
 
-	public float macd;
+	public double macd;
 	
 	public double monthlyReturn;
 
 	public double weeklyReturn;
 
-	public double vol1Month;
-
 	public double vol3Months;
-
-	public double vol6Months;
-
-	public double volYear;
+	
+	public double pcr;
+	
+	public long changeInOI;
 }

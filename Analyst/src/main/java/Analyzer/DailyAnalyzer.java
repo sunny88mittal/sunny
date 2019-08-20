@@ -2,6 +2,7 @@ package Analyzer;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ import Data.StocksDataDownloader;
 import DataUtil.DataUtil;
 import Entities.DailyAnalysis;
 import Entities.ExcelSheet;
+import Entities.FNOData;
+import File.FileReader;
 import File.XLSCreator;
 import Indicators.MACDWithSignalIndicator;
 import Statistics.StatisticsUtil;
@@ -85,10 +88,9 @@ public class DailyAnalyzer {
 			dataRow.add(dailyAnalysis.macd + "");
 			dataRow.add(dailyAnalysis.monthlyReturn + "");
 			dataRow.add(dailyAnalysis.weeklyReturn + "");
-			dataRow.add(dailyAnalysis.vol1Month + "");
 			dataRow.add(dailyAnalysis.vol3Months + "");
-			dataRow.add(dailyAnalysis.vol6Months + "");
-			dataRow.add(dailyAnalysis.volYear + "");
+			dataRow.add(dailyAnalysis.pcr + "");
+			dataRow.add(dailyAnalysis.changeInOI + "");
 			dataRows.add(dataRow);
 		}
 
@@ -130,18 +132,24 @@ public class DailyAnalyzer {
 			signal = "SELL";
 		}
 
+		List<FNOData> fnoData = DataUtil.getFNOData(FileReader.getFNOData(null));
+
 		dailyAnalysis.stock = stockSymbol.name;
 		dailyAnalysis.signal = signal;
 		dailyAnalysis.closePrice = closePrice;
-		dailyAnalysis.psar = psarValue;
-		dailyAnalysis.macd = macdValue;
+		dailyAnalysis.psar = trimDouble(psarValue);
+		dailyAnalysis.macd = trimDouble(macdValue);
 		dailyAnalysis.monthlyReturn = StatisticsUtil.getReturnsLastNIntervals(series, MONTH, backBy);
 		dailyAnalysis.weeklyReturn = StatisticsUtil.getReturnsLastNIntervals(series, WEEK, backBy);
-		dailyAnalysis.vol1Month = StatisticsUtil.getVolatilityLastNIntervals(series, MONTH, backBy);
 		dailyAnalysis.vol3Months = StatisticsUtil.getVolatilityLastNIntervals(series, 3 * MONTH, backBy);
-		dailyAnalysis.vol6Months = StatisticsUtil.getVolatilityLastNIntervals(series, 6 * MONTH, backBy);
-		dailyAnalysis.volYear = StatisticsUtil.getVolatilityLastNIntervals(series, 12 * MONTH, backBy);
+		dailyAnalysis.changeInOI = FNOHelper.getChangeInOI(fnoData, stockSymbol.name);
+		dailyAnalysis.pcr = trimDouble(FNOHelper.getPCR(fnoData, stockSymbol.name));
 
 		return dailyAnalysis;
+	}
+
+	private static double trimDouble(double value) {
+		DecimalFormat df = new DecimalFormat("#.##");
+		return Double.parseDouble(df.format(value));
 	}
 }
