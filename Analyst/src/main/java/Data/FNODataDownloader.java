@@ -31,9 +31,18 @@ public class FNODataDownloader {
 		String month = date.getMonth().toString();
 		month = month.subSequence(0, 3).toString().toUpperCase();
 
-		String url = FNO_URL.replaceAll(DATE, dateValue + "").replaceAll(MONTH, month + "").replaceAll(YEAR,
+		String dateString = dateValue + "";
+		if (dateValue < 10) {
+			dateString = "0" + dateValue;
+		}
+
+		String url = FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
 				"" + yearValue);
 
+		getFNOData(url);
+	}
+
+	private static void getFNOData(String url) throws IOException {
 		String[] tokens = url.split("/");
 		String fileName = tokens[tokens.length - 1];
 
@@ -48,7 +57,35 @@ public class FNODataDownloader {
 		}
 	}
 
+	private static void getPastFNOData(int days) {
+		LocalDateTime date = LocalDateTime.now();
+		for (int i = 0; i < days; i++) {
+			date = date.minusDays(1);
+			if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+				continue;
+			}
+			int dateValue = date.getDayOfMonth();
+			int yearValue = date.getYear();
+
+			String month = date.getMonth().toString();
+			month = month.subSequence(0, 3).toString().toUpperCase();
+
+			String dateString = dateValue + "";
+			if (dateValue < 10) {
+				dateString = "0" + dateValue;
+			}
+
+			String url = FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
+					"" + yearValue);
+			try {
+				getFNOData(url);
+			} catch (IOException e) {
+				System.out.println("Error for : " + url);
+			}
+		}
+	}
+
 	public static void main(String args[]) throws IOException {
-		updateFNOData();
+		getPastFNOData(90);
 	}
 }

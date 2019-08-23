@@ -45,8 +45,13 @@ public class FileReader {
 
 			String month = date.getMonth().toString();
 			month = month.subSequence(0, 3).toString().toUpperCase();
+			
+			String dateString = dateValue + "";
+			if (dateValue < 10) {
+				dateString = "0" + dateValue;
+			}
 
-			String fileName = FileConstants.FNO_FILE_FORMAT.replaceAll("DATE", "" + dateValue)
+			String fileName = FileConstants.FNO_FILE_FORMAT.replaceAll("DATE", dateString)
 					.replaceAll("YEAR", "" + yearValue).replaceAll("MONTH", month);
 			fileLocation = FileConstants.FNO_BASE_PATH + fileName;
 		}
