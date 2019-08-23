@@ -33,11 +33,29 @@ public class DailyAnalyzer {
 	private static int MONTH = 21;
 
 	public static void main(String args[]) throws IOException, IllegalArgumentException, IllegalAccessException {
-		// Update Stocks Data
-		StocksDataDownloader.updateDailyDataAllStocks();
+		doDailyAnalysis(0, false);
+		//doPastAnalysis(90);
+	}
 
-		// Update FNO Data
-		FNODataDownloader.updateFNOData();
+	private static void doPastAnalysis(int days) {
+		for (int i = 0; i < days; i++) {
+			try {
+				doDailyAnalysis(i, true);
+			} catch (Exception e) {
+				System.out.println("Error:" + i);
+			} 
+		}
+	}
+
+	private static void doDailyAnalysis(int backBy, boolean pastAnalysis)
+			throws IOException, IllegalArgumentException, IllegalAccessException {
+		if (!pastAnalysis) {
+			// Update Stocks Data
+			StocksDataDownloader.updateDailyDataAllStocks();
+
+			// Update FNO Data
+			FNODataDownloader.updateFNOData();
+		}
 
 		// Generate Sheets
 		List<StockSymbols> remainingSymbols = StockSymbols.getAllStocksList();
@@ -45,13 +63,14 @@ public class DailyAnalyzer {
 		remainingSymbols.removeAll(StockSymbols.getBankNiftyStocksList());
 
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
-		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList()), "Nifty"));
-		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList()), "BankNifty"));
-		sheets.add(generateExcelSheet(analyzeList(remainingSymbols), "All"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList(), backBy), "Nifty"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList(), backBy), "BankNifty"));
+		sheets.add(generateExcelSheet(analyzeList(remainingSymbols, backBy), "All"));
 		System.out.println("All Stock Lists Analyzed");
 
 		// Create file location
 		LocalDate date = LocalDate.now();
+		date = date.minusDays(backBy);
 		String fileLocation = FileConstants.DAILY_ANALYSIS_FILE_BASE_PATH + date.toString();
 
 		// Print the sheet
@@ -59,11 +78,11 @@ public class DailyAnalyzer {
 		System.out.println("Analysis Created");
 	}
 
-	private static List<DailyAnalysis> analyzeList(List<StockSymbols> stocksList)
+	private static List<DailyAnalysis> analyzeList(List<StockSymbols> stocksList, int backBy)
 			throws IOException, IllegalArgumentException, IllegalAccessException {
 		List<DailyAnalysis> dailyOutput = new ArrayList<DailyAnalysis>();
 		for (StockSymbols stockSymbol : stocksList) {
-			dailyOutput.add(checkDaily(stockSymbol, CandleStickInterval.DAY));
+			dailyOutput.add(checkDaily(stockSymbol, CandleStickInterval.DAY, backBy));
 		}
 
 		return dailyOutput;
@@ -99,9 +118,8 @@ public class DailyAnalyzer {
 		return sheet;
 	}
 
-	private static DailyAnalysis checkDaily(StockSymbols stockSymbol, String candleStickInterval) throws IOException {
-		int backBy = 0;
-
+	private static DailyAnalysis checkDaily(StockSymbols stockSymbol, String candleStickInterval, int backBy)
+			throws IOException {
 		DailyAnalysis dailyAnalysis = new DailyAnalysis();
 
 		TimeSeries series = DataUtil.getTimeSeries(stockSymbol.name, candleStickInterval);
@@ -119,16 +137,8 @@ public class DailyAnalyzer {
 		String signal = "WAIT";
 
 		if ((psarValue < closePrice) && (macdValue > (float) 0.0)) {
-			/*
-			 * System.out.println(stockSymbol.name + " " + bar.getSimpleDateName() +
-			 * ": Buy " + " Close Price : " + bar.getClosePrice());
-			 */
 			signal = "BUY";
 		} else if ((psarValue > closePrice) && (macdValue < (float) 0.0)) {
-			/*
-			 * System.out.println(stockSymbol.name + " " + bar.getSimpleDateName() +
-			 * " : Sell " + " Close Price : " + bar.getClosePrice());
-			 */
 			signal = "SELL";
 		}
 
