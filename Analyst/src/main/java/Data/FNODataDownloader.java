@@ -14,7 +14,7 @@ public class FNODataDownloader {
 
 	private static final String YEAR = "YEAR";
 
-	private static final String FNO_URL = "https://www.nseindia.com/content/historical/DERIVATIVES/2019/MONTH/foDATEMONTHYEARbhav.csv.zip";
+	private static final String FNO_URL = "https://www.nseindia.com/content/historical/DERIVATIVES/YEAR/MONTH/foDATEMONTHYEARbhav.csv.zip";
 
 	public static void updateFNOData() throws IOException {
 		LocalDateTime date = LocalDateTime.now();
@@ -86,6 +86,6 @@ public class FNODataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException {
-		getPastFNOData(90);
+		getPastFNOData(365);
 	}
 }
