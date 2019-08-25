@@ -32,57 +32,57 @@ public class DailyAnalyzer {
 
 	private static int MONTH = 21;
 
-	public static void main(String args[]) throws IOException, IllegalArgumentException, IllegalAccessException {
-		doDailyAnalysis(0, false);
-		//doPastAnalysis(90);
+	public static void main(String args[]) throws Exception {
+		updateData();
+		analyze(LocalDate.now());
+		// doPastAnalysis(90);
 	}
 
 	private static void doPastAnalysis(int days) {
 		for (int i = 0; i < days; i++) {
+			LocalDate date = LocalDate.now().minusDays(i);
 			try {
-				doDailyAnalysis(i, true);
+				analyze(date);
 			} catch (Exception e) {
-				System.out.println("Error:" + i);
-			} 
+				System.out.println("Error:" + date + e.getMessage());
+			}
 		}
 	}
 
-	private static void doDailyAnalysis(int backBy, boolean pastAnalysis)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
-		if (!pastAnalysis) {
-			// Update Stocks Data
-			StocksDataDownloader.updateDailyDataAllStocks();
+	private static void updateData() throws IOException {
+		// Update Stocks Data
+		StocksDataDownloader.updateDailyDataAllStocks();
 
-			// Update FNO Data
-			FNODataDownloader.updateFNOData();
-		}
+		// Update FNO Data
+		FNODataDownloader.updateFNOData();
+	}
 
-		// Generate Sheets
+	private static void analyze(LocalDate date) throws Exception {
+
+		//Prepare Lists
 		List<StockSymbols> remainingSymbols = StockSymbols.getAllStocksList();
 		remainingSymbols.removeAll(StockSymbols.getNiftyStocksList());
 		remainingSymbols.removeAll(StockSymbols.getBankNiftyStocksList());
 
+		// Generate Sheets
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
-		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList(), backBy), "Nifty"));
-		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList(), backBy), "BankNifty"));
-		sheets.add(generateExcelSheet(analyzeList(remainingSymbols, backBy), "All"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList(), date), "Nifty"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList(), date), "BankNifty"));
+		sheets.add(generateExcelSheet(analyzeList(remainingSymbols, date), "All"));
 		System.out.println("All Stock Lists Analyzed");
 
 		// Create file location
-		LocalDate date = LocalDate.now();
-		date = date.minusDays(backBy);
-		String fileLocation = FileConstants.DAILY_ANALYSIS_FILE_BASE_PATH + date.toString();
+		String fileLocation = FileConstants.DAILY_ANALYSIS_FILE_BASE_PATH + date;
 
 		// Print the sheet
 		XLSCreator.generateXLS(sheets, fileLocation);
 		System.out.println("Analysis Created");
 	}
 
-	private static List<DailyAnalysis> analyzeList(List<StockSymbols> stocksList, int backBy)
-			throws IOException, IllegalArgumentException, IllegalAccessException {
+	private static List<DailyAnalysis> analyzeList(List<StockSymbols> stocksList, LocalDate date) throws Exception {
 		List<DailyAnalysis> dailyOutput = new ArrayList<DailyAnalysis>();
 		for (StockSymbols stockSymbol : stocksList) {
-			dailyOutput.add(checkDaily(stockSymbol, CandleStickInterval.DAY, backBy));
+			dailyOutput.add(checkDaily(stockSymbol, CandleStickInterval.DAY, date));
 		}
 
 		return dailyOutput;
@@ -118,8 +118,8 @@ public class DailyAnalyzer {
 		return sheet;
 	}
 
-	private static DailyAnalysis checkDaily(StockSymbols stockSymbol, String candleStickInterval, int backBy)
-			throws IOException {
+	private static DailyAnalysis checkDaily(StockSymbols stockSymbol, String candleStickInterval, LocalDate date)
+			throws Exception {
 		DailyAnalysis dailyAnalysis = new DailyAnalysis();
 
 		TimeSeries series = DataUtil.getTimeSeries(stockSymbol.name, candleStickInterval);
@@ -127,6 +127,20 @@ public class DailyAnalyzer {
 
 		MACDWithSignalIndicator macd = new MACDWithSignalIndicator(closePriceIndicator);
 		ParabolicSarIndicator psar = new ParabolicSarIndicator(series);
+
+		int backBy = -1;
+		for (int i = 0; i < series.getBarCount(); i++) {
+			Bar bar = series.getBar(i);
+			if (bar.getEndTime().getDayOfMonth() == date.getDayOfMonth()
+					&& bar.getEndTime().getMonthValue() == date.getMonthValue()
+					&& bar.getEndTime().getYear() == date.getYear()) {
+				backBy = series.getBarCount() - (i + 1);
+			}
+		}
+
+		if (backBy == -1) {
+			throw new Exception("No Data found");
+		}
 
 		int index = series.getEndIndex() - backBy;
 		Bar bar = series.getBar(index);
@@ -142,7 +156,7 @@ public class DailyAnalyzer {
 			signal = "SELL";
 		}
 
-		List<FNOData> fnoData = DataUtil.getFNOData(FileReader.getFNOData(null));
+		List<FNOData> fnoData = DataUtil.getFNOData(FileReader.getFNOData(date));
 
 		dailyAnalysis.stock = stockSymbol.name;
 		dailyAnalysis.signal = signal;
@@ -159,7 +173,10 @@ public class DailyAnalyzer {
 	}
 
 	private static double trimDouble(double value) {
-		DecimalFormat df = new DecimalFormat("#.##");
-		return Double.parseDouble(df.format(value));
+		if (Double.isFinite(value)) {
+			DecimalFormat df = new DecimalFormat("#.##");
+			return Double.parseDouble(df.format(value));
+		}
+		return value;
 	}
 }
