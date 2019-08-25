@@ -33,9 +33,13 @@ public class DailyAnalyzer {
 	private static int MONTH = 21;
 
 	public static void main(String args[]) throws Exception {
-		updateData();
-		analyze(LocalDate.now());
+		//updateData();
+		//analyze(LocalDate.now());
 		// doPastAnalysis(90);
+		/*for (StockSymbols stockSymbol : StockSymbols.getNiftyStocksList()) {
+			analyzeStock(stockSymbol, 365);
+		}*/
+		analyzeStock(StockSymbols.TATAELXSI, 365);
 	}
 
 	private static void doPastAnalysis(int days) {
@@ -57,9 +61,41 @@ public class DailyAnalyzer {
 		FNODataDownloader.updateFNOData();
 	}
 
+	private static void analyzeStock(StockSymbols stockSymbol, int days)
+			throws IllegalArgumentException, IllegalAccessException, IOException {
+		List<StockSymbols> list = new ArrayList<StockSymbols>();
+		list.add(stockSymbol);
+
+		// Do Analysis
+		List<DailyAnalysis> analysis = new ArrayList<DailyAnalysis>();
+		for (int i = 0; i < days; i++) {
+			LocalDate date = LocalDate.now().minusDays(i);
+			try {
+				List<DailyAnalysis> dailyAnalysis = analyzeList(list, date);
+				for (DailyAnalysis entry : dailyAnalysis) {
+					entry.stock = date.toString();
+				}
+				analysis.addAll(dailyAnalysis);
+			} catch (Exception e) {
+				System.out.println("Error:" + date + e.getMessage());
+			}
+		}
+
+		// Create file location
+		String fileLocation = FileConstants.PAST_ANALYSIS_FILE_BASE_PATH + stockSymbol.name;
+
+		// Generate Sheets
+		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
+		sheets.add(generateExcelSheet(analysis, stockSymbol.name));
+
+		// Print the sheet
+		XLSCreator.generateXLS(sheets, fileLocation);
+		System.out.println("Analysis Created");
+	}
+
 	private static void analyze(LocalDate date) throws Exception {
 
-		//Prepare Lists
+		// Prepare Lists
 		List<StockSymbols> remainingSymbols = StockSymbols.getAllStocksList();
 		remainingSymbols.removeAll(StockSymbols.getNiftyStocksList());
 		remainingSymbols.removeAll(StockSymbols.getBankNiftyStocksList());
