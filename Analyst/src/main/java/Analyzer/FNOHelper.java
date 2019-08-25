@@ -1,9 +1,13 @@
 package Analyzer;
 
-import java.time.LocalDateTime;
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.List;
 
+import Constants.StockSymbols;
+import DataUtil.DataUtil;
 import Entities.FNOData;
+import File.FileReader;
 
 public class FNOHelper {
 
@@ -29,8 +33,7 @@ public class FNOHelper {
 		float callOI = 0;
 		float putOI = 0;
 		for (FNOData fnoDataEntry : fnoData) {
-			if (fnoDataEntry.INSTRUMENT.startsWith(CONST_OPT) && fnoDataEntry.SYMBOL.equals(stockSymbol)
-					&& fnoDataEntry.EXPIRY_DT.toUpperCase().contains(getCurrentMonth())) {
+			if (fnoDataEntry.INSTRUMENT.startsWith(CONST_OPT) && fnoDataEntry.SYMBOL.equals(stockSymbol)) {
 				if (fnoDataEntry.OPTION_TYP.equals(CONST_OPT_CE)) {
 					callOI += fnoDataEntry.OPEN_INT;
 				} else if (fnoDataEntry.OPTION_TYP.equals(CONST_OPT_PE)) {
@@ -42,8 +45,11 @@ public class FNOHelper {
 		return (putOI / callOI);
 	}
 
-	private static String getCurrentMonth() {
-		LocalDateTime date = LocalDateTime.now();
-		return date.getMonth().toString().subSequence(0, 3).toString().toUpperCase();
+	public static void main(String args[]) throws FileNotFoundException {
+		String stockSymbol = StockSymbols.TCS.name;
+		LocalDate date = LocalDate.of(2019, 07, 04);
+		List<String> rawData = FileReader.getFNOData(date);
+		List<FNOData> fnoData = DataUtil.getFNOData(rawData);
+		System.out.println(getPCR(fnoData, stockSymbol));
 	}
 }
