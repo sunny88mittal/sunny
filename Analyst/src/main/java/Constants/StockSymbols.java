@@ -199,6 +199,15 @@ public enum StockSymbols {
 		return stocksList;
 	}
 	
+	public static List<StockSymbols> getAllStocksExIndiciesList() {
+		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
+		stocksList.addAll(Arrays.asList(StockSymbols.values()));
+		stocksList.remove(StockSymbols.VIX);
+		stocksList.remove(StockSymbols.NIFTY);
+		stocksList.remove(StockSymbols.BANKNIFTY);
+		return stocksList;
+	}
+	
 	public static List<StockSymbols> getBankNiftyStocksList() {
 		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
 		stocksList.add(HDFCBANK);
