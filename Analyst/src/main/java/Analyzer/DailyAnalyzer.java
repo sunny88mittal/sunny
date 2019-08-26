@@ -58,8 +58,8 @@ public class DailyAnalyzer {
 		while (executor.getActiveCount() > 0) {
 			Thread.sleep(1000 * 30);
 		}
-		System.out.println("Ended at : " +  LocalDateTime.now());
 		executor.shutdown();
+		System.out.println("Ended at : " +  LocalDateTime.now());
 	}
 
 	private static void doPastAnalysis(int days) {
@@ -114,18 +114,12 @@ public class DailyAnalyzer {
 	}
 
 	private static void analyze(LocalDate date) throws Exception {
-
-		// Prepare Lists
-		List<StockSymbols> remainingSymbols = StockSymbols.getAllStocksList();
-		remainingSymbols.removeAll(StockSymbols.getNiftyStocksList());
-		remainingSymbols.removeAll(StockSymbols.getBankNiftyStocksList());
-
 		// Generate Sheets
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyHeavyStocksList(), date), "NiftyHeavy"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList(), date), "BankNifty"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList(), date), "Nifty"));
-		sheets.add(generateExcelSheet(analyzeList(remainingSymbols, date), "All"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getAllStocksList(), date), "All"));
 		System.out.println("All Stock Lists Analyzed");
 
 		// Create file location
