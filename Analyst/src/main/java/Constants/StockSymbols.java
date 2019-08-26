@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.hssf.record.ExtSSTRecord.InfoSubRecord;
+
 public enum StockSymbols {
     
 	VIX("VIX", "264969"),
@@ -220,6 +222,21 @@ public enum StockSymbols {
 		stocksList.add(YESBANK);
 		stocksList.add(RBLBANK);
 		stocksList.add(BANKBARODA);
+		return stocksList;
+	}
+	
+	public static List<StockSymbols> getNiftyHeavyStocksList() {
+		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
+		stocksList.add(HDFCBANK);
+		stocksList.add(RELIANCE);
+		stocksList.add(HDFC);
+		stocksList.add(INFY);
+		stocksList.add(ICICIBANK);
+		stocksList.add(ITC);
+		stocksList.add(TCS);
+		stocksList.add(KOTAKBANK);
+		stocksList.add(LT);
+		stocksList.add(AXISBANK);
 		return stocksList;
 	}
 	

@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.ta4j.core.Bar;
 import org.ta4j.core.TimeSeries;
@@ -33,13 +36,30 @@ public class DailyAnalyzer {
 	private static int MONTH = 21;
 
 	public static void main(String args[]) throws Exception {
-		//updateData();
-		//analyze(LocalDate.now());
-		// doPastAnalysis(90);
-		/*for (StockSymbols stockSymbol : StockSymbols.getNiftyStocksList()) {
-			analyzeStock(stockSymbol, 365);
-		}*/
-		analyzeStock(StockSymbols.TATAELXSI, 365);
+		System.out.println("Started at : " +  LocalDateTime.now());
+		
+		updateData();
+		analyze(LocalDate.now());
+		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
+		for (final StockSymbols stockSymbol : StockSymbols.getAllStocksExIndiciesList()) {
+			Thread th = new Thread() {
+				public void run() {
+					try {
+						analyzeStock(stockSymbol, 90);
+					} catch (IllegalArgumentException | IllegalAccessException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			};
+			executor.execute(th);
+		}
+		
+		while (executor.getActiveCount() > 0) {
+			Thread.sleep(1000 * 30);
+		}
+		System.out.println("Ended at : " +  LocalDateTime.now());
+		executor.shutdown();
 	}
 
 	private static void doPastAnalysis(int days) {
@@ -77,7 +97,7 @@ public class DailyAnalyzer {
 				}
 				analysis.addAll(dailyAnalysis);
 			} catch (Exception e) {
-				System.out.println("Error:" + date + e.getMessage());
+				// System.out.println("Error:" + date + e.getMessage());
 			}
 		}
 
@@ -102,8 +122,9 @@ public class DailyAnalyzer {
 
 		// Generate Sheets
 		List<ExcelSheet> sheets = new ArrayList<ExcelSheet>();
-		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList(), date), "Nifty"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyHeavyStocksList(), date), "NiftyHeavy"));
 		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getBankNiftyStocksList(), date), "BankNifty"));
+		sheets.add(generateExcelSheet(analyzeList(StockSymbols.getNiftyStocksList(), date), "Nifty"));
 		sheets.add(generateExcelSheet(analyzeList(remainingSymbols, date), "All"));
 		System.out.println("All Stock Lists Analyzed");
 
