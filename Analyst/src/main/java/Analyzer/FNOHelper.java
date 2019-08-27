@@ -30,11 +30,31 @@ public class FNOHelper {
 		return changeInOI;
 	}
 
+	public static List<FNOData> removeExpiredEnteries(List<FNOData> fnoData, LocalDate date) {
+		String dateString = date.getDayOfMonth() + "-" + date.getMonth().name().substring(0, 3) + "-" + date.getYear();
+		List<FNOData> filteredFNOData = new ArrayList<FNOData>();
+		for (FNOData fnoDataEntry : fnoData) {
+			if (!fnoDataEntry.EXPIRY_DT.equalsIgnoreCase(dateString)) {
+				filteredFNOData.add(fnoDataEntry);
+			}
+		}
+		return filteredFNOData;
+	}
+
 	public static float getPCR(List<FNOData> fnoData, String stockSymbol) {
 		float callOI = 0;
 		float putOI = 0;
+
+		// Get CE, PE Entries for current expiry
+		String expiry = null;
 		for (FNOData fnoDataEntry : fnoData) {
 			if (fnoDataEntry.INSTRUMENT.startsWith(CONST_OPT) && fnoDataEntry.SYMBOL.equals(stockSymbol)) {
+				if (expiry == null) {
+					expiry = fnoDataEntry.EXPIRY_DT;
+				} else if (!fnoDataEntry.EXPIRY_DT.equals(expiry)) {
+					continue;
+				}
+
 				if (fnoDataEntry.OPTION_TYP.equals(CONST_OPT_CE)) {
 					callOI += fnoDataEntry.OPEN_INT;
 				} else if (fnoDataEntry.OPTION_TYP.equals(CONST_OPT_PE)) {
@@ -104,10 +124,11 @@ public class FNOHelper {
 	}
 
 	public static void main(String args[]) throws FileNotFoundException {
-		String stockSymbol = StockSymbols.MARUTI.name;
+		String stockSymbol = StockSymbols.BANKNIFTY.name;
 		LocalDate date = LocalDate.of(2019, 8, 26);
 		List<String> rawData = FileReader.getFNOData(date);
 		List<FNOData> fnoData = DataUtil.getFNOData(rawData);
-		System.out.println(getMaxPain(fnoData, stockSymbol));
+		System.out.println(getMaxPain(removeExpiredEnteries(fnoData, date), stockSymbol));
+		System.out.println(getPCR(removeExpiredEnteries(fnoData, date), stockSymbol));
 	}
 }

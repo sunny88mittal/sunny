@@ -36,8 +36,8 @@ public class DailyAnalyzer {
 	private static int MONTH = 21;
 
 	public static void main(String args[]) throws Exception {
-		System.out.println("Started at : " +  LocalDateTime.now());
-		
+		System.out.println("Started at : " + LocalDateTime.now());
+
 		updateData();
 		analyze(LocalDate.now());
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
@@ -54,12 +54,12 @@ public class DailyAnalyzer {
 			};
 			executor.execute(th);
 		}
-		
+
 		while (executor.getActiveCount() > 0) {
 			Thread.sleep(1000 * 30);
 		}
 		executor.shutdown();
-		System.out.println("Ended at : " +  LocalDateTime.now());
+		System.out.println("Ended at : " + LocalDateTime.now());
 	}
 
 	private static void doPastAnalysis(int days) {
@@ -209,6 +209,7 @@ public class DailyAnalyzer {
 		}
 
 		List<FNOData> fnoData = DataUtil.getFNOData(FileReader.getFNOData(date));
+		fnoData = FNOHelper.removeExpiredEnteries(fnoData, date);
 
 		dailyAnalysis.stock = stockSymbol.name;
 		dailyAnalysis.signal = signal;
