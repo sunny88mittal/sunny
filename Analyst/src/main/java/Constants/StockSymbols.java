@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.poi.hssf.record.ExtSSTRecord.InfoSubRecord;
-
 public enum StockSymbols {
     
 	VIX("VIX", "264969"),
@@ -198,15 +196,7 @@ public enum StockSymbols {
 	public static List<StockSymbols> getAllStocksList() {
 		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
 		stocksList.addAll(Arrays.asList(StockSymbols.values()));
-		return stocksList;
-	}
-	
-	public static List<StockSymbols> getAllStocksExIndiciesList() {
-		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
-		stocksList.addAll(Arrays.asList(StockSymbols.values()));
 		stocksList.remove(StockSymbols.VIX);
-		stocksList.remove(StockSymbols.NIFTY);
-		stocksList.remove(StockSymbols.BANKNIFTY);
 		return stocksList;
 	}
 	

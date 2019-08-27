@@ -41,7 +41,7 @@ public class DailyAnalyzer {
 		updateData();
 		analyze(LocalDate.now());
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
-		for (final StockSymbols stockSymbol : StockSymbols.getAllStocksExIndiciesList()) {
+		for (final StockSymbols stockSymbol : StockSymbols.getAllStocksList()) {
 			Thread th = new Thread() {
 				public void run() {
 					try {
