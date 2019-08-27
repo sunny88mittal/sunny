@@ -161,6 +161,7 @@ public class DailyAnalyzer {
 			dataRow.add(dailyAnalysis.vol3Months + "");
 			dataRow.add(dailyAnalysis.pcr + "");
 			dataRow.add(dailyAnalysis.changeInOI + "");
+			dataRow.add(dailyAnalysis.maxPain + "");
 			dataRows.add(dataRow);
 		}
 
@@ -219,6 +220,7 @@ public class DailyAnalyzer {
 		dailyAnalysis.vol3Months = StatisticsUtil.getVolatilityLastNIntervals(series, 3 * MONTH, backBy);
 		dailyAnalysis.changeInOI = FNOHelper.getChangeInOI(fnoData, stockSymbol.name);
 		dailyAnalysis.pcr = trimDouble(FNOHelper.getPCR(fnoData, stockSymbol.name));
+		dailyAnalysis.maxPain = FNOHelper.getMaxPain(fnoData, stockSymbol.name);
 
 		return dailyAnalysis;
 	}

@@ -21,4 +21,6 @@ public class DailyAnalysis {
 	public double pcr;
 	
 	public long changeInOI;
+	
+	public float maxPain;
 }
