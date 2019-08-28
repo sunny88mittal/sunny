@@ -57,7 +57,7 @@ public class FNODataDownloader {
 		}
 	}
 
-	private static void getPastFNOData(int days) {
+	private static void getPastFNOData(int days) throws InterruptedException {
 		LocalDateTime date = LocalDateTime.now();
 		for (int i = 0; i < days; i++) {
 			date = date.minusDays(1);
@@ -81,11 +81,12 @@ public class FNODataDownloader {
 				getFNOData(url);
 			} catch (IOException e) {
 				System.out.println("Error for : " + url);
+				Thread.sleep(1000);
 			}
 		}
 	}
 
-	public static void main(String args[]) throws IOException {
-		getPastFNOData(365);
+	public static void main(String args[]) throws IOException, InterruptedException {
+		getPastFNOData(620);
 	}
 }

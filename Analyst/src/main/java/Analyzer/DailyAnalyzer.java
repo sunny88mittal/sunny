@@ -59,6 +59,7 @@ public class DailyAnalyzer {
 			Thread.sleep(1000 * 30);
 		}
 		executor.shutdown();
+		//doPastAnalysis(2);
 		System.out.println("Ended at : " + LocalDateTime.now());
 	}
 
@@ -153,6 +154,7 @@ public class DailyAnalyzer {
 			List<String> dataRow = new ArrayList<String>();
 			dataRow.add(dailyAnalysis.stock);
 			dataRow.add(dailyAnalysis.closePrice + "");
+			dataRow.add(dailyAnalysis.change + "");
 			dataRow.add(dailyAnalysis.signal);
 			dataRow.add(dailyAnalysis.psar + "");
 			dataRow.add(dailyAnalysis.macd + "");
@@ -216,6 +218,7 @@ public class DailyAnalyzer {
 		dailyAnalysis.closePrice = closePrice;
 		dailyAnalysis.psar = trimDouble(psarValue);
 		dailyAnalysis.macd = trimDouble(macdValue);
+		dailyAnalysis.change = StatisticsUtil.getReturnsLastNIntervals(series, 1, backBy);
 		dailyAnalysis.monthlyReturn = StatisticsUtil.getReturnsLastNIntervals(series, MONTH, backBy);
 		dailyAnalysis.weeklyReturn = StatisticsUtil.getReturnsLastNIntervals(series, WEEK, backBy);
 		dailyAnalysis.vol3Months = StatisticsUtil.getVolatilityLastNIntervals(series, 3 * MONTH, backBy);

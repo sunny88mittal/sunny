@@ -6,6 +6,8 @@ public class DailyAnalysis {
 
 	public int closePrice;
 	
+	public double change;
+	
 	public String signal;
 
 	public double psar;
