@@ -3,15 +3,16 @@ package Data;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Date;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import org.apache.commons.lang3.time.DateUtils;
 
 public class IOHelper {
 
@@ -39,7 +40,7 @@ public class IOHelper {
 			bos.close();
 			zipIn.close();
 		}
-		
+
 		File file = new File(fileLocation);
 		file.delete();
 	}
@@ -54,7 +55,18 @@ public class IOHelper {
 
 	public static boolean isDataAlreadyUpdated(String fileLocation) {
 		File file = new File(fileLocation);
+
 		long lastModfiedTime = file.lastModified();
-		return DateUtils.isSameDay(new Date(), new Date(lastModfiedTime));
+		LocalDateTime lastModifiedDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastModfiedTime),
+				TimeZone.getDefault().toZoneId());
+
+		LocalDate lastMarketDate = LocalDate.now();
+		if (lastMarketDate.getDayOfWeek() == DayOfWeek.SATURDAY) {
+			lastMarketDate = lastMarketDate.minusDays(1);
+		} else if (lastMarketDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+			lastMarketDate = lastMarketDate.minusDays(2);
+		}
+
+		return lastModifiedDate.toLocalDate().equals(lastMarketDate);
 	}
 }
