@@ -22,6 +22,10 @@ public class CandleStickInterval {
 	public static String MINUTE_30 = "30minute";
 
 	public static String MINUTE_60 = "60minute";
+	
+	public static String HOUR_2 = "2hour";
+	
+	public static String HOUR_3 = "3hour";
 
 	public static String DAY = "day";
 
@@ -33,6 +37,8 @@ public class CandleStickInterval {
 		allIntervals.add(MINUTE_15);
 		allIntervals.add(MINUTE_30);
 		allIntervals.add(MINUTE_60);
+		allIntervals.add(HOUR_2);
+		allIntervals.add(HOUR_3);
 		allIntervals.add(DAY);
 		return allIntervals;
 	}
