@@ -12,35 +12,33 @@ import Constants.StockSymbols;
 public class StocksDataDownloader {
 
 	public static String getRealTimeData(StockSymbols stock, String interval) throws IOException {
-		String url = URLConstants.REAL_TIME_URL.replaceAll("SYMBOL", stock.code).
-				replaceAll("INTERVAL", interval).
-				replaceAll("TODATE", getTodaysDate());
+		String url = URLConstants.REAL_TIME_URL.replaceAll("SYMBOL", stock.code).replaceAll("INTERVAL", interval)
+				.replaceAll("TODATE", getTodaysDate());
 		String data = NetworkHelper.makeGetRequest(url);
 		return data;
 	}
 
 	private static void getData(String stockName, String stockSymbol, String interval) throws IOException {
 		IOHelper.createDirIfReq(FileConstants.DATA_FILE_BASE_PATH, stockName);
-		
-		String url = URLConstants.URL.replace("SYMBOL", stockSymbol).
-				replace("INTERVAL", interval).
-				replace("TODATE", getTodaysDate());
+
+		String url = URLConstants.URL.replace("SYMBOL", stockSymbol).replace("INTERVAL", interval).replace("TODATE",
+				getTodaysDate());
 		String fileLocation = FileConstants.DATA_FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
-		
+
 		if (IOHelper.isDataAlreadyUpdated(fileLocation)) {
 			System.out.println("Data already updated for " + stockName + " with interval " + interval);
 			return;
 		}
-		
+
 		String data = NetworkHelper.makeGetRequest(url);
 		IOHelper.writeToFile(fileLocation, data);
 		System.out.println("Data updated for " + stockName + " with interval " + interval);
 	}
-	
+
 	private static String getTodaysDate() {
 		String pattern = "yyyy-MM-dd";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		Date date =  new Date();
+		Date date = new Date();
 		return simpleDateFormat.format(date);
 	}
 
@@ -49,7 +47,7 @@ public class StocksDataDownloader {
 			getData(stockSymbol.name, stockSymbol.code, interval);
 		}
 	}
-	
+
 	public static void updateDailyDataAllStocks() throws IOException {
 		List<StockSymbols> stocks = StockSymbols.getAllStocksList();
 		for (StockSymbols stock : stocks) {
@@ -57,9 +55,8 @@ public class StocksDataDownloader {
 			System.out.println("Data Updated for :" + stock.name);
 		}
 	}
-	
-	public static void updateAllDataAllStocks() throws IOException {
-		List<StockSymbols> stocks = StockSymbols.getAllStocksList();
+
+	public static void updateAllDataForStocks(List<StockSymbols> stocks) throws IOException {
 		for (StockSymbols stock : stocks) {
 			System.out.println("Updating data for : " + stock.name);
 			getDataForStock(stock);
@@ -67,8 +64,16 @@ public class StocksDataDownloader {
 		}
 	}
 
-	public static void main(String args[]) throws IOException {
-		getDataForStock(StockSymbols.AXISBANK);
-		//updateAllDataAllStocks();
+	public static void main(String args[]) throws IOException, InterruptedException {
+		// getDataForStock(StockSymbols.AXISBANK);
+		boolean updated = false;
+		while (!updated) {
+			try {
+				updateAllDataForStocks(StockSymbols.getAllStocksList());
+				updated = true;
+			} catch (Exception e) {
+				Thread.sleep(5000);
+			}
+		}
 	}
 }
