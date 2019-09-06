@@ -17,4 +17,4 @@ Using F&O data to get live PCR ratio etc
 Technology
 	Java (Spring Boot)
 	Web (D3js, Bootstrap)
-	Python (Jupyter)
+	Python (Jupyter, Anaconda)
