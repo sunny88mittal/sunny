@@ -10,6 +10,10 @@ public class OptionsChain {
 	public String expiryDate;
 
 	public String timeStamp;
+	
+	public String callOI;
+	
+	public String putOI;
 
 	List<OptionsDataRow> callOptions = new ArrayList<OptionsDataRow>();
 

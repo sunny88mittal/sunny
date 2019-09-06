@@ -2,10 +2,8 @@ package Entities;
 
 public class OptionsDataRow {
 
-	public static enum OptionType {
-		CALL, PUT
-	}
-
+	public String optionType;
+	
 	public int strikePrice;
 
 	public int openInterestChange;
