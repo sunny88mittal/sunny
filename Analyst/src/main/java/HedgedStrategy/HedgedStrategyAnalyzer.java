@@ -52,8 +52,9 @@ public class HedgedStrategyAnalyzer {
 			LocalDate date = now.minusMonths(i);
 			float buyReturn = getReturnForList(buy, date.getMonthValue(), date.getYear());
 			float sellReturn = getReturnForList(sell, date.getMonthValue(), date.getYear());
-			float netReturn = buyReturn - sellReturn;
-			System.out.println("Return for : " + date.getMonth() + "-" + date.getYear() + " is " + netReturn);
+			float netReturn = (buyReturn / buy.size() - sellReturn / sell.size()) * 5;
+			System.out.println("Return for : " + date.getMonth().toString().subSequence(0, 3) + "-" + date.getYear()
+					+ " is " + netReturn);
 		}
 	}
 
