@@ -59,19 +59,30 @@ public class DailyAnalyzer {
 			Thread.sleep(1000 * 30);
 		}
 		executor.shutdown();
-		//doPastAnalysis(2);
+		//doPastAnalysis(90);
 		System.out.println("Ended at : " + LocalDateTime.now());
 	}
 
-	private static void doPastAnalysis(int days) {
+	private static void doPastAnalysis(int days) throws InterruptedException {
+		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
 		for (int i = 0; i < days; i++) {
-			LocalDate date = LocalDate.now().minusDays(i);
-			try {
-				analyze(date);
-			} catch (Exception e) {
-				System.out.println("Error:" + date + e.getMessage());
-			}
+			final LocalDate date = LocalDate.now().minusDays(i);
+			Thread th = new Thread() {
+				public void run() {
+					try {
+						analyze(date);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						//e.printStackTrace();
+					}
+				}
+			};
+			executor.execute(th);
 		}
+		while (executor.getActiveCount() > 0) {
+			Thread.sleep(1000 * 30);
+		}
+		executor.shutdown();
 	}
 
 	private static void updateData() throws IOException {
