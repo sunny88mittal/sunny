@@ -1,28 +1,8 @@
-===== Indicators =======
+Hedging Strategy
+	Nifty One by Pramod Sir is Good
 
---Trend
-EMA
-MACD
-Parabolic SAR
-
---Momentum
-Stochastic
-Momentum
-
---Volatility
-ATR
-Bollinger Bands
-Super Trend
-
---Volume
-
---Support & Resistance
-Pivot Charts
-
-===== EMA Strategy =====
-BUY : EMA(Small) > EMA(Large)
-SELL : EMA(Small) > EMA(Large)
-
-===== EMA Stochastic Strategy =====
-BUY : EMA(Small) > EMA(Large) AND Stochastic <= 20
-SELL : EMA(Small) > EMA(Large) AND Stochastic >= 80
+Intraday Strategy
+	Using PCR, PSAR, SuperTrend
+	
+Positional Strategy
+	15min, 1 hour, 1 Day using PSAR, Super Trend, MACD
