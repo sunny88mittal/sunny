@@ -6,3 +6,6 @@ Intraday Strategy
 	
 Positional Strategy
 	15min, 1 hour, 1 Day using PSAR, Super Trend, MACD
+	
+Long Term Buy
+	Based on Super Trend
