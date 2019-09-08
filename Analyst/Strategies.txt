@@ -1,11 +1,12 @@
 Hedging Strategy
-	Nifty One by Pramod Sir is Good
+	Nifty Strategy by Pramod Sir
 
-Intraday Strategy
+Intraday Strategy (Nifty, Banknifty)
 	Using PCR, PSAR, SuperTrend
 	
 Positional Strategy
-	15min, 1 hour, 1 Day using PSAR, Super Trend, MACD
+	Check Daily trend using Super Trend, PSAR, MACD
+	Look for a move in the same direction using Hourly Chart
 	
 Long Term Buy
 	Based on Super Trend
