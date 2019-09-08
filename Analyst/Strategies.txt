@@ -7,6 +7,7 @@ Intraday Strategy (Nifty, Banknifty)
 Positional Strategy
 	Check Daily trend using Super Trend, PSAR, MACD
 	Look for a move in the same direction using Hourly Chart
+	Shift to 15 min interval in Sideways market
 	
 Long Term Buy
 	Based on Super Trend
