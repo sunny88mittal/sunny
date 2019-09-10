@@ -19,11 +19,11 @@ public class StocksDataDownloader {
 	}
 
 	private static void getData(String stockName, String stockSymbol, String interval) throws IOException {
-		IOHelper.createDirIfReq(FileConstants.DATA_FILE_BASE_PATH, stockName);
+		IOHelper.createDirIfReq(FileConstants.STOCKS_DATA_FILE_BASE_PATH, stockName);
 
 		String url = URLConstants.DATA_URL.replace("SYMBOL", stockSymbol).replace("INTERVAL", interval).replace("TODATE",
 				getTodaysDate());
-		String fileLocation = FileConstants.DATA_FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
+		String fileLocation = FileConstants.STOCKS_DATA_FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
 
 		if (IOHelper.isDataAlreadyUpdated(fileLocation)) {
 			System.out.println("Data already updated for " + stockName + " with interval " + interval);
