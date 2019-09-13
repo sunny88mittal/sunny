@@ -33,7 +33,7 @@ public class SuperTrendIndicator extends CachedIndicator<Num> {
 
 	@Override
 	protected Num calculate(int index) {
-		int count = period * multiplier;
+		int count = period * multiplier * 10;
 		int seriesStartIndex = index - count;
 
 		// Generate ATR values
@@ -112,11 +112,12 @@ public class SuperTrendIndicator extends CachedIndicator<Num> {
 	}
 
 	public static void main(String args[]) {
-		TimeSeries timeSeries = DataUtil.getTimeSeries(StockSymbols.AXISBANK.name, CandleStickInterval.DAY);
+		TimeSeries timeSeries = DataUtil.getTimeSeries(StockSymbols.MARUTI.name, CandleStickInterval.MINUTE_15);
 		SuperTrendIndicator indicator = new SuperTrendIndicator(timeSeries, 7, 3);
 		int length = timeSeries.getBarCount();
-		for (int i = length - 100; i < length; i++) {
-			System.out.println(timeSeries.getBar(i).getDateName() + " " + indicator.getValue(i).intValue());
+		for (int i = length - 2000; i < length; i++) {
+			System.out.println(i + " " + timeSeries.getBar(i).getDateName() + " " + indicator.getValue(i).intValue()
+					+ " " + timeSeries.getBar(i).getClosePrice());
 		}
 	}
 }
