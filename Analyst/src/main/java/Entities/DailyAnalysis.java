@@ -8,8 +8,14 @@ public class DailyAnalysis {
 	
 	public double change;
 	
-	public String signal;
+	public String stsignal;
+	
+	public String psarsignal;
+	
+	public String macdsignal;
 
+	public double st;
+	
 	public double psar;
 
 	public double macd;

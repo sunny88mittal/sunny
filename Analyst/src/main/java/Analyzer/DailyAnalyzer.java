@@ -27,6 +27,7 @@ import Entities.FNOData;
 import File.FileReader;
 import File.XLSCreator;
 import Indicators.MACDWithSignalIndicator;
+import Indicators.SuperTrendIndicator;
 import Statistics.StatisticsUtil;
 
 public class DailyAnalyzer {
@@ -59,7 +60,7 @@ public class DailyAnalyzer {
 			Thread.sleep(1000 * 30);
 		}
 		executor.shutdown();
-		//doPastAnalysis(90);
+		doPastAnalysis(90);
 		System.out.println("Ended at : " + LocalDateTime.now());
 	}
 
@@ -73,7 +74,7 @@ public class DailyAnalyzer {
 						analyze(date);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						//e.printStackTrace();
+						// e.printStackTrace();
 					}
 				}
 			};
@@ -166,7 +167,10 @@ public class DailyAnalyzer {
 			dataRow.add(dailyAnalysis.stock);
 			dataRow.add(dailyAnalysis.closePrice + "");
 			dataRow.add(dailyAnalysis.change + "");
-			dataRow.add(dailyAnalysis.signal);
+			dataRow.add(dailyAnalysis.stsignal);
+			dataRow.add(dailyAnalysis.psarsignal);
+			dataRow.add(dailyAnalysis.macdsignal);
+			dataRow.add(dailyAnalysis.st + "");
 			dataRow.add(dailyAnalysis.psar + "");
 			dataRow.add(dailyAnalysis.macd + "");
 			dataRow.add(dailyAnalysis.monthlyReturn + "");
@@ -192,6 +196,7 @@ public class DailyAnalyzer {
 
 		MACDWithSignalIndicator macd = new MACDWithSignalIndicator(closePriceIndicator);
 		ParabolicSarIndicator psar = new ParabolicSarIndicator(series);
+		SuperTrendIndicator st = new SuperTrendIndicator(series, 7, 3);
 
 		int backBy = -1;
 		for (int i = 0; i < series.getBarCount(); i++) {
@@ -209,24 +214,25 @@ public class DailyAnalyzer {
 
 		int index = series.getEndIndex() - backBy;
 		Bar bar = series.getBar(index);
+		int closePrice = bar.getClosePrice().intValue();
 
 		int psarValue = psar.getValue(index).intValue();
 		float macdValue = macd.getValue(index).floatValue();
-		int closePrice = bar.getClosePrice().intValue();
-		String signal = "WAIT";
+		float stValue = st.getValue(index).floatValue();
 
-		if ((psarValue < closePrice) && (macdValue > (float) 0.0)) {
-			signal = "BUY";
-		} else if ((psarValue > closePrice) && (macdValue < (float) 0.0)) {
-			signal = "SELL";
-		}
+		String stSignal = stValue >= closePrice ? "SELL" : "BUY";
+		String psarSignal = psarValue >= closePrice ? "SELL" : "BUY";
+		String macdSignal = macdValue < 0 ? "SELL" : "BUY";
 
 		List<FNOData> fnoData = DataUtil.getFNOData(FileReader.getFNOData(date));
 		fnoData = FNOHelper.removeExpiredEnteries(fnoData, date);
 
 		dailyAnalysis.stock = stockSymbol.name;
-		dailyAnalysis.signal = signal;
 		dailyAnalysis.closePrice = closePrice;
+		dailyAnalysis.stsignal = stSignal;
+		dailyAnalysis.psarsignal = psarSignal;
+		dailyAnalysis.macdsignal = macdSignal;
+		dailyAnalysis.st = trimDouble(stValue);
 		dailyAnalysis.psar = trimDouble(psarValue);
 		dailyAnalysis.macd = trimDouble(macdValue);
 		dailyAnalysis.change = StatisticsUtil.getReturnsLastNIntervals(series, 1, backBy);
