@@ -11,9 +11,13 @@ public class OptionsChain {
 
 	public String timeStamp;
 	
-	public String callOI;
+	public float callOI;
 	
-	public String putOI;
+	public float callOIVol;
+	
+	public float putOI;
+	
+	public float putOIVol;
 
 	List<OptionsDataRow> callOptions = new ArrayList<OptionsDataRow>();
 
