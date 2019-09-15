@@ -3,30 +3,54 @@ package Data;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.ta4j.core.BaseTimeSeries;
+import org.ta4j.core.TimeSeries;
+import org.ta4j.core.indicators.EMAIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.StockSymbols;
 import Entities.OptionsChain;
 
 public class OptionsChainDownloader {
 
+	private static int lastScannedFile = -1;
+
+	private static long lastModifiedTime;
+
+	private static Map<String, List<OptionsChain>> optionChainsMap = new HashMap<String, List<OptionsChain>>();
+
 	private static String getLatestData() throws FileNotFoundException {
-		String fileLocation = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Data\\Live Options Chain\\05-09-2019\\AutoSave_1567655526225.htm";
+		String fnoDirLoc = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Data\\Live Options Chain\\05-09-2019";
+		File fnoDir = new File(fnoDirLoc);
 		String fnoHtml = "";
-		Scanner scanner = new Scanner(new File(fileLocation));
-		while (scanner.hasNextLine()) {
-			fnoHtml += scanner.nextLine();
+		File[] files = fnoDir.listFiles();
+		if (files.length > lastScannedFile) {
+			++lastScannedFile;
+			File file = files[lastScannedFile];
+			lastModifiedTime = file.lastModified();
+			fnoHtml = "";
+			Scanner scanner = new Scanner(file);
+			while (scanner.hasNextLine()) {
+				fnoHtml += scanner.nextLine();
+			}
+			scanner.close();
 		}
-		scanner.close();
 		return fnoHtml;
 	}
 
-	public static OptionsChain getOptionsChain(String symbol, String date) throws IOException {
+	public static OptionsChain getOptionsChain() throws IOException {
 		String rawData = getLatestData();
 		Document doc = Jsoup.parse(rawData);
 		OptionsChain optionsChain = getOptionsChain(doc);
@@ -88,9 +112,10 @@ public class OptionsChainDownloader {
 		// Prepare the options chain object
 		optionsChain.symbol = name;
 		optionsChain.callOI = Integer.parseInt(callOI);
-		optionsChain.callOIVol = Integer.parseInt(callOIVol);
+		optionsChain.callOIVol = "-".contentEquals(callOIVol) ? 0 : Integer.parseInt(callOIVol);
 		optionsChain.putOI = Integer.parseInt(putOI);
-		optionsChain.putOIVol = Integer.parseInt(putOIVol);
+		optionsChain.putOIVol = "-".contentEquals(putOIVol) ? 0 : Integer.parseInt(putOIVol);
+		optionsChain.timeStamp = lastModifiedTime;
 		return optionsChain;
 	}
 
@@ -107,7 +132,26 @@ public class OptionsChainDownloader {
 	}
 
 	public static void main(String args[]) throws IOException {
-		OptionsChain optionsChain = getOptionsChain(StockSymbols.BANKNIFTY.name, "1AUG2019");
-		System.out.println("PCR is : " + optionsChain.putOI / optionsChain.callOI);
+		TimeSeries series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
+		ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+		while (true) {
+			OptionsChain optionsChain = getOptionsChain();
+			Date date = new Date(optionsChain.timeStamp);
+			if (date.getMinutes() % 3 == 0) {
+				float pcr = optionsChain.putOI / optionsChain.callOI;
+				ZonedDateTime zdt = date.toInstant().atZone(ZoneId.systemDefault());
+				series.addBar(zdt, 0, 0, 0, pcr);
+				EMAIndicator shortEMA = new EMAIndicator(closePriceIndicator, 5);
+				EMAIndicator longEMA = new EMAIndicator(closePriceIndicator, 13);
+				if (shortEMA.getValue(series.getEndIndex()).isGreaterThan(longEMA.getValue(series.getEndIndex()))) {
+					System.out.println(date + " BUY" + " " + pcr);
+				} else if (shortEMA.getValue(series.getEndIndex()).isLessThan(longEMA.getValue(series.getEndIndex()))) {
+					System.out.println(date + " SELL" + " " + pcr);
+				} else {
+					System.out.println(date + " NO SIGNAL" + " " + pcr);
+				}
+			}
+			// System.out.println("PCR is : " + optionsChain.putOI / optionsChain.callOI);
+		}
 	}
 }
