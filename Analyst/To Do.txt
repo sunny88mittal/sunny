@@ -7,13 +7,13 @@ Integrate with Kite API to get Intraday trades
 	Using VWAP, MACD, PSAR, Super Trend
 	Some way to figure out which stock can give big move for day
 	Some way to figure which move is going to be big for intraday
+
+Using F&O data to get live PCR ratio etc (Complete)
 	
-Test hedged strategies 
+Test hedged strategies (Complete)
 	BankNifty - Sell Put of HDFCBank, ICICI Bank and Kotak Bank. Buy 3 lot of BankNifty put
 	Nifty - Buy 1 lot of Future of good stocks and sell equivalent amount (8 lots) of Nifty
 	
-Using F&O data to get live PCR ratio etc
-
 Technology
 	Java (Spring Boot)
 	Web (D3js, Bootstrap)
