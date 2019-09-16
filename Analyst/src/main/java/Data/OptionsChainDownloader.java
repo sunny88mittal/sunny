@@ -31,12 +31,12 @@ public class OptionsChainDownloader {
 
 	private static Map<String, List<OptionsChain>> optionChainsMap = new HashMap<String, List<OptionsChain>>();
 
-	private static String getLatestData() throws FileNotFoundException {
-		String fnoDirLoc = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Data\\Live Options Chain\\05-09-2019";
+	private static String getLatestData() throws FileNotFoundException, InterruptedException {
+		String fnoDirLoc = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Live Options Chain";
 		File fnoDir = new File(fnoDirLoc);
 		String fnoHtml = "";
 		File[] files = fnoDir.listFiles();
-		if (files.length > lastScannedFile) {
+		if (lastScannedFile < (files.length - 1)) {
 			++lastScannedFile;
 			File file = files[lastScannedFile];
 			lastModifiedTime = file.lastModified();
@@ -46,12 +46,17 @@ public class OptionsChainDownloader {
 				fnoHtml += scanner.nextLine();
 			}
 			scanner.close();
+		} else {
+			Thread.sleep(1000 * 60);
 		}
 		return fnoHtml;
 	}
 
-	public static OptionsChain getOptionsChain() throws IOException {
+	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
 		String rawData = getLatestData();
+		if (rawData.isEmpty()) {
+			return null;
+		}
 		Document doc = Jsoup.parse(rawData);
 		OptionsChain optionsChain = getOptionsChain(doc);
 		return optionsChain;
@@ -131,11 +136,14 @@ public class OptionsChainDownloader {
 		return value;
 	}
 
-	public static void main(String args[]) throws IOException {
+	public static void main(String args[]) throws IOException, InterruptedException {
 		TimeSeries series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
 		ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 		while (true) {
 			OptionsChain optionsChain = getOptionsChain();
+			if (optionsChain == null) {
+				continue;
+			}
 			Date date = new Date(optionsChain.timeStamp);
 			if (date.getMinutes() % 3 == 0) {
 				float pcr = optionsChain.putOI / optionsChain.callOI;
@@ -151,7 +159,6 @@ public class OptionsChainDownloader {
 					System.out.println(date + " NO SIGNAL" + " " + pcr);
 				}
 			}
-			// System.out.println("PCR is : " + optionsChain.putOI / optionsChain.callOI);
 		}
 	}
 }
