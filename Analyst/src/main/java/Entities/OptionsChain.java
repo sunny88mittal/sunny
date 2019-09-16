@@ -9,7 +9,7 @@ public class OptionsChain {
 
 	public String expiryDate;
 
-	public String timeStamp;
+	public long timeStamp;
 	
 	public float callOI;
 	
