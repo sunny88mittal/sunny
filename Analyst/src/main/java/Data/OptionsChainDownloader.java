@@ -1,15 +1,9 @@
 package Data;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -20,40 +14,16 @@ import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
-import Constants.StockSymbols;
 import Entities.OptionsChain;
 
 public class OptionsChainDownloader {
 
-	private static int lastScannedFile = -1;
-
 	private static long lastModifiedTime;
 
-	private static Map<String, List<OptionsChain>> optionChainsMap = new HashMap<String, List<OptionsChain>>();
-
-	private static String getLatestData() throws FileNotFoundException, InterruptedException {
-		String fnoDirLoc = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Live Options Chain";
-		File fnoDir = new File(fnoDirLoc);
-		String fnoHtml = "";
-		File[] files = fnoDir.listFiles();
-		if (lastScannedFile < (files.length - 1)) {
-			++lastScannedFile;
-			File file = files[lastScannedFile];
-			lastModifiedTime = file.lastModified();
-			fnoHtml = "";
-			Scanner scanner = new Scanner(file);
-			while (scanner.hasNextLine()) {
-				fnoHtml += scanner.nextLine();
-			}
-			scanner.close();
-		} else {
-			Thread.sleep(1000 * 60);
-		}
-		return fnoHtml;
-	}
+	private static String url = "https://www.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=OPTIDX&date=19SEP2019&segmentLink=17&symbolCount=2&segmentLink=17";
 
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
-		String rawData = getLatestData();
+		String rawData = NetworkHelper.makeGetRequest(url);
 		if (rawData.isEmpty()) {
 			return null;
 		}
@@ -139,13 +109,17 @@ public class OptionsChainDownloader {
 	public static void main(String args[]) throws IOException, InterruptedException {
 		TimeSeries series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
 		ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+		int lastMinAnalyzed = -1;
 		while (true) {
-			OptionsChain optionsChain = getOptionsChain();
-			if (optionsChain == null) {
-				continue;
-			}
-			Date date = new Date(optionsChain.timeStamp);
-			if (date.getMinutes() % 3 == 0) {
+			Date date = new Date(System.currentTimeMillis());
+			int currentMin = date.getMinutes();
+			if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
+				lastMinAnalyzed = currentMin;
+				OptionsChain optionsChain = getOptionsChain();
+				if (optionsChain == null) {
+					continue;
+				}
+
 				float pcr = optionsChain.putOI / optionsChain.callOI;
 				ZonedDateTime zdt = date.toInstant().atZone(ZoneId.systemDefault());
 				series.addBar(zdt, 0, 0, 0, pcr);
@@ -159,6 +133,7 @@ public class OptionsChainDownloader {
 					System.out.println(date + " NO SIGNAL" + " " + pcr);
 				}
 			}
+			Thread.sleep(20 * 1000);
 		}
 	}
 }
