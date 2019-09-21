@@ -3,7 +3,9 @@ package Data;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -15,15 +17,17 @@ import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Entities.OptionsChain;
+import Entities.OptionsDataRow;
 
 public class OptionsChainDownloader {
 
 	private static long lastModifiedTime;
 
-	private static String url = "https://www.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=OPTIDX&date=19SEP2019&segmentLink=17&symbolCount=2&segmentLink=17";
+	private static String url = "https://www.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=BANKNIFTY&symbol=BANKNIFTY&instrument=OPTIDX&date=26SEP2019&segmentLink=17&symbolCount=2&segmentLink=17";
 
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
 		String rawData = NetworkHelper.makeGetRequest(url);
+		System.out.println(rawData);
 		if (rawData.isEmpty()) {
 			return null;
 		}
@@ -42,68 +46,81 @@ public class OptionsChainDownloader {
 
 		Element table = doc.getElementsByClass("opttbldata").get(0).getElementById("octable");
 		Elements chainElements = table.child(1).children();
-		/*
-		 * Prepare call and put lists List<OptionsDataRow> callOptions = new
-		 * ArrayList<>(); List<OptionsDataRow> putOptions = new ArrayList<>(); for (int
-		 * i = 0; i < chainElements.size() - 1; i++) { Element row =
-		 * chainElements.get(i); Elements columns = row.children();
-		 * 
-		 * // Strike String strike =
-		 * columns.get(11).child(0).child(0).textNodes().get(0).text().trim();
-		 * 
-		 * // Call Data int start = 0; String callOI =
-		 * getTextFromNormalColumn(columns.get(++start)); String callChangeInOI =
-		 * getTextFromNormalColumn(columns.get(++start)); String callVolume =
-		 * getTextFromNormalColumn(columns.get(++start)); String callIV =
-		 * getTextFromNormalColumn(columns.get(++start)); String callPrice =
-		 * getTextFromHyperLinkColumn(columns.get(++start)); String callNetChange =
-		 * getTextFromNormalColumn(columns.get(++start)); String callBidQty =
-		 * getTextFromNormalColumn(columns.get(++start)); String callBidPrice =
-		 * getTextFromNormalColumn(columns.get(++start)); String callAskPrice =
-		 * getTextFromNormalColumn(columns.get(++start)); String callAskQty =
-		 * getTextFromNormalColumn(columns.get(++start));
-		 * 
-		 * // Put Data start = 22; String putOI =
-		 * getTextFromNormalColumn(columns.get(--start)); String putChangeInOI =
-		 * getTextFromNormalColumn(columns.get(--start)); String putVolume =
-		 * getTextFromNormalColumn(columns.get(--start)); String putIV =
-		 * getTextFromNormalColumn(columns.get(--start)); String putPrice =
-		 * getTextFromHyperLinkColumn(columns.get(--start)); String putNetChange =
-		 * getTextFromNormalColumn(columns.get(--start)); String putAskQty =
-		 * getTextFromNormalColumn(columns.get(--start)); String putAskPrice =
-		 * getTextFromNormalColumn(columns.get(--start)); String putBidPrice =
-		 * getTextFromNormalColumn(columns.get(--start)); String putBidQty =
-		 * getTextFromNormalColumn(columns.get(--start)); }
-		 */
+
+		// Prepare call and put lists
+		List<OptionsDataRow> callOptions = new ArrayList<>();
+		List<OptionsDataRow> putOptions = new ArrayList<>();
+		for (int i = 0; i < chainElements.size() - 1; i++) {
+			Element row = chainElements.get(i);
+			Elements columns = row.children();
+
+			// Strike String strike =
+			columns.get(11).child(0).child(0).textNodes().get(0).text().trim();
+
+			// Call Data
+			int start = 0;
+			double callOI = getDoubleFromNormalColumn(columns.get(++start));
+			double callChangeInOI = getDoubleFromNormalColumn(columns.get(++start));
+			double callVolume = getDoubleFromNormalColumn(columns.get(++start));
+			double callIV = getDoubleFromNormalColumn(columns.get(++start));
+			double callPrice = getDoubleFromHyperLinkColumn(columns.get(++start));
+			double callNetChange = getDoubleFromNormalColumn(columns.get(++start));
+			double callBidQty = getDoubleFromNormalColumn(columns.get(++start));
+			double callBidPrice = getDoubleFromNormalColumn(columns.get(++start));
+			double callAskPrice = getDoubleFromNormalColumn(columns.get(++start));
+			double callAskQty = getDoubleFromNormalColumn(columns.get(++start));
+
+			// Put Data
+			start = 22;
+			double putOI = getDoubleFromNormalColumn(columns.get(--start));
+			double putChangeInOI = getDoubleFromNormalColumn(columns.get(--start));
+			double putVolume = getDoubleFromNormalColumn(columns.get(--start));
+			double putIV = getDoubleFromNormalColumn(columns.get(--start));
+			double putPrice = getDoubleFromHyperLinkColumn(columns.get(--start));
+			double putNetChange = getDoubleFromNormalColumn(columns.get(--start));
+			double putAskQty = getDoubleFromNormalColumn(columns.get(--start));
+			double putAskPrice = getDoubleFromNormalColumn(columns.get(--start));
+			double putBidPrice = getDoubleFromNormalColumn(columns.get(--start));
+			double putBidQty = getDoubleFromNormalColumn(columns.get(--start));
+		}
 
 		// Get total OI for Call and put
 		Element totalOIRow = chainElements.get(chainElements.size() - 1);
 		Elements columns = totalOIRow.children();
-		String callOI = getTextFromNormalColumn(columns.get(1).child(0)).replace(",", "");
-		String callOIVol = getTextFromNormalColumn(columns.get(3).child(0)).replace(",", "");
-		String putOI = getTextFromNormalColumn(columns.get(7).child(0)).replace(",", "");
-		String putOIVol = getTextFromNormalColumn(columns.get(5).child(0)).replace(",", "");
+		double callOI = getDoubleFromNormalColumn(columns.get(1).child(0));
+		double callOIVol = getDoubleFromNormalColumn(columns.get(3).child(0));
+		double putOI = getDoubleFromNormalColumn(columns.get(7).child(0));
+		double putOIVol = getDoubleFromNormalColumn(columns.get(5).child(0));
 
 		// Prepare the options chain object
 		optionsChain.symbol = name;
-		optionsChain.callOI = Integer.parseInt(callOI);
-		optionsChain.callOIVol = "-".contentEquals(callOIVol) ? 0 : Integer.parseInt(callOIVol);
-		optionsChain.putOI = Integer.parseInt(putOI);
-		optionsChain.putOIVol = "-".contentEquals(putOIVol) ? 0 : Integer.parseInt(putOIVol);
+		optionsChain.callOI = callOI;
+		optionsChain.callOIVol = callOIVol;
+		optionsChain.putOI = putOI;
+		optionsChain.putOIVol = putOIVol;
 		optionsChain.timeStamp = lastModifiedTime;
 		return optionsChain;
 	}
 
-	private static String getTextFromNormalColumn(Element column) {
-		return column.textNodes().get(0).text().trim();
+	private static double getDoubleFromNormalColumn(Element column) {
+		double doubleValue = 0;
+		String value = column.textNodes().get(0).text().trim().replace(",", "");
+		if (!value.equals("-")) {
+			doubleValue = Double.parseDouble(value);
+		}
+		return doubleValue;
 	}
 
-	private static String getTextFromHyperLinkColumn(Element column) {
+	private static double getDoubleFromHyperLinkColumn(Element column) {
+		double doubleValue = 0;
 		String value = column.textNodes().get(0).text().trim();
 		if (value.equals("")) {
 			value = column.child(0).textNodes().get(0).text().trim();
 		}
-		return value;
+		if (!value.equals("-")) {
+			doubleValue = Double.parseDouble(value);
+		}
+		return doubleValue;
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
@@ -120,7 +137,7 @@ public class OptionsChainDownloader {
 					continue;
 				}
 
-				float pcr = optionsChain.putOI / optionsChain.callOI;
+				double pcr = optionsChain.putOI / optionsChain.callOI;
 				ZonedDateTime zdt = date.toInstant().atZone(ZoneId.systemDefault());
 				series.addBar(zdt, 0, 0, 0, pcr);
 				EMAIndicator shortEMA = new EMAIndicator(closePriceIndicator, 5);

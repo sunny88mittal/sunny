@@ -146,7 +146,7 @@ public class OptionsChainDownloaderDisk {
 			}
 			Date date = new Date(optionsChain.timeStamp);
 			if (date.getMinutes() % 3 == 0) {
-				float pcr = optionsChain.putOI / optionsChain.callOI;
+				double pcr = optionsChain.putOI / optionsChain.callOI;
 				ZonedDateTime zdt = date.toInstant().atZone(ZoneId.systemDefault());
 				series.addBar(zdt, 0, 0, 0, pcr);
 				EMAIndicator shortEMA = new EMAIndicator(closePriceIndicator, 5);
