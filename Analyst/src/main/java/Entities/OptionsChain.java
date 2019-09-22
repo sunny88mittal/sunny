@@ -19,7 +19,7 @@ public class OptionsChain {
 	
 	public double putOIVol;
 
-	List<OptionsDataRow> callOptions = new ArrayList<OptionsDataRow>();
+	public List<OptionsDataRow> callOptions = new ArrayList<OptionsDataRow>();
 
-	List<OptionsDataRow> putOptions = new ArrayList<OptionsDataRow>();
+	public List<OptionsDataRow> putOptions = new ArrayList<OptionsDataRow>();
 }

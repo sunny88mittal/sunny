@@ -3,24 +3,26 @@ package Entities;
 public class OptionsDataRow {
 
 	public String optionType;
-	
-	public int strikePrice;
 
-	public int openInterestChange;
+	public double strikePrice;
 
-	public int volume;
+	public double openInterest;
 
-	public float IV;
+	public double openInterestChange;
 
-	public float LTP;
+	public double volume;
 
-	public float netChange;
+	public double IV;
 
-	public int bidQty;
+	public double LTP;
 
-	public float bidPrice;
+	public double netChange;
 
-	public int askQty;
+	public double bidQty;
 
-	public float askPrice;
+	public double bidPrice;
+
+	public double askQty;
+
+	public double askPrice;
 }

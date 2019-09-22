@@ -1,10 +1,15 @@
 package Controllers;
 
+import java.io.IOException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import Data.OptionsChainDownloader;
+import Entities.OptionsChain;
 
 @SpringBootApplication
 @RestController
@@ -12,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloWorld {
 
     @RequestMapping("/")
-    String hello() {
-        return "Hello World! JavaInterviewPoint";
+    OptionsChain hello() throws IOException, InterruptedException {
+        //return "Hello World! JavaInterviewPoint";
+    	return OptionsChainDownloader.getOptionsChain();
     }
 
     public static void main(String[] args) throws Exception {

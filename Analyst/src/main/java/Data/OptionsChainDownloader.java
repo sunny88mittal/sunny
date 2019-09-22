@@ -27,7 +27,6 @@ public class OptionsChainDownloader {
 
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
 		String rawData = NetworkHelper.makeGetRequest(url);
-		System.out.println(rawData);
 		if (rawData.isEmpty()) {
 			return null;
 		}
@@ -54,34 +53,43 @@ public class OptionsChainDownloader {
 			Element row = chainElements.get(i);
 			Elements columns = row.children();
 
-			// Strike String strike =
-			columns.get(11).child(0).child(0).textNodes().get(0).text().trim();
+			// Strike
+			double strike = Double.parseDouble(columns.get(11).child(0).child(0).textNodes().get(0).text().trim());
 
 			// Call Data
+			OptionsDataRow callRow = new OptionsDataRow();
 			int start = 0;
-			double callOI = getDoubleFromNormalColumn(columns.get(++start));
-			double callChangeInOI = getDoubleFromNormalColumn(columns.get(++start));
-			double callVolume = getDoubleFromNormalColumn(columns.get(++start));
-			double callIV = getDoubleFromNormalColumn(columns.get(++start));
-			double callPrice = getDoubleFromHyperLinkColumn(columns.get(++start));
-			double callNetChange = getDoubleFromNormalColumn(columns.get(++start));
-			double callBidQty = getDoubleFromNormalColumn(columns.get(++start));
-			double callBidPrice = getDoubleFromNormalColumn(columns.get(++start));
-			double callAskPrice = getDoubleFromNormalColumn(columns.get(++start));
-			double callAskQty = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.optionType = "CALL";
+			callRow.strikePrice = strike;
+			callRow.openInterest = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.openInterestChange = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.volume = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.IV = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.LTP = getDoubleFromHyperLinkColumn(columns.get(++start));
+			callRow.netChange = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.bidQty = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.bidPrice = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.askPrice = getDoubleFromNormalColumn(columns.get(++start));
+			callRow.askQty = getDoubleFromNormalColumn(columns.get(++start));
 
 			// Put Data
+			OptionsDataRow putRow = new OptionsDataRow();
 			start = 22;
-			double putOI = getDoubleFromNormalColumn(columns.get(--start));
-			double putChangeInOI = getDoubleFromNormalColumn(columns.get(--start));
-			double putVolume = getDoubleFromNormalColumn(columns.get(--start));
-			double putIV = getDoubleFromNormalColumn(columns.get(--start));
-			double putPrice = getDoubleFromHyperLinkColumn(columns.get(--start));
-			double putNetChange = getDoubleFromNormalColumn(columns.get(--start));
-			double putAskQty = getDoubleFromNormalColumn(columns.get(--start));
-			double putAskPrice = getDoubleFromNormalColumn(columns.get(--start));
-			double putBidPrice = getDoubleFromNormalColumn(columns.get(--start));
-			double putBidQty = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.optionType = "PUT";
+			putRow.strikePrice = strike;
+			putRow.openInterest = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.openInterestChange = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.volume = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.IV = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.LTP = getDoubleFromHyperLinkColumn(columns.get(--start));
+			putRow.netChange = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.askQty = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.askPrice = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.bidPrice = getDoubleFromNormalColumn(columns.get(--start));
+			putRow.bidQty = getDoubleFromNormalColumn(columns.get(--start));
+
+			callOptions.add(callRow);
+			putOptions.add(putRow);
 		}
 
 		// Get total OI for Call and put
@@ -99,6 +107,8 @@ public class OptionsChainDownloader {
 		optionsChain.putOI = putOI;
 		optionsChain.putOIVol = putOIVol;
 		optionsChain.timeStamp = lastModifiedTime;
+		optionsChain.callOptions = callOptions;
+		optionsChain.putOptions = putOptions;
 		return optionsChain;
 	}
 
@@ -117,6 +127,7 @@ public class OptionsChainDownloader {
 		if (value.equals("")) {
 			value = column.child(0).textNodes().get(0).text().trim();
 		}
+		value = value.replace(",", "");
 		if (!value.equals("-")) {
 			doubleValue = Double.parseDouble(value);
 		}
