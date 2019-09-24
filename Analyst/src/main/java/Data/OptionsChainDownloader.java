@@ -7,7 +7,9 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.ta4j.core.BaseTimeSeries;
 import org.ta4j.core.TimeSeries;
@@ -15,7 +17,9 @@ import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.FileConstants;
+import Constants.TradeConstants;
 import Entities.OptionsChain;
+import Entities.OptionsChainInterpretation;
 
 public class OptionsChainDownloader {
 
@@ -26,6 +30,8 @@ public class OptionsChainDownloader {
 	private static String DATA_FILE_NAME = "OPTIONSDATA";
 
 	private static TimeSeries series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
+
+	private static List<OptionsChainInterpretation> optionsChainInterpretations = new ArrayList<OptionsChainInterpretation>();
 
 	private static ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
@@ -40,9 +46,13 @@ public class OptionsChainDownloader {
 				lastModifiedTime = file.lastModified();
 				OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
 				updateTimeSeries(optionsChain);
-				printUpdate(optionsChain);
+				updateInterpretations(optionsChain);
 			}
 		}
+	}
+
+	public static List<OptionsChainInterpretation> getOptionschainInterpretations() {
+		return optionsChainInterpretations;
 	}
 
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
@@ -66,6 +76,12 @@ public class OptionsChainDownloader {
 
 		// Interpret Options Chain
 		OptionsChainInterpreter.interpretOptionsChain(optionsChain);
+
+		// Update time series
+		updateTimeSeries(optionsChain);
+
+		// Update interpretations
+		updateInterpretations(optionsChain);
 
 		return optionsChain;
 	}
@@ -91,19 +107,36 @@ public class OptionsChainDownloader {
 		return true;
 	}
 
-	private static void printUpdate(OptionsChain optionsChain) {
+	private static void updateInterpretations(OptionsChain optionsChain) {
 		EMAIndicator shortEMA = new EMAIndicator(closePriceIndicator, 5);
 		EMAIndicator longEMA = new EMAIndicator(closePriceIndicator, 13);
 
 		LocalTime date = series.getLastBar().getEndTime().toLocalTime();
 		double pcr = optionsChain.putOI / optionsChain.callOI;
+
+		String signal = "";
 		if (shortEMA.getValue(series.getEndIndex()).isGreaterThan(longEMA.getValue(series.getEndIndex()))) {
-			System.out.println(date + " BUY" + " " + pcr);
+			signal = TradeConstants.BUY;
 		} else if (shortEMA.getValue(series.getEndIndex()).isLessThan(longEMA.getValue(series.getEndIndex()))) {
-			System.out.println(date + " SELL" + " " + pcr);
+			signal = TradeConstants.SELL;
 		} else {
-			System.out.println(date + " NO SIGNAL" + " " + pcr);
+			signal = TradeConstants.HOLD;
 		}
+
+		OptionsChainInterpretation optionsChainInterpretation = new OptionsChainInterpretation();
+		optionsChainInterpretation.shortEMA = shortEMA.getValue(series.getEndIndex()).doubleValue();
+		optionsChainInterpretation.longEMA = longEMA.getValue(series.getEndIndex()).doubleValue();
+		optionsChainInterpretation.signal = signal;
+		optionsChainInterpretation.pcr = pcr;
+		optionsChainInterpretation.time = date;
+		optionsChainInterpretations.add(optionsChainInterpretation);
+	}
+
+	private static void printLatestInterpretation() {
+		OptionsChainInterpretation optionsChainInterpretation = optionsChainInterpretations
+				.get(optionsChainInterpretations.size() - 1);
+		System.out.println(optionsChainInterpretation.time + " " + optionsChainInterpretation.signal + " "
+				+ optionsChainInterpretation.pcr);
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
@@ -114,9 +147,8 @@ public class OptionsChainDownloader {
 			int currentMin = date.getMinutes();
 			if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
 				lastMinAnalyzed = currentMin;
-				OptionsChain optionsChain = getOptionsChain();
-				updateTimeSeries(optionsChain);
-				printUpdate(optionsChain);
+				getOptionsChain();
+				printLatestInterpretation();
 			}
 			Thread.sleep(20 * 1000);
 		}

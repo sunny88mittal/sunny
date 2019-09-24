@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import Constants.CandleStickInterval;
 import Constants.FileConstants;
 import Constants.StockSymbols;
@@ -13,7 +15,7 @@ public class StocksDataDownloader {
 
 	public static String getRealTimeData(StockSymbols stock, String interval) throws IOException {
 		String url = URLConstants.REAL_TIME_URL.replaceAll("SYMBOL", stock.code).replaceAll("INTERVAL", interval)
-				.replaceAll("TODATE", getTodaysDate());
+				.replaceAll("TODATE", getTodaysDate(0)).replaceAll("FROMDATE", getTodaysDate(7));
 		String data = NetworkHelper.makeGetRequest(url);
 		return data;
 	}
@@ -21,8 +23,8 @@ public class StocksDataDownloader {
 	private static void getData(String stockName, String stockSymbol, String interval) throws IOException {
 		IOHelper.createDirIfReq(FileConstants.STOCKS_DATA_FILE_BASE_PATH, stockName);
 
-		String url = URLConstants.DATA_URL.replace("SYMBOL", stockSymbol).replace("INTERVAL", interval).replace("TODATE",
-				getTodaysDate());
+		String url = URLConstants.DATA_URL.replace("SYMBOL", stockSymbol).replace("INTERVAL", interval)
+				.replace("TODATE", getTodaysDate(0));
 		String fileLocation = FileConstants.STOCKS_DATA_FILE_BASE_PATH + "\\" + stockName + "\\" + interval + ".json";
 
 		if (IOHelper.isDataAlreadyUpdated(fileLocation)) {
@@ -35,10 +37,11 @@ public class StocksDataDownloader {
 		System.out.println("Data updated for " + stockName + " with interval " + interval);
 	}
 
-	private static String getTodaysDate() {
+	private static String getTodaysDate(int minus) {
 		String pattern = "yyyy-MM-dd";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		Date date = new Date();
+		date = DateUtils.addDays(new Date(), -1 * minus);
 		return simpleDateFormat.format(date);
 	}
 
