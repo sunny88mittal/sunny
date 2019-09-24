@@ -1,4 +1,4 @@
-package Analyzer;
+package Data;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,11 +10,10 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.CandleStickInterval;
 import Constants.StockSymbols;
-import Data.StocksDataDownloader;
 import DataUtil.DataUtil;
 import Indicators.MACDWithSignalIndicator;
 
-public class RealTimeTracker {
+public class RealTimeIndicatorProvider {
 
 	public static void trackRealTime(StockSymbols stockSymbol, String candleStickInterval)
 			throws IOException, InterruptedException {
