@@ -26,7 +26,7 @@ public class OptionsDataRow {
 
 	public double askPrice;
 
-	public String trend;
+	public String trend = "";
 
-	public String interpretation;
+	public String interpretation = "";
 }
