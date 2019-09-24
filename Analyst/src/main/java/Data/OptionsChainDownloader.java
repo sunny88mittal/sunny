@@ -21,8 +21,6 @@ public class OptionsChainDownloader {
 
 	private static long lastModifiedTime = 0;
 
-	private static OptionsChain baseOptionsChain = null;
-
 	private static String url = "https://www.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=BANKNIFTY&symbol=BANKNIFTY&instrument=OPTIDX&date=26SEP2019&segmentLink=17&symbolCount=2&segmentLink=17";
 
 	private static String DATA_FILE_NAME = "OPTIONSDATA";
@@ -31,7 +29,26 @@ public class OptionsChainDownloader {
 
 	private static ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
+	private static void loadDataFromDisk() {
+		// We are restarting, load the data till now from disk
+		if (lastModifiedTime == 0) {
+			String pattern = "dd-MM-YYYY";
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+			String dateFolder = simpleDateFormat.format(new Date());
+			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
+				String fileContents = IOHelper.readFile(file.getAbsolutePath());
+				lastModifiedTime = file.lastModified();
+				OptionsChain optionsChain = OptionsChainParser.getOptionsChain(fileContents, lastModifiedTime);
+				updateTimeSeries(optionsChain);
+				printUpdate(optionsChain);
+			}
+		}
+	}
+
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
+		// Load data from disk if we are starting again
+		loadDataFromDisk();
+
 		// Get data from network
 		String rawData = NetworkHelper.makeGetRequest(url);
 		if (rawData.isEmpty()) {
@@ -48,11 +65,7 @@ public class OptionsChainDownloader {
 		OptionsChain optionsChain = OptionsChainParser.getOptionsChain(rawData, lastModifiedTime);
 
 		// Interpret Options Chain
-		if (baseOptionsChain == null) {
-			baseOptionsChain = optionsChain;
-		} else {
-			OptionsChainInterpreter.interpretOptionsChain(optionsChain, baseOptionsChain);
-		}
+		OptionsChainInterpreter.interpretOptionsChain(optionsChain);
 
 		return optionsChain;
 	}
@@ -94,23 +107,6 @@ public class OptionsChainDownloader {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		// We are restarting, load the data till now from disk
-		if (lastModifiedTime == 0) {
-			String pattern = "dd-MM-YYYY";
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-			String dateFolder = simpleDateFormat.format(new Date());
-			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
-				String fileContents = IOHelper.readFile(file.getAbsolutePath());
-				lastModifiedTime = file.lastModified();
-				OptionsChain optionsChain = OptionsChainParser.getOptionsChain(fileContents, lastModifiedTime);
-				if (baseOptionsChain == null) {
-					baseOptionsChain = optionsChain;
-				}
-				updateTimeSeries(optionsChain);
-				printUpdate(optionsChain);
-			}
-		}
-
 		// Real time analysis
 		int lastMinAnalyzed = -1;
 		while (true) {

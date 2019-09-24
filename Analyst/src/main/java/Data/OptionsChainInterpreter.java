@@ -6,36 +6,26 @@ import Entities.OptionsDataRow;
 
 public class OptionsChainInterpreter {
 
-	public static void interpretOptionsChain(OptionsChain current, OptionsChain base) {
+	public static void interpretOptionsChain(OptionsChain current) {
 		// Call Options Interpretation
-		for (OptionsDataRow baseOptionsDataRow : base.callOptions) {
-			if (baseOptionsDataRow.LTP != 0 && baseOptionsDataRow.openInterest != 0) {
-				for (OptionsDataRow currentOptionsDataRow : current.callOptions) {
-					if (currentOptionsDataRow.LTP != 0 && currentOptionsDataRow.openInterest != 0) {
-						double priceChange = currentOptionsDataRow.LTP - baseOptionsDataRow.LTP;
-						double oiChange = currentOptionsDataRow.openInterest - currentOptionsDataRow.openInterestChange;
-						String callInterpretation = getOptionInterpretation(priceChange, oiChange);
-						String trend = getCallTrend(callInterpretation);
-						currentOptionsDataRow.interpretation = callInterpretation;
-						currentOptionsDataRow.trend = trend;
-					}
-				}
+		for (OptionsDataRow currentOptionsDataRow : current.callOptions) {
+			if (currentOptionsDataRow.LTP != 0 && currentOptionsDataRow.openInterest != 0) {
+				String callInterpretation = getOptionInterpretation(currentOptionsDataRow.netChange,
+						currentOptionsDataRow.openInterestChange);
+				String trend = getCallTrend(callInterpretation);
+				currentOptionsDataRow.interpretation = callInterpretation;
+				currentOptionsDataRow.trend = trend;
 			}
 		}
 
 		// Put Options Interpretation
-		for (OptionsDataRow baseOptionsDataRow : base.putOptions) {
-			if (baseOptionsDataRow.LTP != 0 && baseOptionsDataRow.openInterest != 0) {
-				for (OptionsDataRow currentOptionsDataRow : current.putOptions) {
-					if (currentOptionsDataRow.LTP != 0 && currentOptionsDataRow.openInterest != 0) {
-						double priceChange = currentOptionsDataRow.LTP - baseOptionsDataRow.LTP;
-						double oiChange = currentOptionsDataRow.openInterest - currentOptionsDataRow.openInterestChange;
-						String callInterpretation = getOptionInterpretation(priceChange, oiChange);
-						String trend = getPutTrend(callInterpretation);
-						currentOptionsDataRow.interpretation = callInterpretation;
-						currentOptionsDataRow.trend = trend;
-					}
-				}
+		for (OptionsDataRow currentOptionsDataRow : current.putOptions) {
+			if (currentOptionsDataRow.LTP != 0 && currentOptionsDataRow.openInterest != 0) {
+				String putInterpretation = getOptionInterpretation(currentOptionsDataRow.netChange,
+						currentOptionsDataRow.openInterestChange);
+				String trend = getPutTrend(putInterpretation);
+				currentOptionsDataRow.interpretation = putInterpretation;
+				currentOptionsDataRow.trend = trend;
 			}
 		}
 	}
