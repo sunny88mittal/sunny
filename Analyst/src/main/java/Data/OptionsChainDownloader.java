@@ -7,14 +7,8 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.ta4j.core.BaseTimeSeries;
 import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.EMAIndicator;
@@ -22,7 +16,6 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.FileConstants;
 import Entities.OptionsChain;
-import Entities.OptionsDataRow;
 
 public class OptionsChainDownloader {
 
