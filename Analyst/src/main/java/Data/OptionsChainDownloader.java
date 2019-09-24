@@ -21,6 +21,8 @@ public class OptionsChainDownloader {
 
 	private static long lastModifiedTime = 0;
 
+	private static OptionsChain baseOptionsChain = null;
+
 	private static String url = "https://www.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=BANKNIFTY&symbol=BANKNIFTY&instrument=OPTIDX&date=26SEP2019&segmentLink=17&symbolCount=2&segmentLink=17";
 
 	private static String DATA_FILE_NAME = "OPTIONSDATA";
@@ -30,13 +32,28 @@ public class OptionsChainDownloader {
 	private static ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
+		// Get data from network
 		String rawData = NetworkHelper.makeGetRequest(url);
 		if (rawData.isEmpty()) {
 			return null;
 		}
+
+		// Update last modified time
 		lastModifiedTime = System.currentTimeMillis();
+
+		// Write the data to disk
 		writeToDisk(rawData);
-		OptionsChain optionsChain = OptionChainParser.getOptionsChain(rawData, lastModifiedTime);
+
+		// Get Options Chain
+		OptionsChain optionsChain = OptionsChainParser.getOptionsChain(rawData, lastModifiedTime);
+
+		// Interpret Options Chain
+		if (baseOptionsChain == null) {
+			baseOptionsChain = optionsChain;
+		} else {
+			OptionsChainInterpreter.interpretOptionsChain(optionsChain, baseOptionsChain);
+		}
+
 		return optionsChain;
 	}
 
@@ -85,7 +102,10 @@ public class OptionsChainDownloader {
 			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
 				String fileContents = IOHelper.readFile(file.getAbsolutePath());
 				lastModifiedTime = file.lastModified();
-				OptionsChain optionsChain = OptionChainParser.getOptionsChain(fileContents, lastModifiedTime);
+				OptionsChain optionsChain = OptionsChainParser.getOptionsChain(fileContents, lastModifiedTime);
+				if (baseOptionsChain == null) {
+					baseOptionsChain = optionsChain;
+				}
 				updateTimeSeries(optionsChain);
 				printUpdate(optionsChain);
 			}
