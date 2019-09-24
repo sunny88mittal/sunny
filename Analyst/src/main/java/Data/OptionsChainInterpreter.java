@@ -9,7 +9,7 @@ public class OptionsChainInterpreter {
 	public static void interpretOptionsChain(OptionsChain current) {
 		// Call Options Interpretation
 		for (OptionsDataRow currentOptionsDataRow : current.callOptions) {
-			if (currentOptionsDataRow.LTP != 0 && currentOptionsDataRow.openInterest != 0) {
+			if (currentOptionsDataRow.netChange != 0 && currentOptionsDataRow.openInterestChange != 0) {
 				String callInterpretation = getOptionInterpretation(currentOptionsDataRow.netChange,
 						currentOptionsDataRow.openInterestChange);
 				String trend = getCallTrend(callInterpretation);
@@ -20,7 +20,7 @@ public class OptionsChainInterpreter {
 
 		// Put Options Interpretation
 		for (OptionsDataRow currentOptionsDataRow : current.putOptions) {
-			if (currentOptionsDataRow.LTP != 0 && currentOptionsDataRow.openInterest != 0) {
+			if (currentOptionsDataRow.netChange != 0 && currentOptionsDataRow.openInterestChange != 0) {
 				String putInterpretation = getOptionInterpretation(currentOptionsDataRow.netChange,
 						currentOptionsDataRow.openInterestChange);
 				String trend = getPutTrend(putInterpretation);
