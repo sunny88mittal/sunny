@@ -3,6 +3,7 @@ package Data;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -21,6 +23,21 @@ public class IOHelper {
 		fileWriter.write(data);
 		fileWriter.flush();
 		fileWriter.close();
+	}
+
+	public static String readFile(String fileLocation) {
+		String line = "";
+		try {
+			Scanner scanner = new Scanner(new File(fileLocation));
+			while (scanner.hasNextLine()) {
+				line = scanner.nextLine();
+				break;
+			}
+			scanner.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return line;
 	}
 
 	public static void writeToZipFile(String fileLocation, byte[] data) throws IOException {
@@ -43,6 +60,15 @@ public class IOHelper {
 
 		File file = new File(fileLocation);
 		file.delete();
+	}
+
+	public static File[] getFilesInDir(String basePath, String dirName) {
+		String fileLocation = basePath + "\\" + dirName;
+		File file = new File(fileLocation);
+		if (file.exists()) {
+			return file.listFiles();
+		}
+		return new File[] {};
 	}
 
 	public static void createDirIfReq(String basePath, String dirName) {

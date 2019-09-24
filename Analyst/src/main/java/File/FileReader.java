@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import Constants.FileConstants;
+import Data.IOHelper;
 
 public class FileReader {
 
@@ -21,17 +22,7 @@ public class FileReader {
 			return candleStickCache.get(fileLocation);
 		}
 
-		String line = "";
-		try {
-			Scanner scanner = new Scanner(new File(fileLocation));
-			while (scanner.hasNextLine()) {
-				line = scanner.nextLine();
-				break;
-			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		String line = IOHelper.readFile(fileLocation);
 
 		candleStickCache.put(fileLocation, line);
 		return line;
