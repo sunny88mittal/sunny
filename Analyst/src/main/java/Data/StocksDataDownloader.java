@@ -15,7 +15,7 @@ public class StocksDataDownloader {
 
 	public static String getRealTimeData(StockSymbols stock, String interval) throws IOException {
 		String url = URLConstants.REAL_TIME_URL.replaceAll("SYMBOL", stock.code).replaceAll("INTERVAL", interval)
-				.replaceAll("TODATE", getTodaysDate(0)).replaceAll("FROMDATE", getTodaysDate(7));
+				.replaceAll("TODATE", getTodaysDate(0)).replaceAll("FROMDATE", getTodaysDate(14));
 		String data = NetworkHelper.makeGetRequest(url);
 		return data;
 	}

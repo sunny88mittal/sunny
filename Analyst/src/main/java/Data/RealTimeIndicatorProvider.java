@@ -1,7 +1,8 @@
 package Data;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.ta4j.core.Bar;
 import org.ta4j.core.TimeSeries;
@@ -10,54 +11,68 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.CandleStickInterval;
 import Constants.StockSymbols;
+import Constants.TradeConstants;
 import DataUtil.DataUtil;
 import Indicators.MACDWithSignalIndicator;
+import Indicators.SuperTrendIndicator;
 
 public class RealTimeIndicatorProvider {
 
-	public static void trackRealTime(StockSymbols stockSymbol, String candleStickInterval)
-			throws IOException, InterruptedException {
-		int sleepFor = 1000 * 40;
-		int lastCheckedAt = -1;
-		while (true) {
-			int currentMinute = getCurrentMinute();
-			if (currentMinute % 3 == 0 && currentMinute != lastCheckedAt) {
-				check3Min(stockSymbol, candleStickInterval);
-				lastCheckedAt = currentMinute;
-			}
-			Thread.sleep(sleepFor);
-		}
+	private static final String PSAR = "PSAR";
+
+	private static final String MACD = "MACD";
+
+	private static final String SUPERTREND = "SUPERTREND";
+
+	public static Map<String, Map<String, String>> getIndicatorsFor() throws IOException {
+		Map<String, Map<String, String>> signalsValues = new HashMap<String, Map<String, String>>();
+		signalsValues.put(CandleStickInterval.MINUTE_3,
+				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_3));
+		signalsValues.put(CandleStickInterval.MINUTE_5,
+				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_5));
+		signalsValues.put(CandleStickInterval.MINUTE_15,
+				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_15));
+		return signalsValues;
 	}
 
-	private static void check3Min(StockSymbols stockSymbol, String candleStickInterval) throws IOException {
+	private static Map<String, String> getIndicatorsSignals(StockSymbols stockSymbol, String candleStickInterval)
+			throws IOException {
+		Map<String, String> signalsValues = new HashMap<String, String>();
+
 		String data = StocksDataDownloader.getRealTimeData(stockSymbol, candleStickInterval);
 		TimeSeries series = DataUtil.convertToTimeseries(DataUtil.getCandeStickData(data));
 		ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
 		MACDWithSignalIndicator macd = new MACDWithSignalIndicator(closePriceIndicator);
 		ParabolicSarIndicator psar = new ParabolicSarIndicator(series);
+		SuperTrendIndicator superTrend = new SuperTrendIndicator(series, 7, 3);
 
 		int index = series.getEndIndex();
 		Bar bar = series.getBar(index);
+		double closePrice = bar.getClosePrice().doubleValue();
 
-		int psarValue = psar.getValue(index).intValue();
-		float macdValue = macd.getValue(index).floatValue();
-		int closePrice = bar.getClosePrice().intValue();
+		double psarValue = psar.getValue(index).doubleValue();
+		double macdValue = macd.getValue(index).doubleValue();
+		double superTrendValue = superTrend.getValue(index).doubleValue();
 
-		if ((psarValue < closePrice) && (macdValue > (float) 0.0)) {
-			System.out.println(bar.getSimpleDateName() + ": Buy " + " Close Price : " + bar.getClosePrice());
-		} else if ((psarValue > closePrice) && (macdValue < (float) 0.0)) {
-			System.out.println(bar.getSimpleDateName() + " : Sell " + " Close Price : " + bar.getClosePrice());
+		if (psarValue > closePrice) {
+			signalsValues.put(PSAR, TradeConstants.SELL);
 		} else {
-			System.out.println(bar.getSimpleDateName() + " : Wait " + " Close Price : " + bar.getClosePrice());
+			signalsValues.put(PSAR, TradeConstants.BUY);
 		}
-	}
 
-	private static int getCurrentMinute() {
-		return LocalDateTime.now().getMinute();
-	}
+		if (macdValue > 0) {
+			signalsValues.put(MACD, TradeConstants.BUY);
+		} else {
+			signalsValues.put(MACD, TradeConstants.SELL);
+		}
 
-	public static void main(String args[]) throws IOException, InterruptedException {
-		trackRealTime(StockSymbols.IBULHSGFIN, CandleStickInterval.MINUTE_3);
+		if (superTrendValue > closePrice) {
+			signalsValues.put(SUPERTREND, TradeConstants.SELL);
+		} else {
+			signalsValues.put(SUPERTREND, TradeConstants.BUY);
+		}
+
+		return signalsValues;
 	}
 }
