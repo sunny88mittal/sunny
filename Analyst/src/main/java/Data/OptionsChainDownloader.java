@@ -38,7 +38,7 @@ public class OptionsChainDownloader {
 			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
 				String fileContents = IOHelper.readFile(file.getAbsolutePath());
 				lastModifiedTime = file.lastModified();
-				OptionsChain optionsChain = OptionsChainParser.getOptionsChain(fileContents, lastModifiedTime);
+				OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
 				updateTimeSeries(optionsChain);
 				printUpdate(optionsChain);
 			}
@@ -62,7 +62,7 @@ public class OptionsChainDownloader {
 		writeToDisk(rawData);
 
 		// Get Options Chain
-		OptionsChain optionsChain = OptionsChainParser.getOptionsChain(rawData, lastModifiedTime);
+		OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(rawData, lastModifiedTime);
 
 		// Interpret Options Chain
 		OptionsChainInterpreter.interpretOptionsChain(optionsChain);

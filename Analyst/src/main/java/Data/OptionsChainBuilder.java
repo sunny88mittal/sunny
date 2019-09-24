@@ -12,7 +12,7 @@ import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsDataRow;
 
-public class OptionsChainParser {
+public class OptionsChainBuilder {
 
 	public static OptionsChain getOptionsChain(String rawData, long lastModifiedTime) {
 		Document doc = Jsoup.parse(rawData);
