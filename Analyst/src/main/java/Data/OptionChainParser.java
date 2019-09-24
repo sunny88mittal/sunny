@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsDataRow;
 
@@ -39,7 +40,7 @@ public class OptionChainParser {
 			// Call Data
 			OptionsDataRow callRow = new OptionsDataRow();
 			int start = 0;
-			callRow.optionType = "CALL";
+			callRow.optionType = TradeConstants.CALL;
 			callRow.strikePrice = strike;
 			callRow.openInterest = getDoubleFromNormalColumn(columns.get(++start));
 			callRow.openInterestChange = getDoubleFromNormalColumn(columns.get(++start));
@@ -55,7 +56,7 @@ public class OptionChainParser {
 			// Put Data
 			OptionsDataRow putRow = new OptionsDataRow();
 			start = 22;
-			putRow.optionType = "PUT";
+			putRow.optionType = TradeConstants.PUT;
 			putRow.strikePrice = strike;
 			putRow.openInterest = getDoubleFromNormalColumn(columns.get(--start));
 			putRow.openInterestChange = getDoubleFromNormalColumn(columns.get(--start));
