@@ -3,6 +3,8 @@ Hedging Strategy
 
 Intraday Strategy (Nifty, Banknifty)
 	Using PCR, PSAR, SuperTrend
+	Buy Options if IV < 25
+	Sell Options if IV > 25
 	
 Positional Strategy
 	Check Daily trend using Super Trend, PSAR, MACD
