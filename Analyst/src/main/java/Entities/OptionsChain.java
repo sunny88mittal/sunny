@@ -6,6 +6,8 @@ import java.util.List;
 public class OptionsChain {
 
 	public String symbol;
+	
+	public String price;
 
 	public String expiryDate;
 

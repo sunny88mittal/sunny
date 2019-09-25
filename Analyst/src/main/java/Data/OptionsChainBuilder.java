@@ -23,6 +23,7 @@ public class OptionsChainBuilder {
 		String underlying = doc.getElementsContainingText("Underlying Index").last().child(0).textNodes().get(0)
 				.toString();
 		String name = underlying.split(" ")[0];
+		String price = underlying.split(" ")[1];
 
 		Element table = doc.getElementsByClass("opttbldata").get(0).getElementById("octable");
 		Elements chainElements = table.child(1).children();
@@ -83,6 +84,7 @@ public class OptionsChainBuilder {
 
 		// Prepare the options chain object
 		optionsChain.symbol = name;
+		optionsChain.price = price;
 		optionsChain.callOI = callOI;
 		optionsChain.callOIVol = callOIVol;
 		optionsChain.putOI = putOI;
