@@ -18,7 +18,3 @@ Technology
 	Java (Spring Boot)
 	Web (D3js, Bootstrap, JQuery)
 	Python (Jupyter, Anaconda)
-
-Courses to Study
-	Siva's
-	Angad Singh
