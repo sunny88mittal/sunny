@@ -3,6 +3,7 @@ package Controllers;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +15,12 @@ import Entities.OptionsChainInterpretation;
 @RequestMapping("/optionschain")
 public class OptionsChainController {
 
-	@RequestMapping("/data")
+	@GetMapping("/get/data")
 	OptionsChain getOptionsChainData() throws IOException, InterruptedException {
 		return OptionsChainDownloader.getOptionsChain();
 	}
 
-	@RequestMapping("/interpretations")
+	@GetMapping("/get/interpretations")
 	List<OptionsChainInterpretation> getOptionsChainInterpretations() throws IOException, InterruptedException {
 		return OptionsChainDownloader.getOptionschainInterpretations();
 	}
