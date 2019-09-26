@@ -2,11 +2,13 @@ package Data;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +27,16 @@ public class OptionsChainDownloader {
 
 	private static long lastModifiedTime = 0;
 
-	private static String url = "https://www.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=BANKNIFTY&symbol=BANKNIFTY&instrument=OPTIDX&date=26SEP2019&segmentLink=17&symbolCount=2&segmentLink=17";
+	private static String SYMBOL = "BANKNIFTY";
+
+	private static String CUR_DATE = "3OCT2019";
+
+	private static String NEXT_DATE = "10OCT2019";
+
+	private static String CUR_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", SYMBOL).replace("DATE", CUR_DATE);
+
+	private static String NEXT_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", SYMBOL).replace("DATE",
+			NEXT_DATE);
 
 	private static String DATA_FILE_NAME = "OPTIONSDATA";
 
@@ -38,15 +49,14 @@ public class OptionsChainDownloader {
 	private static void loadDataFromDisk() {
 		// We are restarting, load the data till now from disk
 		if (lastModifiedTime == 0) {
-			String pattern = "dd-MM-YYYY";
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-			String dateFolder = simpleDateFormat.format(new Date());
+			String dateFolder = getFolderName(LocalDateTime.now());
 			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
 				String fileContents = IOHelper.readFile(file.getAbsolutePath());
 				lastModifiedTime = file.lastModified();
 				OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
 				updateTimeSeries(optionsChain);
 				updateInterpretations(optionsChain);
+				printLatestInterpretation();
 			}
 		}
 	}
@@ -60,7 +70,7 @@ public class OptionsChainDownloader {
 		loadDataFromDisk();
 
 		// Get data from network
-		String rawData = NetworkHelper.makeGetRequest(url);
+		String rawData = NetworkHelper.makeGetRequest(CUR_URL);
 		if (rawData.isEmpty()) {
 			return null;
 		}
@@ -69,7 +79,7 @@ public class OptionsChainDownloader {
 		lastModifiedTime = System.currentTimeMillis();
 
 		// Write the data to disk
-		writeToDisk(rawData);
+		writeToDisk(rawData, LocalDateTime.now());
 
 		// Get Options Chain
 		OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(rawData, lastModifiedTime);
@@ -83,13 +93,35 @@ public class OptionsChainDownloader {
 		// Update interpretations
 		updateInterpretations(optionsChain);
 
+		// Prepare Data For Next Day
+		prepareDataForNextDay();
+
 		return optionsChain;
 	}
 
-	private static void writeToDisk(String data) throws IOException {
-		String pattern = "dd-MM-YYYY";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		String dateFolder = simpleDateFormat.format(new Date());
+	private static void prepareDataForNextDay() throws IOException {
+		LocalDateTime twoThirtyPM = LocalDateTime.now().withHour(14).withMinute(30);
+		LocalDateTime timeNow = LocalDateTime.now();
+		String rawData = "";
+		if (timeNow.isAfter(twoThirtyPM)) {
+			if (timeNow.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
+				rawData = NetworkHelper.makeGetRequest(NEXT_URL);
+			} else {
+				rawData = NetworkHelper.makeGetRequest(CUR_URL);
+			}
+		}
+		timeNow.plusDays(1).toLocalDate();
+		writeToDisk(rawData, timeNow.plusDays(1));
+	}
+
+	private static String getFolderName(LocalDateTime date) {
+		String pattern = "dd-MM-yyyy";
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+		return date.format(dateFormatter);
+	}
+
+	private static void writeToDisk(String data, LocalDateTime date) throws IOException {
+		String dateFolder = getFolderName(date);
 		IOHelper.createDirIfReq(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder);
 		String timestamp = System.currentTimeMillis() + "";
 		String fileName = FileConstants.OPTIONS_FILE_BASE_PATH + dateFolder + "\\" + DATA_FILE_NAME + "_" + timestamp
@@ -141,14 +173,21 @@ public class OptionsChainDownloader {
 
 	public static void main(String args[]) throws IOException, InterruptedException {
 		// Real time analysis
+		LocalDateTime nineTenAM = LocalDateTime.now().withHour(9).withMinute(10);
+		LocalDateTime threeThirtyThreePM = LocalDateTime.now().withHour(15).withMinute(33);
 		int lastMinAnalyzed = -1;
 		while (true) {
-			Date date = new Date(System.currentTimeMillis());
-			int currentMin = date.getMinutes();
-			if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
-				lastMinAnalyzed = currentMin;
-				getOptionsChain();
-				printLatestInterpretation();
+			LocalDateTime now = LocalDateTime.now();
+			if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)) {
+				Date date = new Date(System.currentTimeMillis());
+				int currentMin = date.getMinutes();
+				if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
+					lastMinAnalyzed = currentMin;
+					getOptionsChain();
+					printLatestInterpretation();
+				}
+			} else {
+				System.out.println("Market Closed");
 			}
 			Thread.sleep(20 * 1000);
 		}
