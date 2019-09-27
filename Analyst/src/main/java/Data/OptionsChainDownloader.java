@@ -186,10 +186,12 @@ public class OptionsChainDownloader {
 		while (true) {
 			try {
 				LocalDateTime now = LocalDateTime.now();
+				DayOfWeek dayToday = now.getDayOfWeek();
 				int currentMin = now.getMinute();
 				if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
 					lastMinAnalyzed = currentMin;
-					if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)) {
+					if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)
+							&& !(dayToday.equals(DayOfWeek.SATURDAY) || dayToday.equals(DayOfWeek.SUNDAY))) {
 						getOptionsChain();
 						printLatestInterpretation();
 					} else {
