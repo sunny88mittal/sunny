@@ -185,17 +185,17 @@ public class OptionsChainDownloader {
 		int lastMinAnalyzed = -1;
 		while (true) {
 			LocalDateTime now = LocalDateTime.now();
-			if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)) {
-				int currentMin = now.getMinute();
-				if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
-					lastMinAnalyzed = currentMin;
+			int currentMin = now.getMinute();
+			if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
+				lastMinAnalyzed = currentMin;
+				if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)) {
 					getOptionsChain();
 					printLatestInterpretation();
+				} else {
+					System.out.println("Market Closed");
 				}
-			} else {
-				System.out.println("Market Closed");
 			}
-			Thread.sleep(20 * 1000);
+			Thread.sleep(10 * 1000);
 		}
 	}
 }
