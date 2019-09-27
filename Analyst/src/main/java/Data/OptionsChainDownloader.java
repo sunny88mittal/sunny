@@ -49,6 +49,8 @@ public class OptionsChainDownloader {
 
 	private static ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
+	private static OptionsChain lastOptionChain;
+
 	private static void loadDataFromDisk() {
 		// We are restarting, load the data till now from disk
 		if (lastModifiedTime == 0) {
@@ -68,39 +70,55 @@ public class OptionsChainDownloader {
 		return optionsChainInterpretations;
 	}
 
-	@Scheduled(cron = "0 0/3 9-4 * * MON-FRI")
-	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
-		// Load data from disk if we are starting again
-		loadDataFromDisk();
+	public static OptionsChain getLatestOptionsChain() {
+		return lastOptionChain;
+	}
 
-		// Get data from network
-		String rawData = NetworkHelper.makeGetRequest(CUR_URL);
-		if (rawData.isEmpty()) {
-			return null;
+	@Scheduled(cron = "0 */3 9-15 * * MON-FRI")
+	public static void getOptionsChain() throws IOException, InterruptedException {
+		// Constants to keep track of time and day
+		LocalDateTime nineFourteenAM = LocalDateTime.now().withHour(9).withMinute(14);
+		LocalDateTime threeThirtyTwoPM = LocalDateTime.now().withHour(15).withMinute(32);
+		LocalDateTime now = LocalDateTime.now();
+
+		// Getting latest options chain
+		if (now.isAfter(nineFourteenAM) && now.isBefore(threeThirtyTwoPM) && !NSEHolidays.isHoliday(now)) {
+
+			// Load data from disk if we are starting again
+			loadDataFromDisk();
+
+			// Get data from network
+			String rawData = NetworkHelper.makeGetRequest(CUR_URL);
+			if (rawData.isEmpty()) {
+				return;
+			}
+
+			// Update last modified time
+			lastModifiedTime = System.currentTimeMillis();
+
+			// Write the data to disk
+			writeToDisk(rawData, LocalDateTime.now());
+
+			// Get Options Chain
+			OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(rawData, lastModifiedTime);
+
+			// Interpret Options Chain
+			OptionsChainInterpreter.interpretOptionsChain(optionsChain);
+
+			// Update time series
+			updateTimeSeries(optionsChain);
+
+			// Update interpretations
+			updateInterpretations(optionsChain);
+
+			// Print Latest interpretation
+			printLatestInterpretation();
+
+			// Prepare Data For Next Day
+			prepareDataForNextDay();
+
+			lastOptionChain = optionsChain;
 		}
-
-		// Update last modified time
-		lastModifiedTime = System.currentTimeMillis();
-
-		// Write the data to disk
-		writeToDisk(rawData, LocalDateTime.now());
-
-		// Get Options Chain
-		OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(rawData, lastModifiedTime);
-
-		// Interpret Options Chain
-		OptionsChainInterpreter.interpretOptionsChain(optionsChain);
-
-		// Update time series
-		updateTimeSeries(optionsChain);
-
-		// Update interpretations
-		updateInterpretations(optionsChain);
-
-		// Prepare Data For Next Day
-		prepareDataForNextDay();
-
-		return optionsChain;
 	}
 
 	private static void prepareDataForNextDay() throws IOException {
@@ -124,8 +142,8 @@ public class OptionsChainDownloader {
 			while (NSEHolidays.isHoliday(nextTradingDay)) {
 				nextTradingDay = nextTradingDay.plusDays(1);
 			}
-			
-			//Write to disk
+
+			// Write to disk
 			writeToDisk(rawData, nextTradingDay);
 		}
 	}
@@ -185,32 +203,5 @@ public class OptionsChainDownloader {
 				.get(optionsChainInterpretations.size() - 1);
 		System.out.println(optionsChainInterpretation.time + " " + optionsChainInterpretation.signal + " "
 				+ optionsChainInterpretation.pcr);
-	}
-
-	public static void main(String args[]) throws IOException, InterruptedException {
-		// Real time analysis
-		LocalDateTime nineTenAM = LocalDateTime.now().withHour(9).withMinute(10);
-		LocalDateTime threeThirtyThreePM = LocalDateTime.now().withHour(15).withMinute(33);
-		int lastMinAnalyzed = -1;
-		while (true) {
-			try {
-				LocalDateTime now = LocalDateTime.now();
-				DayOfWeek dayToday = now.getDayOfWeek();
-				int currentMin = now.getMinute();
-				if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
-					lastMinAnalyzed = currentMin;
-					if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)
-							&& !(dayToday.equals(DayOfWeek.SATURDAY) || dayToday.equals(DayOfWeek.SUNDAY))) {
-						getOptionsChain();
-						printLatestInterpretation();
-					} else {
-						// System.out.println("Market Closed");
-					}
-				}
-				Thread.sleep(10 * 1000);
-			} catch (Exception ex) {
-				System.out.println("Some Error");
-			}
-		}
 	}
 }

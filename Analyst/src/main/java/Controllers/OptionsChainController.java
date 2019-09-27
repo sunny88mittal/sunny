@@ -17,7 +17,7 @@ public class OptionsChainController {
 
 	@GetMapping("/get/data")
 	OptionsChain getOptionsChainData() throws IOException, InterruptedException {
-		return OptionsChainDownloader.getOptionsChain();
+		return OptionsChainDownloader.getLatestOptionsChain();
 	}
 
 	@GetMapping("/get/interpretations")
