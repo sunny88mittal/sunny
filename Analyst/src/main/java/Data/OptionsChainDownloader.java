@@ -20,6 +20,7 @@ import org.ta4j.core.indicators.EMAIndicator;
 import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.FileConstants;
+import Constants.NSEHolidays;
 import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
@@ -120,6 +121,11 @@ public class OptionsChainDownloader {
 			if (nextTradingDay.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
 				nextTradingDay = nextTradingDay.plusDays(2);
 			}
+			while (NSEHolidays.isHoliday(nextTradingDay)) {
+				nextTradingDay = nextTradingDay.plusDays(1);
+			}
+			
+			//Write to disk
 			writeToDisk(rawData, nextTradingDay);
 		}
 	}
