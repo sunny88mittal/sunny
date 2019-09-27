@@ -111,14 +111,14 @@ public class OptionsChainDownloader {
 			} else {
 				rawData = NetworkHelper.makeGetRequest(CUR_URL);
 			}
-		}
 
-		// Get next trading day
-		LocalDateTime nextTradingDay = timeNow.plusDays(1);
-		if (nextTradingDay.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-			nextTradingDay = timeNow.plusDays(2);
+			// Get next trading day
+			LocalDateTime nextTradingDay = timeNow.plusDays(1);
+			if (nextTradingDay.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+				nextTradingDay = timeNow.plusDays(2);
+			}
+			writeToDisk(rawData, nextTradingDay);
 		}
-		writeToDisk(rawData, nextTradingDay);
 	}
 
 	private static String getFolderName(LocalDateTime date) {
