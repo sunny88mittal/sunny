@@ -67,7 +67,7 @@ public class OptionsChainDownloader {
 		return optionsChainInterpretations;
 	}
 
-	@Scheduled(cron = "0 0/3 9-4 ? * MON,TUE,WED,THU,FRI *")
+	@Scheduled(cron = "0 0/3 9-4 * * MON-FRI")
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
 		// Load data from disk if we are starting again
 		loadDataFromDisk();
@@ -118,7 +118,7 @@ public class OptionsChainDownloader {
 			// Get next trading day
 			LocalDateTime nextTradingDay = timeNow.plusDays(1);
 			if (nextTradingDay.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
-				nextTradingDay = timeNow.plusDays(2);
+				nextTradingDay = nextTradingDay.plusDays(2);
 			}
 			writeToDisk(rawData, nextTradingDay);
 		}
