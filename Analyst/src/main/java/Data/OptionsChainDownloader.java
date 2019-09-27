@@ -103,6 +103,8 @@ public class OptionsChainDownloader {
 		LocalDateTime twoThirtyPM = LocalDateTime.now().withHour(14).withMinute(30);
 		LocalDateTime timeNow = LocalDateTime.now();
 		String rawData = "";
+		
+		//Get raw data for next day
 		if (timeNow.isAfter(twoThirtyPM)) {
 			if (timeNow.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
 				rawData = NetworkHelper.makeGetRequest(NEXT_URL);
@@ -110,8 +112,13 @@ public class OptionsChainDownloader {
 				rawData = NetworkHelper.makeGetRequest(CUR_URL);
 			}
 		}
-		timeNow.plusDays(1).toLocalDate();
-		writeToDisk(rawData, timeNow.plusDays(1));
+		
+		//Get next trading day
+		LocalDateTime nextTradingDay = timeNow.plusDays(1);
+		if (nextTradingDay.getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+			nextTradingDay = timeNow.plusDays(2);
+		}
+		writeToDisk(rawData, nextTradingDay);
 	}
 
 	private static String getFolderName(LocalDateTime date) {
