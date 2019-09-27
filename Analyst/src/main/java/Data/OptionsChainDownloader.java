@@ -12,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.ta4j.core.BaseTimeSeries;
 import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.EMAIndicator;
@@ -22,6 +24,7 @@ import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
 
+@Component
 public class OptionsChainDownloader {
 
 	private static long lastModifiedTime = 0;
@@ -64,6 +67,7 @@ public class OptionsChainDownloader {
 		return optionsChainInterpretations;
 	}
 
+	@Scheduled(cron = "0 0/3 9-4 ? * MON,TUE,WED,THU,FRI *")
 	public static OptionsChain getOptionsChain() throws IOException, InterruptedException {
 		// Load data from disk if we are starting again
 		loadDataFromDisk();
