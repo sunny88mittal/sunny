@@ -51,21 +51,6 @@ public class OptionsChainDownloader {
 
 	private static OptionsChain lastOptionChain;
 
-	private static void loadDataFromDisk() {
-		// We are restarting, load the data till now from disk
-		if (lastModifiedTime == 0) {
-			String dateFolder = getFolderName(LocalDateTime.now());
-			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
-				String fileContents = IOHelper.readFile(file.getAbsolutePath());
-				lastModifiedTime = file.lastModified();
-				OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
-				updateTimeSeries(optionsChain);
-				updateInterpretations(optionsChain);
-				printLatestInterpretation();
-			}
-		}
-	}
-
 	public static List<OptionsChainInterpretation> getOptionschainInterpretations() {
 		return optionsChainInterpretations;
 	}
@@ -118,6 +103,21 @@ public class OptionsChainDownloader {
 			prepareDataForNextDay();
 
 			lastOptionChain = optionsChain;
+		}
+	}
+
+	private static void loadDataFromDisk() {
+		// We are restarting, load the data till now from disk
+		if (lastModifiedTime == 0) {
+			String dateFolder = getFolderName(LocalDateTime.now());
+			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
+				String fileContents = IOHelper.readFile(file.getAbsolutePath());
+				lastModifiedTime = file.lastModified();
+				OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
+				updateTimeSeries(optionsChain);
+				updateInterpretations(optionsChain);
+				printLatestInterpretation();
+			}
 		}
 	}
 
