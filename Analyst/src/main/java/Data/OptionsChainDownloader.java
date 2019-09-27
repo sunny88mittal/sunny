@@ -184,18 +184,22 @@ public class OptionsChainDownloader {
 		LocalDateTime threeThirtyThreePM = LocalDateTime.now().withHour(15).withMinute(33);
 		int lastMinAnalyzed = -1;
 		while (true) {
-			LocalDateTime now = LocalDateTime.now();
-			int currentMin = now.getMinute();
-			if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
-				lastMinAnalyzed = currentMin;
-				if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)) {
-					getOptionsChain();
-					printLatestInterpretation();
-				} else {
-					System.out.println("Market Closed");
+			try {
+				LocalDateTime now = LocalDateTime.now();
+				int currentMin = now.getMinute();
+				if (currentMin % 3 == 0 && currentMin != lastMinAnalyzed) {
+					lastMinAnalyzed = currentMin;
+					if (now.isAfter(nineTenAM) && now.isBefore(threeThirtyThreePM)) {
+						getOptionsChain();
+						printLatestInterpretation();
+					} else {
+						// System.out.println("Market Closed");
+					}
 				}
+				Thread.sleep(10 * 1000);
+			} catch (Exception ex) {
+				System.out.println("Some Error");
 			}
-			Thread.sleep(10 * 1000);
 		}
 	}
 }
