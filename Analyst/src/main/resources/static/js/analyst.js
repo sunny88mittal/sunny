@@ -50,9 +50,14 @@ var updateIndicators = function(data) {
 
 var updateOptionsChain = function(data) {
 	if (data != undefined) {
-		$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).empty();
+
 		var symbol = data.symbol;
 		var spotPrice = data.price;
+
+		$(SYMBOL).text(symbol);
+		$(SYMBOL_VALUE).text(spotPrice);
+
+		$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).empty();
 		for (var i = 0; i < data.callOptions.length; i++) {
 			var callOption = data.callOptions[i];
 			var putOption = data.putOptions[i];
@@ -94,7 +99,12 @@ var updateOptionsChain = function(data) {
 }
 
 var updateOptionChainInterpretations = function(data) {
-
+	if (data != undefined) {
+		var length = data.length;
+		var lastInterpretation = data[length - 1];
+		$(PCR_VALUE).text(lastInterpretation.pcr);
+		$(PCR_SIGNAL).text(lastInterpretation.signal);
+	}
 }
 
 var getInterpretationColour = function(interpretation, optionType,
