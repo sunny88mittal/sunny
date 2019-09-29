@@ -1,7 +1,9 @@
 package Data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ta4j.core.Bar;
@@ -13,6 +15,7 @@ import Constants.CandleStickInterval;
 import Constants.StockSymbols;
 import Constants.TradeConstants;
 import DataUtil.DataUtil;
+import Entities.RealTimeIndicatorValues;
 import Indicators.MACDWithSignalIndicator;
 import Indicators.SuperTrendIndicator;
 
@@ -24,14 +27,14 @@ public class RealTimeIndicatorProvider {
 
 	private static final String SUPERTREND = "SUPERTREND";
 
-	public static Map<String, Map<String, String>> getIndicatorsFor() throws IOException {
-		Map<String, Map<String, String>> signalsValues = new HashMap<String, Map<String, String>>();
-		signalsValues.put(CandleStickInterval.MINUTE_3,
-				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_3));
-		signalsValues.put(CandleStickInterval.MINUTE_5,
-				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_5));
-		signalsValues.put(CandleStickInterval.MINUTE_15,
-				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_15));
+	public static List<RealTimeIndicatorValues> getIndicatorsFor() throws IOException {
+		List<RealTimeIndicatorValues> signalsValues = new ArrayList<RealTimeIndicatorValues>();
+		signalsValues.add(new RealTimeIndicatorValues(CandleStickInterval.MINUTE_3,
+				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_3)));
+		signalsValues.add(new RealTimeIndicatorValues(CandleStickInterval.MINUTE_5,
+				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_5)));
+		signalsValues.add(new RealTimeIndicatorValues(CandleStickInterval.MINUTE_15,
+				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_15)));
 		return signalsValues;
 	}
 
