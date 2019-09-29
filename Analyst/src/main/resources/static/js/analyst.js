@@ -35,7 +35,7 @@ var setDefaultValues = function() {
 
 var updateIndicators = function(data) {
 	if (data != undefined) {
-		$("#indicators_table").find('tbody').empty();
+		$(INDICATORS_TABLE).find(TABLE_BODY).empty();
 		for (var i = 0; i < data.length; i++) {
 			var row = "<tr align='left'>";
 			row += getTableColumnWithColour(data[i].interval, COLOUR_GREY);
@@ -43,14 +43,14 @@ var updateIndicators = function(data) {
 			row += getColumnForIndicator(data[i].indicators.PSAR);
 			row += getColumnForIndicator(data[i].indicators.MACD);
 			row += "</tr>";
-			$("#indicators_table").find('tbody').append(row);
+			$(INDICATORS_TABLE).find(TABLE_BODY).append(row);
 		}
 	}
 }
 
 var updateOptionsChain = function(data) {
 	if (data != undefined) {
-		$("#optionschain_table").find('tbody').empty();
+		$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).empty();
 		var symbol = data.symbol;
 		var spotPrice = data.price;
 		for (var i = 0; i < data.callOptions.length; i++) {
@@ -88,7 +88,7 @@ var updateOptionsChain = function(data) {
 
 			row += "</tr>";
 
-			$("#optionschain_table").find('tbody').append(row);
+			$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).append(row);
 		}
 	}
 }
