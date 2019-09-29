@@ -22,13 +22,13 @@ var reloadData = function() {
 }
 
 var setDefaultValues = function() {
-	$.get("/indicators/get/data", function(data, status) {
+	$.get(INDICATORS_DATA, function(data, status) {
 		updateIndicators(data);
 	});
-	$.get("/optionschain/get/data", function(data, status) {
+	$.get(OPTIONS_CHAIN_DATA, function(data, status) {
 		updateOptionsChain(data);
 	});
-	$.get("optionschain/get/interpretations", function(data, status) {
+	$.get(OPTIONS_CHAIN_INTERPRETATION, function(data, status) {
 		updateOptionChainInterpretations(data);
 	});
 }
@@ -38,7 +38,7 @@ var updateIndicators = function(data) {
 		$("#indicators_table").find('tbody').empty();
 		for (var i = 0; i < data.length; i++) {
 			var row = "<tr align='left'>";
-			row += "<td bgcolor='grey'>" + data[i].interval + "</td>";
+			row += getTableColumnWithColour(data[i].interval, COLOUR_GREY);
 			row += getColumnForIndicator(data[i].indicators.SUPERTREND);
 			row += getColumnForIndicator(data[i].indicators.PSAR);
 			row += getColumnForIndicator(data[i].indicators.MACD);
@@ -51,31 +51,43 @@ var updateIndicators = function(data) {
 var updateOptionsChain = function(data) {
 	if (data != undefined) {
 		$("#optionschain_table").find('tbody').empty();
+		var symbol = data.symbol;
 		var spotPrice = data.price;
 		for (var i = 0; i < data.callOptions.length; i++) {
 			var callOption = data.callOptions[i];
 			var putOption = data.putOptions[i];
 			var strikePrice = callOption.strikePrice;
-			var callColour = strikePrice <= spotPrice ? 'LightYellow' : 'White';
-			var putColour = strikePrice >= spotPrice ? 'LightYellow' : 'White';
+			var callColour = strikePrice <= spotPrice ? COLOUR_LIGHT_YELLOW
+					: COLOUR_WHITE;
+			var putColour = strikePrice >= spotPrice ? COLOUR_LIGHT_YELLOW
+					: COLOUR_WHITE;
 
 			var row = "<tr>";
-			row += getColumnForIndicator(callOption.trend);
-			row += "<td bgcolor=" + callColour  + ">" + callOption.interpretation + "</td>";
-			row += "<td bgcolor=" + callColour  + ">" + callOption.openInterest + "</td>";
-			row += "<td bgcolor=" + callColour  + ">" + callOption.openInterestChange + "</td>";
-			row += "<td bgcolor=" + callColour  + ">" + callOption.LTP + "</td>";
-			row += "<td bgcolor=" + callColour  + ">" + callOption.netChange + "</td>";
 
-			row += "<td>" + callOption.strikePrice + "</td>";
+			row += getColumnForIndicator(callOption.trend, callColour);
+			row += getTableColumnWithColour(callOption.interpretation,
+					getInterpretationColour(callOption.interpretation,
+							callOption.optionType, callColour));
+			row += getTableColumnWithColour(callOption.openInterest, callColour);
+			row += getTableColumnWithColour(callOption.openInterestChange,
+					callColour);
+			row += getTableColumnWithColour(callOption.LTP, callColour);
+			row += getTableColumnWithColour(callOption.netChange, callColour);
 
-			row += "<td bgcolor=" + putColour  + ">" + putOption.netChange + "</td>";
-			row += "<td bgcolor=" + putColour  + ">" + putOption.LTP + "</td>";
-			row += "<td bgcolor=" + putColour  + ">" + putOption.openInterestChange + "</td>";
-			row += "<td bgcolor=" + putColour  + ">" + putOption.openInterest + "</td>";
-			row += "<td bgcolor=" + putColour  + ">" + putOption.interpretation + "</td>";
-			row += getColumnForIndicator(putOption.trend);
+			row += getTableColumnWithColour(callOption.strikePrice);
+
+			row += getTableColumnWithColour(putOption.netChange, putColour);
+			row += getTableColumnWithColour(putOption.LTP, putColour);
+			row += getTableColumnWithColour(putOption.openInterestChange,
+					putColour);
+			row += getTableColumnWithColour(putOption.openInterest, putColour);
+			row += getTableColumnWithColour(putOption.interpretation,
+					getInterpretationColour(putOption.interpretation,
+							putOption.optionType, putColour));
+			row += getColumnForIndicator(putOption.trend, putColour);
+
 			row += "</tr>";
+
 			$("#optionschain_table").find('tbody').append(row);
 		}
 	}
@@ -85,11 +97,49 @@ var updateOptionChainInterpretations = function(data) {
 
 }
 
-var getColumnForIndicator = function(data) {
-	if (data == "SELL" || data == "Bearish") {
-		return "<td bgcolor='red'>" + data + "</td>";
-	} else if (data == "BUY" || data == "Bullish") {
-		return "<td bgcolor='green'>" + data + "</td>";
+var getInterpretationColour = function(interpretation, optionType,
+		selectedColour) {
+	var colour = COLOUR_GREEN;
+
+	if (interpretation == NO_DATA) {
+		return selectedColour;
 	}
-	return "<td bgcolor='LightYellow'>" + data + "</td>";
+
+	if (optionType == OPTION_TYPE_CALL) {
+		if (interpretation == INTERPRETATION_SHORT_BUILDUP
+				|| interpretation == INTERPRETATION_LONG_UNWINDING) {
+			colour = COLOUR_RED;
+		}
+	}
+
+	if (optionType == OPTION_TYPE_PUT) {
+		if (interpretation == INTERPRETATION_LONG_BUILDUP
+				|| interpretation == INTERPRETATION_SHORT_UNWINDING) {
+			colour = COLOUR_RED;
+		}
+	}
+
+	return colour;
+}
+
+var getColumnForIndicator = function(data, selectedColour) {
+	var colour = COLOUR_LIGHT_YELLOW;
+	if (data == TRADE_ACTION_SELL || data == TREND_BEARISH) {
+		colour = COLOUR_RED;
+	} else if (data == TRADE_ACTION_BUY || data == TREND_BULLISH) {
+		colour = COLOUR_GREEN;
+	}
+
+	if (data == NO_DATA) {
+		colour = selectedColour;
+	}
+
+	return getTableColumnWithColour(data, colour);
+}
+
+var getTableColumnWithColour = function(data, colour) {
+	if (colour == undefined) {
+		colour = COLOUR_WHITE;
+	}
+	return "<td bgcolor=" + colour + ">" + data + "</td>";
 }
