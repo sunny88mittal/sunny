@@ -118,7 +118,7 @@ var updateOptionChainInterpretations = function(data) {
 			shortEMA.push(interpretation.shortEMA);
 			longEMA.push(interpretation.longEMA);
 			pcrValues.push(interpretation.pcr);
-			time.push(interpretation.time);
+			time.push(interpretation.time.split(".")[0]);
 		}
 
 		// Create the chart
