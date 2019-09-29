@@ -55,12 +55,13 @@ public class OptionsChainDownloader {
 		return optionsChainInterpretations;
 	}
 
-	public static OptionsChain getLatestOptionsChain() {
+	public static OptionsChain getLatestOptionsChain() throws IOException, InterruptedException {
+		loadDataFromDisk();
 		return lastOptionChain;
 	}
 
 	@Scheduled(cron = "0 */3 9-15 * * MON-FRI")
-	public static void getOptionsChain() throws IOException, InterruptedException {
+	public static void updateOptionsData() throws IOException, InterruptedException {
 		// Constants to keep track of time and day
 		LocalDateTime nineFourteenAM = LocalDateTime.now().withHour(9).withMinute(14);
 		LocalDateTime threeThirtyTwoPM = LocalDateTime.now().withHour(15).withMinute(32);
@@ -96,9 +97,6 @@ public class OptionsChainDownloader {
 			// Update interpretations
 			updateInterpretations(optionsChain);
 
-			// Print Latest interpretation
-			printLatestInterpretation();
-
 			// Prepare Data For Next Day
 			prepareDataForNextDay();
 
@@ -112,11 +110,21 @@ public class OptionsChainDownloader {
 			String dateFolder = getFolderName(LocalDateTime.now());
 			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
 				String fileContents = IOHelper.readFile(file.getAbsolutePath());
+
 				lastModifiedTime = file.lastModified();
+
 				OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
+
+				lastOptionChain = optionsChain;
+
+				// Interpret Options Chain
+				OptionsChainInterpreter.interpretOptionsChain(optionsChain);
+
+				// Update time series
 				updateTimeSeries(optionsChain);
+
+				// Update interpretations
 				updateInterpretations(optionsChain);
-				printLatestInterpretation();
 			}
 		}
 	}
