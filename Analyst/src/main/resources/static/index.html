@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -15,35 +16,42 @@
 <link rel="stylesheet" href="css/analyst.css">
 
 <title>Analyst</title>
+
 </head>
+
 <body onload="infiniteLoader()">
 	<div class="container-fluid">
 		<div class="row mt-3">
-			<div class="col-sm" id="symbol">BANKNIFTY</div>
-			<div class="col-sm" id="symbol_value">21000.00</div>
-		</div>
+			<div class="col-8" id="pcrChar">
+				<canvas id="pcr_chart"></canvas>
+			</div>
 
-		<div class="row mt-3">
-			<div class="col-sm" id="pcr">PCR</div>
-			<div class="col-sm" id="pcr_value">1.0</div>
-			<div class="col-sm" id="pcr_signal">SELL</div>
-		</div>
+			<div class="col" id="indicators_block">
+				<div class="row mt-4">
+					<div class="col-sm divborder" id="symbol">BANKNIFTY</div>
+					<div class="col-sm divborder" id="symbol_value">-</div>
+				</div>
 
-		<div class="row mt-3">
-			<div class="col-sm" id="pcrChar">PCR CHART</div>
-			<div class="col-sm" id="indicators">
-				<table class="table" id="indicators_table">
-					<thead class="thead-dark">
-						<tr>
-							<th scope="col" align="center">INTERVAL</th>
-							<th scope="col" align="center">SUPERTREND</th>
-							<th scope="col" align="center">PSAR</th>
-							<th scope="col" align="center">MACD</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+				<div class="row mt-4">
+					<div class="col-sm divborder" id="pcr">PCR</div>
+					<div class="col-sm divborder" id="pcr_value">-</div>
+					<div class="col-sm divborder" id="pcr_signal">-</div>
+				</div>
+
+				<div class="row mt-4" id="indicators">
+					<table class="table" id="indicators_table">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col" align="center">INTERVAL</th>
+								<th scope="col" align="center">SUPERTREND</th>
+								<th scope="col" align="center">PSAR</th>
+								<th scope="col" align="center">MACD</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 
@@ -92,6 +100,8 @@
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
 		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 		crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
 	<script src="js/analyst.js"></script>
 	<script src="js/constants.js"></script>

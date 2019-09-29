@@ -1,5 +1,5 @@
 var infiniteLoader = function() {
-	setDefaultValues();
+	updateData();
 	setInterval(reloadData, 3 * 60 * 1000);
 }
 
@@ -11,17 +11,12 @@ var reloadData = function() {
 
 	if (day > 0 && day < 6) {
 		if ((hour >= 9 && minute >= 14) || (hour <= 15 && minute <= 32)) {
-			// Call to get Indicators
-
-			// Call to get Options Data
-
-			// Call to get Option Chain Interpretations
+			updateData();
 		}
-
 	}
 }
 
-var setDefaultValues = function() {
+var updateData = function() {
 	$.get(INDICATORS_DATA, function(data, status) {
 		updateIndicators(data);
 	});
@@ -100,10 +95,64 @@ var updateOptionsChain = function(data) {
 
 var updateOptionChainInterpretations = function(data) {
 	if (data != undefined) {
+		// Update pcr
 		var length = data.length;
 		var lastInterpretation = data[length - 1];
-		$(PCR_VALUE).text(lastInterpretation.pcr);
+		$(PCR_VALUE).text(lastInterpretation.pcr.toFixed(4));
 		$(PCR_SIGNAL).text(lastInterpretation.signal);
+		$(PCR_SIGNAL).removeClass("pcrbuy");
+		$(PCR_SIGNAL).removeClass("pcrsell");
+		if (lastInterpretation.signal == TRADE_ACTION_BUY) {
+			$(PCR_SIGNAL).addClass("pcrbuy");
+		} else {
+			$(PCR_SIGNAL).addClass("pcrsell");
+		}
+
+		// Prepare data for the chart
+		var shortEMA = [];
+		var longEMA = [];
+		var pcrValues = [];
+		var time = [];
+		for (var i = 0; i < length; i++) {
+			var interpretation = data[i];
+			shortEMA.push(interpretation.shortEMA);
+			longEMA.push(interpretation.longEMA);
+			pcrValues.push(interpretation.pcr);
+			time.push(interpretation.time);
+		}
+
+		// Create the chart
+		var ctx = $(PCR_CHART);
+		var mixedChart = new Chart(ctx, {
+			type : 'bar',
+			data : {
+				datasets : [ {
+					label : 'PCR',
+					data : pcrValues,
+					backgroundColor : 'Crimson'
+				}, {
+					label : 'Short EMA',
+					data : shortEMA,
+					type : 'line',
+					borderColor : 'Green'
+				}, {
+					label : 'Long EMA',
+					data : longEMA,
+					type : 'line',
+					borderColor : 'Black'
+				} ],
+				labels : time
+			},
+			options : {
+				scales : {
+					yAxes : [ {
+						ticks : {
+							beginAtZero : true
+						}
+					} ]
+				}
+			}
+		});
 	}
 }
 

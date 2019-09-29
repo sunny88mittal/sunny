@@ -1,0 +1,12 @@
+.divborder {
+	text-align: left;
+	border: 1px solid black;
+}
+
+.pcrbuy {
+	background-color: green;
+}
+
+.pcrsell {
+	background-color: red;
+}
