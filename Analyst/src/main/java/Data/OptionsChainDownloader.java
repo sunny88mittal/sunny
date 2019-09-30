@@ -56,6 +56,7 @@ public class OptionsChainDownloader {
 	}
 
 	public static OptionsChain getLatestOptionsChain() throws IOException, InterruptedException {
+		loadDataFromDisk();
 		return lastOptionChain;
 	}
 
