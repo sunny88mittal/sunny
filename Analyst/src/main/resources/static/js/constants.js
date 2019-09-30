@@ -1,7 +1,7 @@
 var NO_DATA = "-";
 
-var COLOUR_GREEN = 'green';
-var COLOUR_RED = 'red';
+var COLOUR_GREEN = 'mediumseagreen';
+var COLOUR_RED = 'crimson';
 var COLOUR_WHITE = 'white';
 var COLOUR_GREY = 'grey';
 var COLOUR_LIGHT_YELLOW = 'LightYellow';
