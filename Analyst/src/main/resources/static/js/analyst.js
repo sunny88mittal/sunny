@@ -1,3 +1,5 @@
+var pcrChart;
+
 var infiniteLoader = function() {
 	updateData();
 	setInterval(reloadData, 3 * 60 * 1000);
@@ -123,7 +125,10 @@ var updateOptionChainInterpretations = function(data) {
 
 		// Create the chart
 		var ctx = $(PCR_CHART);
-		var mixedChart = new Chart(ctx, {
+		if (pcrChart != undefined) {
+			pcrChart.destroy();
+		}
+		pcrChart = new Chart(ctx, {
 			type : 'bar',
 			data : {
 				datasets : [ {
