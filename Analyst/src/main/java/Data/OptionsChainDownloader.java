@@ -61,12 +61,15 @@ public class OptionsChainDownloader {
 
 	@Scheduled(cron = "0 0 9 * * MON-FRI")
 	public static void loadPreviousDataFromDisk() {
-		series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
-		optionsChainInterpretations = new ArrayList<OptionsChainInterpretation>();
-		closePriceIndicator = new ClosePriceIndicator(series);
-		lastOptionChain = null;
-		lastModifiedTime = 0;
-		loadDataFromDisk();
+		LocalDateTime now = LocalDateTime.now();
+		if (!NSEHolidays.isHoliday(now)) {
+			series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
+			optionsChainInterpretations = new ArrayList<OptionsChainInterpretation>();
+			closePriceIndicator = new ClosePriceIndicator(series);
+			lastOptionChain = null;
+			lastModifiedTime = 0;
+			loadDataFromDisk();
+		}
 	}
 
 	@Scheduled(cron = "0 */3 9-15 * * MON-FRI")
