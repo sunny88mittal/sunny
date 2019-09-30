@@ -32,7 +32,7 @@ var updateIndicators = function(data) {
 	if (data != undefined) {
 		$(INDICATORS_TABLE).find(TABLE_BODY).empty();
 		for (var i = 0; i < data.length; i++) {
-			var row = "<tr align='left'>";
+			var row = "<tr>";
 			row += getTableColumnWithColour(data[i].interval, COLOUR_GREY);
 			row += getColumnForIndicator(data[i].indicators.SUPERTREND);
 			row += getColumnForIndicator(data[i].indicators.PSAR);
@@ -200,5 +200,5 @@ var getTableColumnWithColour = function(data, colour) {
 	if (colour == undefined) {
 		colour = COLOUR_WHITE;
 	}
-	return "<td bgcolor=" + colour + ">" + data + "</td>";
+	return "<td align='center' bgcolor=" + colour + ">" + data + "</td>";
 }
