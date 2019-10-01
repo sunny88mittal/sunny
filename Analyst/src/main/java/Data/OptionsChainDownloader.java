@@ -20,6 +20,7 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.FileConstants;
 import Constants.NSEHolidays;
+import Constants.StockSymbols;
 import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
@@ -231,5 +232,11 @@ public class OptionsChainDownloader {
 				.get(optionsChainInterpretations.size() - 1);
 		System.out.println(optionsChainInterpretation.time + " " + optionsChainInterpretation.signal + " "
 				+ optionsChainInterpretation.pcr);
+	}
+
+	public static void main(String args[]) throws IOException, InterruptedException {
+		String nifty = StockSymbols.NIFTY.name;
+		OptionsChainDownloader niftyDownloader = new OptionsChainDownloader(nifty);
+		niftyDownloader.updateOptionsData();
 	}
 }
