@@ -30,11 +30,11 @@ public class RealTimeIndicatorProvider {
 	public static List<RealTimeIndicatorValues> getIndicatorsFor() throws IOException {
 		List<RealTimeIndicatorValues> signalsValues = new ArrayList<RealTimeIndicatorValues>();
 		signalsValues.add(new RealTimeIndicatorValues(CandleStickInterval.MINUTE_3,
-				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_3)));
+				getIndicatorsSignals(StockSymbols.BANKNIFTYFUT, CandleStickInterval.MINUTE_3)));
 		signalsValues.add(new RealTimeIndicatorValues(CandleStickInterval.MINUTE_5,
-				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_5)));
+				getIndicatorsSignals(StockSymbols.BANKNIFTYFUT, CandleStickInterval.MINUTE_5)));
 		signalsValues.add(new RealTimeIndicatorValues(CandleStickInterval.MINUTE_15,
-				getIndicatorsSignals(StockSymbols.BANKNIFTY, CandleStickInterval.MINUTE_15)));
+				getIndicatorsSignals(StockSymbols.BANKNIFTYFUT, CandleStickInterval.MINUTE_15)));
 		return signalsValues;
 	}
 
