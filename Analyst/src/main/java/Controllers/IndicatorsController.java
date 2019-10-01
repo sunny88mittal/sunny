@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import Data.RealTimeIndicatorProvider;
@@ -15,7 +16,7 @@ import Entities.RealTimeIndicatorValues;
 public class IndicatorsController {
 
 	@GetMapping("/get/data")
-	public List<RealTimeIndicatorValues> getIndicators() throws IOException {
-		return RealTimeIndicatorProvider.getIndicatorsFor();
+	public List<RealTimeIndicatorValues> getIndicators(@RequestParam String symbol) throws IOException {
+		return RealTimeIndicatorProvider.getIndicatorsFor(symbol);
 	}
 }

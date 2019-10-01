@@ -27,7 +27,7 @@ public class RealTimeIndicatorProvider {
 
 	private static final String SUPERTREND = "SUPERTREND";
 
-	public static List<RealTimeIndicatorValues> getIndicatorsFor() throws IOException {
+	public static List<RealTimeIndicatorValues> getIndicatorsFor(String symbol) throws IOException {
 		List<RealTimeIndicatorValues> signalsValues = new ArrayList<RealTimeIndicatorValues>();
 		signalsValues.add(new RealTimeIndicatorValues(CandleStickInterval.MINUTE_3,
 				getIndicatorsSignals(StockSymbols.BANKNIFTYFUT, CandleStickInterval.MINUTE_3)));

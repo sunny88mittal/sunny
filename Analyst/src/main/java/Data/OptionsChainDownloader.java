@@ -51,11 +51,11 @@ public class OptionsChainDownloader {
 
 	private static OptionsChain lastOptionChain;
 
-	public static List<OptionsChainInterpretation> getOptionschainInterpretations() {
+	public static List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
 		return optionsChainInterpretations;
 	}
 
-	public static OptionsChain getLatestOptionsChain() throws IOException, InterruptedException {
+	public static OptionsChain getLatestOptionsChain(String symbol) throws IOException, InterruptedException {
 		loadDataFromDisk();
 		return lastOptionChain;
 	}
