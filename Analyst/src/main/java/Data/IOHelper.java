@@ -62,9 +62,8 @@ public class IOHelper {
 		file.delete();
 	}
 
-	public static File[] getFilesInDir(String basePath, String dirName) {
-		String fileLocation = basePath + "\\" + dirName;
-		File file = new File(fileLocation);
+	public static File[] getFilesInDir(String dirLocation) {
+		File file = new File(dirLocation);
 		if (file.exists()) {
 			return file.listFiles();
 		}

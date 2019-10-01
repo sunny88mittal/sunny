@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.stereotype.Component;
 import org.ta4j.core.BaseTimeSeries;
 import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.EMAIndicator;
@@ -25,7 +24,6 @@ import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
 
-@Component
 public class OptionsChainDownloader {
 
 	private final String symbol;
@@ -34,7 +32,7 @@ public class OptionsChainDownloader {
 
 	private final String NEXT_URL;
 
-	private static long lastModifiedTime = 0;
+	private long lastModifiedTime = 0;
 
 	private static String CUR_DATE = "3OCT2019";
 
@@ -115,8 +113,8 @@ public class OptionsChainDownloader {
 		// We are restarting, load the data till now from disk
 		if (lastModifiedTime == 0) {
 			String dateFolder = getFolderName(LocalDateTime.now());
-			String baseDir = FileConstants.OPTIONS_FILE_BASE_PATH + "\\" + symbol;
-			for (File file : IOHelper.getFilesInDir(baseDir, dateFolder)) {
+			String dirLocation = FileConstants.OPTIONS_FILE_BASE_PATH + "\\" + dateFolder + "\\" + symbol;
+			for (File file : IOHelper.getFilesInDir(dirLocation)) {
 				String fileContents = IOHelper.readFile(file.getAbsolutePath());
 
 				lastModifiedTime = file.lastModified();
@@ -237,6 +235,6 @@ public class OptionsChainDownloader {
 	public static void main(String args[]) throws IOException, InterruptedException {
 		String nifty = StockSymbols.NIFTY.name;
 		OptionsChainDownloader niftyDownloader = new OptionsChainDownloader(nifty);
-		niftyDownloader.updateOptionsData();
+		niftyDownloader.getLatestOptionsChain();
 	}
 }

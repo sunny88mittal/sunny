@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import Constants.NSEHolidays;
 import Constants.StockSymbols;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
 
+@Component
 public class OptionsChainDataManager {
 
 	private static Map<String, OptionsChainDownloader> optionsDownloaderMap = new HashMap<String, OptionsChainDownloader>();
