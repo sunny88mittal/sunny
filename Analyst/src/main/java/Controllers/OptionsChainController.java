@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import Data.OptionsChainDownloader;
+import Data.OptionsChainDataManager;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
 
@@ -18,12 +18,12 @@ public class OptionsChainController {
 
 	@GetMapping("/get/data")
 	OptionsChain getOptionsChainData(@RequestParam String symbol) throws IOException, InterruptedException {
-		return OptionsChainDownloader.getLatestOptionsChain(symbol);
+		return OptionsChainDataManager.getLatestOptionsChain(symbol);
 	}
 
 	@GetMapping("/get/interpretations")
 	List<OptionsChainInterpretation> getOptionsChainInterpretations(@RequestParam String symbol)
 			throws IOException, InterruptedException {
-		return OptionsChainDownloader.getOptionschainInterpretations(symbol);
+		return OptionsChainDataManager.getOptionschainInterpretations(symbol);
 	}
 }
