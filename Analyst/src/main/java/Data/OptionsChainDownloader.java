@@ -12,7 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.ta4j.core.BaseTimeSeries;
 import org.ta4j.core.TimeSeries;
@@ -28,40 +27,44 @@ import Entities.OptionsChainInterpretation;
 @Component
 public class OptionsChainDownloader {
 
-	private static long lastModifiedTime = 0;
+	private final String symbol;
 
-	private static String SYMBOL = "BANKNIFTY";
+	private final String CUR_URL;
+
+	private final String NEXT_URL;
+
+	private static long lastModifiedTime = 0;
 
 	private static String CUR_DATE = "3OCT2019";
 
 	private static String NEXT_DATE = "10OCT2019";
 
-	private static String CUR_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", SYMBOL).replace("DATE", CUR_DATE);
-
-	private static String NEXT_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", SYMBOL).replace("DATE",
-			NEXT_DATE);
-
 	private static String DATA_FILE_NAME = "OPTIONSDATA";
 
-	private static TimeSeries series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
+	private TimeSeries series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
 
-	private static List<OptionsChainInterpretation> optionsChainInterpretations = new ArrayList<OptionsChainInterpretation>();
+	private List<OptionsChainInterpretation> optionsChainInterpretations = new ArrayList<OptionsChainInterpretation>();
 
-	private static ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
+	private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
-	private static OptionsChain lastOptionChain;
+	private OptionsChain lastOptionChain;
 
-	public static List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
+	public OptionsChainDownloader(String symbol) {
+		this.symbol = symbol;
+		CUR_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", symbol).replace("DATE", CUR_DATE);
+		NEXT_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", symbol).replace("DATE", NEXT_DATE);
+	}
+
+	public List<OptionsChainInterpretation> getOptionschainInterpretations() {
 		return optionsChainInterpretations;
 	}
 
-	public static OptionsChain getLatestOptionsChain(String symbol) throws IOException, InterruptedException {
+	public OptionsChain getLatestOptionsChain() throws IOException, InterruptedException {
 		loadDataFromDisk();
 		return lastOptionChain;
 	}
 
-	@Scheduled(cron = "0 0 9 * * MON-FRI")
-	public static void loadPreviousDataFromDisk() {
+	public void loadPreviousDataFromDisk() {
 		LocalDateTime now = LocalDateTime.now();
 		if (!NSEHolidays.isHoliday(now)) {
 			series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
@@ -73,55 +76,46 @@ public class OptionsChainDownloader {
 		}
 	}
 
-	@Scheduled(cron = "0 */3 9-15 * * MON-FRI")
-	public static void updateOptionsData() throws IOException, InterruptedException {
-		// Constants to keep track of time and day
-		LocalDateTime nineFourteenAM = LocalDateTime.now().withHour(9).withMinute(14);
-		LocalDateTime threeThirtyTwoPM = LocalDateTime.now().withHour(15).withMinute(32);
-		LocalDateTime now = LocalDateTime.now();
+	public void updateOptionsData() throws IOException, InterruptedException {
+		// Load data from disk if we are starting again
+		loadDataFromDisk();
 
-		// Getting latest options chain
-		if (now.isAfter(nineFourteenAM) && now.isBefore(threeThirtyTwoPM) && !NSEHolidays.isHoliday(now)) {
-
-			// Load data from disk if we are starting again
-			loadDataFromDisk();
-
-			// Get data from network
-			String rawData = NetworkHelper.makeGetRequest(CUR_URL);
-			if (rawData.isEmpty()) {
-				return;
-			}
-
-			// Update last modified time
-			lastModifiedTime = System.currentTimeMillis();
-
-			// Write the data to disk
-			writeToDisk(rawData, LocalDateTime.now());
-
-			// Get Options Chain
-			OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(rawData, lastModifiedTime);
-
-			// Interpret Options Chain
-			OptionsChainInterpreter.interpretOptionsChain(optionsChain);
-
-			// Update time series
-			updateTimeSeries(optionsChain);
-
-			// Update interpretations
-			updateInterpretations(optionsChain);
-
-			// Prepare Data For Next Day
-			prepareDataForNextDay();
-
-			lastOptionChain = optionsChain;
+		// Get data from network
+		String rawData = NetworkHelper.makeGetRequest(CUR_URL);
+		if (rawData.isEmpty()) {
+			return;
 		}
+
+		// Update last modified time
+		lastModifiedTime = System.currentTimeMillis();
+
+		// Write the data to disk
+		writeToDisk(rawData, LocalDateTime.now());
+
+		// Get Options Chain
+		OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(rawData, lastModifiedTime);
+
+		// Interpret Options Chain
+		OptionsChainInterpreter.interpretOptionsChain(optionsChain);
+
+		// Update time series
+		updateTimeSeries(optionsChain);
+
+		// Update interpretations
+		updateInterpretations(optionsChain);
+
+		// Prepare Data For Next Day
+		prepareDataForNextDay();
+
+		lastOptionChain = optionsChain;
 	}
 
-	private static void loadDataFromDisk() {
+	private void loadDataFromDisk() {
 		// We are restarting, load the data till now from disk
 		if (lastModifiedTime == 0) {
 			String dateFolder = getFolderName(LocalDateTime.now());
-			for (File file : IOHelper.getFilesInDir(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder)) {
+			String baseDir = FileConstants.OPTIONS_FILE_BASE_PATH + "\\" + symbol;
+			for (File file : IOHelper.getFilesInDir(baseDir, dateFolder)) {
 				String fileContents = IOHelper.readFile(file.getAbsolutePath());
 
 				lastModifiedTime = file.lastModified();
@@ -142,7 +136,7 @@ public class OptionsChainDownloader {
 		}
 	}
 
-	private static void prepareDataForNextDay() throws IOException {
+	private void prepareDataForNextDay() throws IOException {
 		LocalDateTime twoThirtyPM = LocalDateTime.now().withHour(14).withMinute(30);
 		LocalDateTime timeNow = LocalDateTime.now();
 		String rawData = "";
@@ -169,22 +163,35 @@ public class OptionsChainDownloader {
 		}
 	}
 
-	private static String getFolderName(LocalDateTime date) {
+	private String getFolderName(LocalDateTime date) {
 		String pattern = "dd-MM-yyyy";
 		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 		return date.format(dateFormatter);
 	}
 
-	private static void writeToDisk(String data, LocalDateTime date) throws IOException {
+	private void writeToDisk(String data, LocalDateTime date) throws IOException {
 		String dateFolder = getFolderName(date);
-		IOHelper.createDirIfReq(FileConstants.OPTIONS_FILE_BASE_PATH, dateFolder);
+
+		// Create folder for date if not there
+		String folderLocation = FileConstants.OPTIONS_FILE_BASE_PATH;
+		IOHelper.createDirIfReq(folderLocation, dateFolder);
+
+		// Create folder for stock if not there
+		folderLocation = folderLocation + "\\" + dateFolder;
+		IOHelper.createDirIfReq(folderLocation, symbol);
+
+		// Final folder location
+		folderLocation = folderLocation + "\\" + symbol;
+
+		// File location
 		String timestamp = System.currentTimeMillis() + "";
-		String fileName = FileConstants.OPTIONS_FILE_BASE_PATH + dateFolder + "\\" + DATA_FILE_NAME + "_" + timestamp
-				+ ".html";
+		String fileName = folderLocation + "\\" + DATA_FILE_NAME + "_" + timestamp + ".html";
+
+		// Write to disk
 		IOHelper.writeToFile(fileName, data);
 	}
 
-	private static boolean updateTimeSeries(OptionsChain optionsChain) {
+	private boolean updateTimeSeries(OptionsChain optionsChain) {
 		if (optionsChain == null) {
 			return false;
 		}
@@ -194,7 +201,7 @@ public class OptionsChainDownloader {
 		return true;
 	}
 
-	private static void updateInterpretations(OptionsChain optionsChain) {
+	private void updateInterpretations(OptionsChain optionsChain) {
 		EMAIndicator shortEMA = new EMAIndicator(closePriceIndicator, 5);
 		EMAIndicator longEMA = new EMAIndicator(closePriceIndicator, 13);
 
@@ -219,7 +226,7 @@ public class OptionsChainDownloader {
 		optionsChainInterpretations.add(optionsChainInterpretation);
 	}
 
-	private static void printLatestInterpretation() {
+	public void printLatestInterpretation() {
 		OptionsChainInterpretation optionsChainInterpretation = optionsChainInterpretations
 				.get(optionsChainInterpretations.size() - 1);
 		System.out.println(optionsChainInterpretation.time + " " + optionsChainInterpretation.signal + " "
