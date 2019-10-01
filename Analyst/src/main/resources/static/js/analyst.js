@@ -19,13 +19,20 @@ var reloadData = function() {
 }
 
 var updateData = function() {
-	$.get(INDICATORS_DATA, function(data, status) {
+	// Get the selected symbol from select dropdown
+	var selectedSymbol = $(SYMBOL_SELECTOR).find(":selected").text();
+
+	var indicatorsURL = getURLWithParams(INDICATORS_DATA, selectedSymbol);
+	var optionsChainDataURL = getURLWithParams(OPTIONS_CHAIN_DATA, selectedSymbol);
+	var optionsChainInterpretationURL = getURLWithParams(OPTIONS_CHAIN_INTERPRETATION, selectedSymbol);
+
+	$.get(indicatorsURL, function(data, status) {
 		updateIndicators(data);
 	});
-	$.get(OPTIONS_CHAIN_DATA, function(data, status) {
+	$.get(optionsChainDataURL, function(data, status) {
 		updateOptionsChain(data);
 	});
-	$.get(OPTIONS_CHAIN_INTERPRETATION, function(data, status) {
+	$.get(optionsChainInterpretationURL, function(data, status) {
 		updateOptionChainInterpretations(data);
 	});
 }

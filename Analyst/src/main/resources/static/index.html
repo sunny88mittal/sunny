@@ -27,7 +27,12 @@
 			</div>
 
 			<div class="col" id="indicators_block">
-				<div class="row mt-5">
+				<select class = "row" id = "symbol_selector" style="margin-left:75%;">
+					<option value="BANKNIFTY">BANKNIFTY</option>
+					<option value="NIFTY">NIFTY</option>
+				</select>
+
+				<div class="row mt-3">
 					<div class="col-sm divborder" id="symbol">BANKNIFTY</div>
 					<div class="col-sm divborder" id="symbol_value">-</div>
 				</div>
@@ -39,7 +44,7 @@
 				</div>
 
 				<div class="row mt-4" id="indicators">
-					<table class="table" id="indicators_table" >
+					<table class="table" id="indicators_table">
 						<thead class="thead-dark">
 							<tr>
 								<th scope="col" align="center">INTERVAL</th>
@@ -61,7 +66,8 @@
 		</div>
 
 		<div class="row mt-1 px-2">
-			<table class="table table-fixed" id="optionschain_table" style = "font-size : smaller;">
+			<table class="table table-fixed" id="optionschain_table"
+				style="font-size: smaller;">
 				<thead class="thead-dark">
 					<tr>
 						<th scope="col">Trend</th>
