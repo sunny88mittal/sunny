@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import Constants.StockSymbols;
 import Data.RealTimeIndicatorProvider;
 import Entities.RealTimeIndicatorValues;
 
@@ -17,6 +18,10 @@ public class IndicatorsController {
 
 	@GetMapping("/get/data")
 	public List<RealTimeIndicatorValues> getIndicators(@RequestParam String symbol) throws IOException {
-		return RealTimeIndicatorProvider.getIndicatorsFor(symbol);
+		StockSymbols stockSymbol = StockSymbols.BANKNIFTYFUT;
+		if (symbol == StockSymbols.NIFTY.name) {
+			stockSymbol = StockSymbols.NIFTYFUT;
+		}
+		return RealTimeIndicatorProvider.getIndicatorsFor(stockSymbol);
 	}
 }
