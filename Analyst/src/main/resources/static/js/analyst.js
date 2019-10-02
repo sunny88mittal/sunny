@@ -59,7 +59,7 @@ var updateOptionsChain = function(data) {
 
 		var symbol = data.symbol;
 		var spotPrice = data.price;
-		var range = (spotPrice * 5) / 100;
+		var range = (spotPrice * 2.5) / 100;
 
 		$(SYMBOL).text(symbol);
 		$(SYMBOL_VALUE).text(spotPrice);
