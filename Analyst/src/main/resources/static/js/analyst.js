@@ -23,8 +23,10 @@ var updateData = function() {
 	var selectedSymbol = $(SYMBOL_SELECTOR).find(":selected").text();
 
 	var indicatorsURL = getURLWithParams(INDICATORS_DATA, selectedSymbol);
-	var optionsChainDataURL = getURLWithParams(OPTIONS_CHAIN_DATA, selectedSymbol);
-	var optionsChainInterpretationURL = getURLWithParams(OPTIONS_CHAIN_INTERPRETATION, selectedSymbol);
+	var optionsChainDataURL = getURLWithParams(OPTIONS_CHAIN_DATA,
+			selectedSymbol);
+	var optionsChainInterpretationURL = getURLWithParams(
+			OPTIONS_CHAIN_INTERPRETATION, selectedSymbol);
 
 	$.get(indicatorsURL, function(data, status) {
 		updateIndicators(data);
@@ -57,6 +59,7 @@ var updateOptionsChain = function(data) {
 
 		var symbol = data.symbol;
 		var spotPrice = data.price;
+		var range = (spotPrice * 5) / 100;
 
 		$(SYMBOL).text(symbol);
 		$(SYMBOL_VALUE).text(spotPrice);
@@ -66,6 +69,12 @@ var updateOptionsChain = function(data) {
 			var callOption = data.callOptions[i];
 			var putOption = data.putOptions[i];
 			var strikePrice = callOption.strikePrice;
+			
+			//Show data for strikes only within 5% range
+			if (Math.abs(strikePrice - spotPrice) > range) {
+				continue;
+			}
+			
 			var callColour = strikePrice <= spotPrice ? COLOUR_LIGHT_YELLOW
 					: COLOUR_WHITE;
 			var putColour = strikePrice >= spotPrice ? COLOUR_LIGHT_YELLOW
