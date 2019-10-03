@@ -59,10 +59,12 @@ var updateOptionsChain = function(data) {
 
 		var symbol = data.symbol;
 		var spotPrice = data.price;
+		var maxPain = data.maxPainAt;
 		var range = (spotPrice * 2.5) / 100;
 
 		$(SYMBOL).text(symbol);
 		$(SYMBOL_VALUE).text(spotPrice);
+		$(MAXPAIN_VALUE).text(maxPain);
 
 		$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).empty();
 		for (var i = 0; i < data.callOptions.length; i++) {
@@ -86,6 +88,7 @@ var updateOptionsChain = function(data) {
 			row += getTableColumnWithColour(callOption.interpretation,
 					getInterpretationColour(callOption.interpretation,
 							callOption.optionType, callColour));
+			row += getTableColumnWithColour(callOption.IV, callColour);
 			row += getTableColumnWithColour(callOption.openInterest, callColour);
 			row += getTableColumnWithColour(callOption.openInterestChange,
 					callColour);
@@ -99,6 +102,7 @@ var updateOptionsChain = function(data) {
 			row += getTableColumnWithColour(putOption.openInterestChange,
 					putColour);
 			row += getTableColumnWithColour(putOption.openInterest, putColour);
+			row += getTableColumnWithColour(putOption.IV, putColour);
 			row += getTableColumnWithColour(putOption.interpretation,
 					getInterpretationColour(putOption.interpretation,
 							putOption.optionType, putColour));
