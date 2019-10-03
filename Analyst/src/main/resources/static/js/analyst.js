@@ -63,7 +63,7 @@ var updateOptionsChain = function(data) {
 		var range = (spotPrice * 2.5) / 100;
 
 		$(SYMBOL).text(symbol);
-		$(SYMBOL_VALUE).text(spotPrice);
+		$(SYMBOL_VALUE).text(spotPrice.split(".")[0]);
 		$(MAXPAIN_VALUE).text(maxPain);
 
 		$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).empty();
