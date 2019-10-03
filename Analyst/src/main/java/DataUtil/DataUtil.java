@@ -31,7 +31,8 @@ public class DataUtil {
 			float low = Float.parseFloat(candle.get(3));
 			float close = Float.parseFloat(candle.get(4));
 			float volume = Float.parseFloat(candle.get(5));
-			CandleStickData candleStickData = new CandleStickData(timestamp, open, high, low, close, volume);
+			float openInterest = Float.parseFloat(candle.get(6));
+			CandleStickData candleStickData = new CandleStickData(timestamp, open, high, low, close, volume, openInterest);
 			candleStickDataList.add(candleStickData);
 		}
 
