@@ -126,9 +126,6 @@ public class OptionsChainDownloader {
 				// Interpret Options Chain
 				OptionsChainInterpreter.interpretOptionsChain(optionsChain);
 
-				// Get Max Pain
-				optionsChain.maxPainAt = OptionsChainInterpreter.getMaxPain(optionsChain);
-
 				// Update time series
 				updateTimeSeries(optionsChain);
 

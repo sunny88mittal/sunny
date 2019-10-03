@@ -30,6 +30,9 @@ public class OptionsChainInterpreter {
 				currentOptionsDataRow.trend = trend;
 			}
 		}
+		
+		//Update Max pain
+		current.maxPainAt = getMaxPain(current);
 	}
 
 	private static String getPutTrend(String optionInterpretation) {
