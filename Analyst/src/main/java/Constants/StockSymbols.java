@@ -200,6 +200,7 @@ public enum StockSymbols {
 		stocksList.addAll(Arrays.asList(StockSymbols.values()));
 		stocksList.remove(StockSymbols.VIX);
 		stocksList.remove(StockSymbols.BANKNIFTYFUT);
+		stocksList.remove(StockSymbols.NIFTYFUT);
 		return stocksList;
 	}
 	

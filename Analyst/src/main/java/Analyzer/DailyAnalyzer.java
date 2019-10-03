@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.ta4j.core.Bar;
 import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.ParabolicSarIndicator;
@@ -17,6 +19,7 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.CandleStickInterval;
 import Constants.FileConstants;
+import Constants.NSEHolidays;
 import Constants.StockSymbols;
 import Data.FNODataDownloader;
 import Data.StocksDataDownloader;
@@ -30,6 +33,7 @@ import Indicators.MACDWithSignalIndicator;
 import Indicators.SuperTrendIndicator;
 import Statistics.StatisticsUtil;
 
+@Component
 public class DailyAnalyzer {
 
 	private static int WEEK = 5;
@@ -37,6 +41,15 @@ public class DailyAnalyzer {
 	private static int MONTH = 21;
 
 	public static void main(String args[]) throws Exception {
+		runanalyzer();
+	}
+
+	@Scheduled(cron = "0 0 21 * * MON-FRI")
+	public static void runanalyzer() throws Exception {
+		if (NSEHolidays.isHoliday( LocalDateTime.now())) {
+			return;
+		}
+		
 		System.out.println("Started at : " + LocalDateTime.now());
 
 		updateData();
@@ -60,7 +73,7 @@ public class DailyAnalyzer {
 			Thread.sleep(1000 * 30);
 		}
 		executor.shutdown();
-		doPastAnalysis(90);
+		// doPastAnalysis(90);
 		System.out.println("Ended at : " + LocalDateTime.now());
 	}
 
