@@ -34,9 +34,9 @@ public class OptionsChainDownloader {
 
 	private long lastModifiedTime = 0;
 
-	private static String CUR_DATE = "3OCT2019";
+	private static String CUR_DATE = "10OCT2019";
 
-	private static String NEXT_DATE = "10OCT2019";
+	private static String NEXT_DATE = "17OCT2019";
 
 	private static String DATA_FILE_NAME = "OPTIONSDATA";
 
