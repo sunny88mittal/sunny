@@ -20,6 +20,8 @@ public class OptionsChain {
 	public double putOI;
 	
 	public double putOIVol;
+	
+	public double maxPainAt;
 
 	public List<OptionsDataRow> callOptions = new ArrayList<OptionsDataRow>();
 

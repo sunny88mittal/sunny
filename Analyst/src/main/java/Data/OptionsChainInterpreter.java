@@ -1,5 +1,7 @@
 package Data;
 
+import java.util.List;
+
 import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsDataRow;
@@ -62,5 +64,45 @@ public class OptionsChainInterpreter {
 		}
 
 		return optionInterpretation;
+	}
+
+	public static double getMaxPain(OptionsChain current) {
+		// Compute max pain
+		double maxPainAt = Double.MAX_VALUE;
+		double maxPain = Double.MAX_VALUE;
+		List<OptionsDataRow> ceEntries = current.callOptions;
+		List<OptionsDataRow> peEntries = current.putOptions;
+
+		for (int i = 0; i < ceEntries.size(); i++) {
+			double spotPrice = ceEntries.get(i).strikePrice;
+			double totalPain = 0.0;
+
+			// Call Pain
+			for (OptionsDataRow ceEntry : ceEntries) {
+				double strikePrice = ceEntry.strikePrice;
+				double openInterest = ceEntry.openInterest;
+				double pain = openInterest * (spotPrice - strikePrice);
+				if (pain > 0) {
+					totalPain += pain;
+				}
+			}
+
+			// Put Pain
+			for (OptionsDataRow peEntry : peEntries) {
+				double strikePrice = peEntry.strikePrice;
+				double openInterest = peEntry.openInterest;
+				double pain = openInterest * (strikePrice - spotPrice);
+				if (pain > 0) {
+					totalPain += pain;
+				}
+			}
+
+			if (totalPain < maxPain) {
+				maxPain = totalPain;
+				maxPainAt = spotPrice;
+			}
+		}
+
+		return maxPainAt;
 	}
 }
