@@ -44,7 +44,7 @@ public class DailyAnalyzer {
 		runanalyzer();
 	}
 
-	@Scheduled(cron = "0 0 21 * * MON-FRI")
+	@Scheduled(cron = "0 0 22 * * MON-FRI")
 	public static void runanalyzer() throws Exception {
 		if (NSEHolidays.isHoliday( LocalDateTime.now())) {
 			return;
