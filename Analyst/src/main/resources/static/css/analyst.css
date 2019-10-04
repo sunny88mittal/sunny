@@ -10,3 +10,9 @@
 .pcrsell {
 	background-color: crimson;
 }
+
+.sticky {
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
