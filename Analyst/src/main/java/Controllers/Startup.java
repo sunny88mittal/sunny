@@ -22,7 +22,7 @@ public class Startup implements SchedulingConfigurer {
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
 		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-		taskScheduler.setPoolSize(5);
+		taskScheduler.setPoolSize(7);
 		taskScheduler.initialize();
 		taskRegistrar.setScheduler(taskScheduler);
 	}
