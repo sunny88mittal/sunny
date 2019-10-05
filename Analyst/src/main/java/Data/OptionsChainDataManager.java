@@ -27,6 +27,7 @@ public class OptionsChainDataManager {
 		stocksList.add(StockSymbols.RELIANCE.name);
 		stocksList.add(StockSymbols.TCS.name);
 		stocksList.add(StockSymbols.INFY.name);
+		stocksList.add(StockSymbols.HDFCBANK.name);
 
 		for (String stock : stocksList) {
 			OptionsChainDownloader optionsChainDownloader = new OptionsChainDownloader(stock);
