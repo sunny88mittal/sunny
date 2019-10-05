@@ -19,24 +19,29 @@ import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 
 import Constants.FileConstants;
 import Constants.NSEHolidays;
-import Constants.StockSymbols;
 import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
 
 public class OptionsChainDownloader {
 
+	public static enum EXPIRY {
+		WEEKLY, MONTHLY
+	}
+
 	private final String symbol;
 
-	private final String CUR_URL;
+	private String CUR_URL;
 
-	private final String NEXT_URL;
+	private String NEXT_URL;
+
+	private LocalDateTime CUR_DATE;
+
+	private LocalDateTime NEXT_DATE;
+
+	private EXPIRY expiry;
 
 	private long lastModifiedTime = 0;
-
-	private static String CUR_DATE = "10OCT2019";
-
-	private static String NEXT_DATE = "17OCT2019";
 
 	private static String DATA_FILE_NAME = "OPTIONSDATA";
 
@@ -48,10 +53,10 @@ public class OptionsChainDownloader {
 
 	private OptionsChain lastOptionChain;
 
-	public OptionsChainDownloader(String symbol) {
+	public OptionsChainDownloader(String symbol, EXPIRY expiry) {
 		this.symbol = symbol;
-		CUR_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", symbol).replace("DATE", CUR_DATE);
-		NEXT_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", symbol).replace("DATE", NEXT_DATE);
+		this.expiry = expiry;
+		updateOptionsURLs();
 	}
 
 	public List<OptionsChainInterpretation> getOptionschainInterpretations() {
@@ -61,6 +66,48 @@ public class OptionsChainDownloader {
 	public OptionsChain getLatestOptionsChain() throws IOException, InterruptedException {
 		loadDataFromDisk();
 		return lastOptionChain;
+	}
+
+	public void updateOptionsURLs() {
+		LocalDateTime date = LocalDateTime.now();
+
+		// Weekly Expiry Get immediately next Thursday
+		while (date.getDayOfWeek() != DayOfWeek.THURSDAY) {
+			date = date.plusDays(1);
+		}
+		CUR_DATE = date;
+		NEXT_DATE = date.plusWeeks(1);
+
+		// Monthly Expiry
+		if (expiry == EXPIRY.MONTHLY) {
+			// Get last Thursday of current month
+			while (date.plusWeeks(1).getMonth() == LocalDateTime.now().getMonth()) {
+				date = date.plusWeeks(1);
+			}
+
+			// If todays date is after the last Thursday of this month
+			if (LocalDateTime.now().getDayOfMonth() > date.getDayOfMonth()) {
+				// Get the last Thursday of next month
+				while (date.plusWeeks(1).getMonth() == LocalDateTime.now().plusMonths(1).getMonth()) {
+					date = date.plusWeeks(1);
+				}
+			}
+			CUR_DATE = date;
+			NEXT_DATE = date.plusMonths(1);
+		}
+
+		CUR_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", symbol).replace("DATE",
+				getExpiryDateAsString(CUR_DATE));
+		NEXT_URL = URLConstants.OPTIONS_CHAIN_URL.replace("SYMBOL", symbol).replace("DATE",
+				getExpiryDateAsString(NEXT_DATE));
+	}
+
+	private static String getExpiryDateAsString(LocalDateTime date) {
+		String expiryString = "";
+		expiryString += date.getDayOfMonth();
+		expiryString += date.getMonth().toString().substring(0, 3).toUpperCase();
+		expiryString += date.getYear();
+		return expiryString;
 	}
 
 	public void loadPreviousDataFromDisk() {
@@ -138,15 +185,14 @@ public class OptionsChainDownloader {
 	private void prepareDataForNextDay() throws IOException {
 		LocalDateTime twoThirtyPM = LocalDateTime.now().withHour(14).withMinute(30);
 		LocalDateTime timeNow = LocalDateTime.now();
-		String rawData = "";
 
 		// Get raw data for next day
 		if (timeNow.isAfter(twoThirtyPM)) {
-			if (timeNow.getDayOfWeek().equals(DayOfWeek.THURSDAY)) {
-				rawData = NetworkHelper.makeGetRequest(NEXT_URL);
-			} else {
-				rawData = NetworkHelper.makeGetRequest(CUR_URL);
-			}
+			// Get URL to use
+			String urlToUse = timeNow.getDayOfMonth() == CUR_DATE.getDayOfMonth() ? NEXT_URL : CUR_URL;
+
+			// Get Data
+			String rawData = NetworkHelper.makeGetRequest(urlToUse);
 
 			// Get next trading day
 			LocalDateTime nextTradingDay = timeNow.plusDays(1);
@@ -233,8 +279,9 @@ public class OptionsChainDownloader {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		String nifty = StockSymbols.NIFTY.name;
-		OptionsChainDownloader niftyDownloader = new OptionsChainDownloader(nifty);
-		niftyDownloader.getLatestOptionsChain();
+		LocalDateTime date = LocalDateTime.now();
+		System.out.println(date.getDayOfMonth());
+		System.out.println(date.getMonth().toString().substring(0, 3).toUpperCase());
+		System.out.println(date.getYear());
 	}
 }
