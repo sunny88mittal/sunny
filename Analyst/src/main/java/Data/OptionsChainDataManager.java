@@ -2,6 +2,7 @@ package Data;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +21,17 @@ public class OptionsChainDataManager {
 	private static Map<String, OptionsChainDownloader> optionsDownloaderMap = new HashMap<String, OptionsChainDownloader>();
 
 	static {
-		String bankNifty = StockSymbols.BANKNIFTY.name;
-		String nifty = StockSymbols.NIFTY.name;
-		OptionsChainDownloader bankNiftyDownloader = new OptionsChainDownloader(bankNifty);
-		OptionsChainDownloader niftyDownloader = new OptionsChainDownloader(nifty);
-		optionsDownloaderMap.put(bankNifty, bankNiftyDownloader);
-		optionsDownloaderMap.put(nifty, niftyDownloader);
+		List<String> stocksList = new ArrayList<String>();
+		stocksList.add(StockSymbols.BANKNIFTY.name);
+		stocksList.add(StockSymbols.NIFTY.name);
+		stocksList.add(StockSymbols.RELIANCE.name);
+		stocksList.add(StockSymbols.TCS.name);
+		stocksList.add(StockSymbols.INFY.name);
+
+		for (String stock : stocksList) {
+			OptionsChainDownloader optionsChainDownloader = new OptionsChainDownloader(stock);
+			optionsDownloaderMap.put(stock, optionsChainDownloader);
+		}
 	}
 
 	public static List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {

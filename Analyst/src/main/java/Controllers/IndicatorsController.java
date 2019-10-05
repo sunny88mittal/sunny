@@ -18,10 +18,14 @@ public class IndicatorsController {
 
 	@GetMapping("/get/data")
 	public List<RealTimeIndicatorValues> getIndicators(@RequestParam String symbol) throws IOException {
-		StockSymbols stockSymbol = StockSymbols.BANKNIFTYFUT;
-		if (symbol.contentEquals(StockSymbols.NIFTY.name)) {
-			stockSymbol = StockSymbols.NIFTYFUT;
+		StockSymbols stockSymbol = null;
+		for (StockSymbols stockSymbolIt : StockSymbols.values()) {
+			if (stockSymbolIt.name.equals(symbol)) {
+				stockSymbol = stockSymbolIt;
+				break;
+			}
 		}
+
 		return RealTimeIndicatorProvider.getIndicatorsFor(stockSymbol);
 	}
 }
