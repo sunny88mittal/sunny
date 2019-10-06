@@ -50,6 +50,10 @@ public class OptionsChainDataManager {
 	public static OptionsChain getLatestOptionsChain(String symbol) throws IOException, InterruptedException {
 		return optionsDownloaderMap.get(symbol).getLatestOptionsChain();
 	}
+	
+	public static List<OptionsChain> getOptionsChainTimeSeries(String symbol) {
+		return optionsDownloaderMap.get(symbol).getOptionsChainTimeSeries();
+	}
 
 	@Scheduled(cron = "0 0 9 * * MON-FRI")
 	public static void updateOptionsURLs() {

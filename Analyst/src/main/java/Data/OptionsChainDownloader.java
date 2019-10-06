@@ -51,7 +51,7 @@ public class OptionsChainDownloader {
 
 	private ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(series);
 
-	private List<OptionsChain> lastOptionChain = new ArrayList<OptionsChain>();
+	private List<OptionsChain> optionsChainList = new ArrayList<OptionsChain>();
 
 	public OptionsChainDownloader(String symbol, EXPIRY expiry) {
 		this.symbol = symbol;
@@ -65,7 +65,12 @@ public class OptionsChainDownloader {
 
 	public OptionsChain getLatestOptionsChain() throws IOException, InterruptedException {
 		loadDataFromDisk();
-		return lastOptionChain.get(lastOptionChain.size() - 1);
+		return optionsChainList.get(optionsChainList.size() - 1);
+	}
+	
+	public List<OptionsChain> getOptionsChainTimeSeries() {
+		loadDataFromDisk();
+		return optionsChainList;
 	}
 
 	public void updateOptionsURLs() {
@@ -116,7 +121,7 @@ public class OptionsChainDownloader {
 			series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
 			optionsChainInterpretations = new ArrayList<OptionsChainInterpretation>();
 			closePriceIndicator = new ClosePriceIndicator(series);
-			lastOptionChain = new ArrayList<OptionsChain>();
+			optionsChainList = new ArrayList<OptionsChain>();
 			lastModifiedTime = 0;
 			loadDataFromDisk();
 		}
@@ -153,7 +158,7 @@ public class OptionsChainDownloader {
 		// Prepare Data For Next Day
 		prepareDataForNextDay();
 
-		lastOptionChain.add(optionsChain);
+		optionsChainList.add(optionsChain);
 	}
 
 	private void loadDataFromDisk() {
@@ -168,7 +173,7 @@ public class OptionsChainDownloader {
 
 				OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
 
-				lastOptionChain.add(optionsChain);
+				optionsChainList.add(optionsChain);
 
 				// Interpret Options Chain
 				OptionsChainInterpreter.interpretOptionsChain(optionsChain);

@@ -17,13 +17,18 @@ import Entities.OptionsChainInterpretation;
 public class OptionsChainController {
 
 	@GetMapping("/get/data")
-	OptionsChain getOptionsChainData(@RequestParam String symbol) throws IOException, InterruptedException {
+	public OptionsChain getOptionsChainData(@RequestParam String symbol) throws IOException, InterruptedException {
 		return OptionsChainDataManager.getLatestOptionsChain(symbol);
 	}
 
 	@GetMapping("/get/interpretations")
-	List<OptionsChainInterpretation> getOptionsChainInterpretations(@RequestParam String symbol)
+	public List<OptionsChainInterpretation> getOptionsChainInterpretations(@RequestParam String symbol)
 			throws IOException, InterruptedException {
 		return OptionsChainDataManager.getOptionschainInterpretations(symbol);
+	}
+
+	@GetMapping("/get/timeseries")
+	public List<OptionsChain> getOptionsChainTimeSeries(@RequestParam String symbol) {
+		return OptionsChainDataManager.getOptionsChainTimeSeries(symbol);
 	}
 }
