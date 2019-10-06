@@ -18,6 +18,9 @@ var reloadData = function() {
 	}
 }
 
+/**
+ * Function which updates all the data
+ */
 var updateData = function() {
 	// Get the selected symbol from select dropdown
 	var selectedSymbol = $(SYMBOL_SELECTOR).find(":selected").text();
@@ -37,8 +40,16 @@ var updateData = function() {
 	$.get(optionsChainInterpretationURL, function(data, status) {
 		updateOptionChainInterpretations(data);
 	});
+	/*$.get(OPTIONS_CHAIN_TIMESERIES, function(data, status) {
+		updateOptionTimeSeriesChart(data);
+	});*/
 }
 
+/**
+ * Function to update the indicators
+ * 
+ * @data Indicators data
+ */
 var updateIndicators = function(data) {
 	if (data != undefined) {
 		$(INDICATORS_TABLE).find(TABLE_BODY).empty();
@@ -54,14 +65,19 @@ var updateIndicators = function(data) {
 	}
 }
 
+/**
+ * Function to update the options chain table
+ * 
+ * @data latest option chain data
+ */
 var updateOptionsChain = function(data) {
 	if (data != undefined) {
 
 		var symbol = data.symbol;
 		var spotPrice = data.price;
 		var maxPain = data.maxPainAt;
-		
-		//Range for indexes 2.5%, for stocks 6%
+
+		// Range for indexes 2.5%, for stocks 6%
 		var range = (spotPrice * 2.5) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
 			range = (spotPrice * 6) / 100;
@@ -120,6 +136,11 @@ var updateOptionsChain = function(data) {
 	}
 }
 
+/**
+ * Updates option chain interpretations table and draws the pcr chart
+ * 
+ * @data Option Chain Interpretations
+ */
 var updateOptionChainInterpretations = function(data) {
 	if (data != undefined) {
 		// Update pcr
@@ -183,6 +204,26 @@ var updateOptionChainInterpretations = function(data) {
 				}
 			}
 		});
+	}
+}
+
+/**
+ * Function to draw the option time series chart
+ *
+ * @data Options Chain time series data
+ */
+var updateOptionTimeSeriesChart = function(data) {
+	//TODO : Complete this
+	if (data != undefined && data.length > 0) {
+		var length = data.length;
+		var lastOptionChain = data[length - 1];
+		var spotPrice = lastOptionChain.price;
+		
+		// Range for indexes 1%, for stocks 2%
+		var range = (spotPrice * 1) / 100;
+		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
+			range = (spotPrice * 2) / 100;
+		}
 	}
 }
 

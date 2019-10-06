@@ -10,3 +10,4 @@ var OPTIONS_CHAIN_TABLE_HEADER = "#optionschain_table_header";
 var INDICATORS_TABLE = "#indicators_table";
 var SYMBOL_SELECTOR = "#symbol_selector";
 var MAXPAIN_VALUE = "#maxpain_value";
+var TIME_SERIES_CHART = "#options_time_series";
