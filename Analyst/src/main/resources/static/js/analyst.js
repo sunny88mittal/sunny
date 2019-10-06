@@ -60,7 +60,12 @@ var updateOptionsChain = function(data) {
 		var symbol = data.symbol;
 		var spotPrice = data.price;
 		var maxPain = data.maxPainAt;
+		
+		//Range for indexes 2.5%, for stocks 6%
 		var range = (spotPrice * 2.5) / 100;
+		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
+			range = (spotPrice * 6) / 100;
+		}
 
 		$(SYMBOL).text(symbol);
 		$(SYMBOL_VALUE).text(spotPrice.split(".")[0]);
@@ -71,12 +76,12 @@ var updateOptionsChain = function(data) {
 			var callOption = data.callOptions[i];
 			var putOption = data.putOptions[i];
 			var strikePrice = callOption.strikePrice;
-			
-			//Show data for strikes only within 5% range
+
+			// Show data for strikes within range only
 			if (Math.abs(strikePrice - spotPrice) > range) {
 				continue;
 			}
-			
+
 			var callColour = strikePrice <= spotPrice ? COLOUR_LIGHT_YELLOW
 					: COLOUR_WHITE;
 			var putColour = strikePrice >= spotPrice ? COLOUR_LIGHT_YELLOW
