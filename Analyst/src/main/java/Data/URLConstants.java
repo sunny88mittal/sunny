@@ -13,6 +13,6 @@ public class URLConstants {
 			+ "access_token=&" + "from=FROMDATE" + "&to=TODATE&" + "ciqrandom=1564301727399";
 
 	public static final String OPTIONS_CHAIN_URL = "https://www.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?"
-			+ "symbolCode=-10006&symbol=SYMBOL&symbol=SYMBOL&instrument=OPTIDX&date=DATE&segmentLink=17&symbolCount=2&segmentLink=17";
+			+ "symbolCode=-10006&symbol=SYMBOL&symbol=SYMBOL&date=DATE&segmentLink=17&symbolCount=2&segmentLink=17";
 
 }
