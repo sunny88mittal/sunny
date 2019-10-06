@@ -82,4 +82,8 @@ public class OptionsChainDataManager {
 			}
 		}
 	}
+
+	public static void main(String args[]) throws IOException, InterruptedException {
+		updateOptionsData();
+	}
 }
