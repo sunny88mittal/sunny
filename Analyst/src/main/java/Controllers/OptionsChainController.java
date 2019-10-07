@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import Data.OptionsChainDataManager;
+import DataUtil.OptionsChainConvertor;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
+import Entities.OptionsChainMini;
 
 @RestController
 @RequestMapping("/optionschain")
@@ -28,7 +30,8 @@ public class OptionsChainController {
 	}
 
 	@GetMapping("/get/timeseries")
-	public List<OptionsChain> getOptionsChainTimeSeries(@RequestParam String symbol) {
-		return OptionsChainDataManager.getOptionsChainTimeSeries(symbol);
+	public List<OptionsChainMini> getOptionsChainTimeSeries(@RequestParam String symbol) {
+		List<OptionsChain> optionsChainList = OptionsChainDataManager.getOptionsChainTimeSeries(symbol);
+		return OptionsChainConvertor.convertToMiniOptionsChain(optionsChainList);
 	}
 }
