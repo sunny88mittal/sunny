@@ -1,6 +1,8 @@
 package DataUtil;
 
+import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,8 @@ public class OptionsChainConvertor {
 			OptionsChainMini optionsChainMini = new OptionsChainMini();
 			optionsChainMini.symbol = optionsChain.symbol;
 			optionsChainMini.price = optionsChain.price;
-			optionsChainMini.time = LocalTime.ofSecondOfDay(optionsChain.timeStamp / 1000);
+			optionsChainMini.time = LocalTime.ofInstant(Instant.ofEpochMilli(optionsChain.timeStamp),
+					ZoneId.systemDefault());
 
 			// Call Options
 			for (OptionsDataRow optionsDataRow : optionsChain.callOptions) {
