@@ -206,7 +206,7 @@ var updateOptionTimeSeriesChart = function(data) {
 		var symbol = lastOptionChain.symbol;
 
 		// Range for indexes 1%, for stocks 2%
-		var range = (spotPrice * .7) / 100;
+		var range = (spotPrice * 1.2) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
 			range = (spotPrice * 1.5) / 100;
 		}
