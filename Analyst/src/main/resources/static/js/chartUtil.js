@@ -18,3 +18,18 @@ var getChart = function(ctx, chartType, datatsetsArray, labelsArray) {
 
 	return chart;
 }
+
+var getDataset = function(labelValue, dataArr, chartType, bgColor, borderColor) {
+	var dataset = {};
+	dataset.label = labelValue;
+	dataset.data = dataArr;
+	dataset.type = chartType;
+
+	if (bgColor != undefined) {
+		dataset.backgroundColor = bgColor;
+	}
+
+	if (borderColor != undefined) {
+		dataset.borderColor = borderColor;
+	}
+}
