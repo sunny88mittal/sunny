@@ -32,6 +32,8 @@ var updateData = function() {
 			selectedSymbol);
 	var optionsChainInterpretationURL = getURLWithParams(
 			OPTIONS_CHAIN_INTERPRETATION, selectedSymbol);
+	var optionsChainTimeSeriesURL = getURLWithParams(OPTIONS_CHAIN_TIMESERIES,
+			selectedSymbol);
 
 	$.get(indicatorsURL, function(data, status) {
 		updateIndicators(data);
@@ -42,7 +44,7 @@ var updateData = function() {
 	$.get(optionsChainInterpretationURL, function(data, status) {
 		updateOptionChainInterpretations(data);
 	});
-	$.get(OPTIONS_CHAIN_TIMESERIES, function(data, status) {
+	$.get(optionsChainTimeSeriesURL, function(data, status) {
 		updateOptionTimeSeriesChart(data);
 	});
 }
@@ -176,14 +178,16 @@ var updateOptionChainInterpretations = function(data) {
 		if (pcrChart != undefined) {
 			pcrChart.destroy();
 		}
-		
-		//Create datasets
+
+		// Create datasets
 		var datasets = [];
 		datasets.push(getDataset('PCR', pcrValues, CHART_TYPE_BAR, COLOUR_RED));
-		datasets.push(getDataset('Short EMA', shortEMA, CHART_TYPE_LINE, null, COLOUR_GREEN));
-		datasets.push(getDataset('Long EMA', longEMA, CHART_TYPE_LINE, null, COLOUR_BLACK));
-		
-		//Create Chart
+		datasets.push(getDataset('Short EMA', shortEMA, CHART_TYPE_LINE, null,
+				COLOUR_GREEN));
+		datasets.push(getDataset('Long EMA', longEMA, CHART_TYPE_LINE, null,
+				COLOUR_BLACK));
+
+		// Create Chart
 		pcrChart = getChart(ctx, CHART_TYPE_BAR, datasets, time);
 	}
 }
@@ -213,7 +217,6 @@ var updateOptionTimeSeriesChart = function(data) {
 		}
 
 		// Update the open interest line chart
-		
 
 		// Update the price line chart
 	}
