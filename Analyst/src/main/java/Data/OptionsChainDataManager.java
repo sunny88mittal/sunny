@@ -76,7 +76,7 @@ public class OptionsChainDataManager {
 	public static void updateOptionsData() throws IOException, InterruptedException {
 		// Constants to keep track of time and day
 		LocalDateTime nineFourteenAM = LocalDateTime.now().withHour(9).withMinute(14);
-		LocalDateTime threeThirtyTwoPM = LocalDateTime.now().withHour(15).withMinute(32);
+		LocalDateTime threeThirtyTwoPM = LocalDateTime.now().withHour(15).withMinute(34);
 		LocalDateTime now = LocalDateTime.now();
 
 		// Getting latest options chain
