@@ -161,7 +161,7 @@ public class OptionsChainDownloader {
 		optionsChainList.add(optionsChain);
 	}
 
-	private void loadDataFromDisk() {
+	private synchronized void loadDataFromDisk() {
 		// We are restarting, load the data till now from disk
 		if (lastModifiedTime == 0) {
 			String dateFolder = getFolderName(LocalDateTime.now());
