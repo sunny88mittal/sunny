@@ -198,16 +198,17 @@ var updateOptionChainInterpretations = function(data) {
  * @data Options Chain time series data
  */
 var updateOptionTimeSeriesChart = function(data) {
-	// TODO : Complete this
+
 	if (data != undefined && data.length > 0) {
 		var length = data.length;
 		var lastOptionChain = data[length - 1];
 		var spotPrice = lastOptionChain.price;
+		var symbol = lastOptionChain.symbol;
 
 		// Range for indexes 1%, for stocks 2%
-		var range = (spotPrice * 1) / 100;
+		var range = (spotPrice * .7) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
-			range = (spotPrice * 2) / 100;
+			range = (spotPrice * 1) / 100;
 		}
 
 		// Prepare time data for the charts
@@ -216,9 +217,113 @@ var updateOptionTimeSeriesChart = function(data) {
 			time.push(data[i].time.split(".")[0]);
 		}
 
+		// Prepare open interest and price data for the charts
+		var ceOIMap = {};
+		var peOIMap = {};
+		var cePriceMap = {};
+		var pePriceMap = {};
+
+		for (var i = 0; i < length; i++) {
+			var datai = data[i];
+			var callOptions = datai.callOptions;
+			var putOptions = datai.putOptions;
+
+			// Generate maps for call options
+			for (var j = 0; j < callOptions.length; j++) {
+				var callOption = callOptions[j];
+				var strikePrice = callOption.strikePrice;
+				var openInterest = callOption.openInterest;
+				var price = callOption.LTP;
+
+				if (Math.abs(strikePrice - spotPrice) <= range) {
+					// Open Interest
+					if (!ceOIMap[strikePrice]) {
+						ceOIMap[strikePrice] = [];
+					}
+					var ceOIArray = ceOIMap[strikePrice];
+					ceOIArray.push(openInterest);
+
+					// Open Interest
+					if (!cePriceMap[strikePrice]) {
+						cePriceMap[strikePrice] = [];
+					}
+					var cePriceArray = cePriceMap[strikePrice];
+					cePriceArray.push(price);
+				}
+			}
+
+			// Generate maps for put options
+			for (var j = 0; j < putOptions.length; j++) {
+				var putOption = putOptions[j];
+				var strikePrice = putOption.strikePrice;
+				var openInterest = putOption.openInterest;
+				var price = putOption.LTP;
+
+				if (Math.abs(strikePrice - spotPrice) <= range) {
+					// Open Interest
+					if (!peOIMap[strikePrice]) {
+						peOIMap[strikePrice] = [];
+					}
+					var peOIArray = peOIMap[strikePrice];
+					peOIArray.push(openInterest);
+
+					// Open Interest
+					if (!pePriceMap[strikePrice]) {
+						pePriceMap[strikePrice] = [];
+					}
+					var pePriceArray = pePriceMap[strikePrice];
+					pePriceArray.push(price);
+				}
+			}
+		}
+
+		// Create the datasets
+		var ceOIDatasets = [];
+		var peOIDatasets = [];
+		var cePriceDatasets = [];
+		var pePriceDatasets = [];
+
+		Object.keys(ceOIMap).forEach(
+				function(key) {
+					ceOIDatasets.push(getDataset(key + "CE", ceOIMap[key],
+							CHART_TYPE_LINE, null, COLOUR_RED));
+				});
+
+		Object.keys(peOIMap).forEach(
+				function(key) {
+					peOIDatasets.push(getDataset(key + "PE", peOIMap[key],
+							CHART_TYPE_LINE, null, COLOUR_BLACK));
+				});
+
+		Object.keys(cePriceMap).forEach(
+				function(key) {
+					cePriceDatasets
+							.push(getDataset(key + "CE", cePriceMap[key],
+									CHART_TYPE_LINE, null, COLOUR_RED));
+				});
+
+		Object.keys(pePriceMap).forEach(
+				function(key) {
+					pePriceDatasets.push(getDataset(key + "PE",
+							pePriceMap[key], CHART_TYPE_LINE, null,
+							COLOUR_BLACK));
+				});
+
 		// Update the open interest line chart
+		var ctx = $(OPTIONS_INTEREST_TIME_SERIES_CHART);
+		if (optionsOITimeSeriesChart) {
+			optionsOITimeSeriesChart.destroy();
+		}
+		optionsOITimeSeriesChart = getChart(ctx, CHART_TYPE_LINE, ceOIDatasets
+				.concat(peOIDatasets), time);
 
 		// Update the price line chart
+		var ctx = $(OPTIONS_PRICE_TIME_SERIES_CHART);
+		if (optionsPriceTimeSeriesChart) {
+			optionsPriceTimeSeriesChart.destroy();
+		}
+		optionsPriceTimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
+				cePriceDatasets.concat(pePriceDatasets), time);
 	}
 }
 
