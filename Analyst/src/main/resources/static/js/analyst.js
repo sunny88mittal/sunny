@@ -171,41 +171,20 @@ var updateOptionChainInterpretations = function(data) {
 			time.push(interpretation.time.split(".")[0]);
 		}
 
-		// Create the chart
+		// Get Context
 		var ctx = $(PCR_CHART);
 		if (pcrChart != undefined) {
 			pcrChart.destroy();
 		}
-		pcrChart = new Chart(ctx, {
-			type : 'bar',
-			data : {
-				datasets : [ {
-					label : 'PCR',
-					data : pcrValues,
-					backgroundColor : 'Crimson'
-				}, {
-					label : 'Short EMA',
-					data : shortEMA,
-					type : 'line',
-					borderColor : 'Green'
-				}, {
-					label : 'Long EMA',
-					data : longEMA,
-					type : 'line',
-					borderColor : 'Black'
-				} ],
-				labels : time
-			},
-			options : {
-				scales : {
-					yAxes : [ {
-						ticks : {
-							beginAtZero : true
-						}
-					} ]
-				}
-			}
-		});
+		
+		//Create datasets
+		var datasets = [];
+		datasets.push(getDataset('PCR', pcrValues, CHART_TYPE_BAR, COLOUR_RED));
+		datasets.push(getDataset('Short EMA', shortEMA, CHART_TYPE_LINE, null, COLOUR_GREEN));
+		datasets.push(getDataset('Long EMA', longEMA, CHART_TYPE_LINE, null, COLOUR_BLACK));
+		
+		//Create Chart
+		pcrChart = getChart(ctx, CHART_TYPE_BAR, datasets, time);
 	}
 }
 

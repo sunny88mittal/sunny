@@ -25,11 +25,13 @@ var getDataset = function(labelValue, dataArr, chartType, bgColor, borderColor) 
 	dataset.data = dataArr;
 	dataset.type = chartType;
 
-	if (bgColor != undefined) {
+	if (bgColor) {
 		dataset.backgroundColor = bgColor;
 	}
 
-	if (borderColor != undefined) {
+	if (borderColor) {
 		dataset.borderColor = borderColor;
 	}
+	
+	return dataset;
 }

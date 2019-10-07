@@ -4,6 +4,7 @@ var COLOUR_GREEN = 'mediumseagreen';
 var COLOUR_RED = 'crimson';
 var COLOUR_WHITE = 'white';
 var COLOUR_GREY = 'grey';
+var COLOUR_BLACK = 'black';
 var COLOUR_LIGHT_YELLOW = 'LightYellow';
 
 var TREND_BEARISH = "Bearish";
@@ -19,3 +20,6 @@ var INTERPRETATION_LONG_BUILDUP = "Long Buildup";
 var INTERPRETATION_SHORT_BUILDUP = "Short Buildup";
 var INTERPRETATION_LONG_UNWINDING = "Long Unwinding";
 var INTERPRETATION_SHORT_UNWINDING = "Short Unwinding";
+
+var CHART_TYPE_LINE = 'line';
+var CHART_TYPE_BAR = 'bar';
