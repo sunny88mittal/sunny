@@ -1,4 +1,6 @@
 var pcrChart;
+var optionsOITimeSeriesChart;
+var optionsPriceTimeSeriesChart;
 
 var infiniteLoader = function() {
 	updateData();
@@ -40,9 +42,9 @@ var updateData = function() {
 	$.get(optionsChainInterpretationURL, function(data, status) {
 		updateOptionChainInterpretations(data);
 	});
-	/*$.get(OPTIONS_CHAIN_TIMESERIES, function(data, status) {
+	$.get(OPTIONS_CHAIN_TIMESERIES, function(data, status) {
 		updateOptionTimeSeriesChart(data);
-	});*/
+	});
 }
 
 /**
@@ -209,21 +211,32 @@ var updateOptionChainInterpretations = function(data) {
 
 /**
  * Function to draw the option time series chart
- *
+ * 
  * @data Options Chain time series data
  */
 var updateOptionTimeSeriesChart = function(data) {
-	//TODO : Complete this
+	// TODO : Complete this
 	if (data != undefined && data.length > 0) {
 		var length = data.length;
 		var lastOptionChain = data[length - 1];
 		var spotPrice = lastOptionChain.price;
-		
+
 		// Range for indexes 1%, for stocks 2%
 		var range = (spotPrice * 1) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
 			range = (spotPrice * 2) / 100;
 		}
+
+		// Prepare time data for the charts
+		var time = [];
+		for (var i = 0; i < length; i++) {
+			time.push(data[i].time.split(".")[0]);
+		}
+
+		// Update the open interest line chart
+		
+
+		// Update the price line chart
 	}
 }
 

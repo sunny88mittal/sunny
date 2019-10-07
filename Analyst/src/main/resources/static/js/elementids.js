@@ -10,4 +10,5 @@ var OPTIONS_CHAIN_TABLE_HEADER = "#optionschain_table_header";
 var INDICATORS_TABLE = "#indicators_table";
 var SYMBOL_SELECTOR = "#symbol_selector";
 var MAXPAIN_VALUE = "#maxpain_value";
-var TIME_SERIES_CHART = "#options_time_series";
+var OPTIONS_INTEREST_TIME_SERIES_CHART = "#options_interest_time_series";
+var OPTIONS_PRICE_TIME_SERIES_CHART = "#options_price_time_series";
