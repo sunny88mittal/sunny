@@ -206,7 +206,7 @@ var updateOptionTimeSeriesChart = function(data) {
 		var symbol = lastOptionChain.symbol;
 
 		// Range for indexes 1%, for stocks 2%
-		var range = (spotPrice * 1.2) / 100;
+		var range = (spotPrice * 1.5) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
 			range = (spotPrice * 1.5) / 100;
 		}
@@ -235,7 +235,7 @@ var updateOptionTimeSeriesChart = function(data) {
 				var openInterest = callOption.openInterest;
 				var price = callOption.LTP;
 
-				if (Math.abs(strikePrice - spotPrice) <= range) {
+				if ((strikePrice - spotPrice) <= range && (strikePrice >= spotPrice)) {
 					// Open Interest
 					if (!ceOIMap[strikePrice]) {
 						ceOIMap[strikePrice] = [];
@@ -259,7 +259,7 @@ var updateOptionTimeSeriesChart = function(data) {
 				var openInterest = putOption.openInterest;
 				var price = putOption.LTP;
 
-				if (Math.abs(strikePrice - spotPrice) <= range) {
+				if ((spotPrice - strikePrice) <= range && (spotPrice >= strikePrice)) {
 					// Open Interest
 					if (!peOIMap[strikePrice]) {
 						peOIMap[strikePrice] = [];
