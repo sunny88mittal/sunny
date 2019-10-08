@@ -208,7 +208,7 @@ var updateOptionTimeSeriesChart = function(data) {
 		// Range for indexes 1%, for stocks 2%
 		var range = (spotPrice * 1.5) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
-			range = (spotPrice * 1.5) / 100;
+			range = (spotPrice * 4) / 100;
 		}
 
 		// Prepare time data for the charts
