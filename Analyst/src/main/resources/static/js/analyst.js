@@ -1,6 +1,8 @@
 var pcrChart;
-var optionsOITimeSeriesChart;
-var optionsPriceTimeSeriesChart;
+var optionsCEOITimeSeriesChart;
+var optionsCEPriceTimeSeriesChart;
+var optionsPEOITimeSeriesChart;
+var optionsPEPriceTimeSeriesChart;
 
 var infiniteLoader = function() {
 	updateData();
@@ -206,7 +208,7 @@ var updateOptionTimeSeriesChart = function(data) {
 		var symbol = lastOptionChain.symbol;
 
 		// Range for indexes 1%, for stocks 2%
-		var range = (spotPrice * 1.5) / 100;
+		var range = (spotPrice * 1) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
 			range = (spotPrice * 4) / 100;
 		}
@@ -235,7 +237,7 @@ var updateOptionTimeSeriesChart = function(data) {
 				var openInterest = callOption.openInterest;
 				var price = callOption.LTP;
 
-				if ((strikePrice - spotPrice) <= range && (strikePrice >= spotPrice)) {
+				if (Math.abs(strikePrice - spotPrice) <= range) {
 					// Open Interest
 					if (!ceOIMap[strikePrice]) {
 						ceOIMap[strikePrice] = [];
@@ -259,7 +261,7 @@ var updateOptionTimeSeriesChart = function(data) {
 				var openInterest = putOption.openInterest;
 				var price = putOption.LTP;
 
-				if ((spotPrice - strikePrice) <= range && (spotPrice >= strikePrice)) {
+				if (Math.abs(spotPrice - strikePrice) <= range) {
 					// Open Interest
 					if (!peOIMap[strikePrice]) {
 						peOIMap[strikePrice] = [];
@@ -310,20 +312,34 @@ var updateOptionTimeSeriesChart = function(data) {
 				});
 
 		// Update the open interest line chart
-		var ctx = $(OPTIONS_INTEREST_TIME_SERIES_CHART);
-		if (optionsOITimeSeriesChart) {
-			optionsOITimeSeriesChart.destroy();
+		var ctx = $(OPTIONS_CE_INTEREST_TIME_SERIES_CHART);
+		if (optionsCEOITimeSeriesChart) {
+			optionsCEOITimeSeriesChart.destroy();
 		}
-		optionsOITimeSeriesChart = getChart(ctx, CHART_TYPE_LINE, ceOIDatasets
-				.concat(peOIDatasets), time);
+		optionsCEOITimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
+				ceOIDatasets, time);
+
+		ctx = $(OPTIONS_PE_INTEREST_TIME_SERIES_CHART);
+		if (optionsPEOITimeSeriesChart) {
+			optionsPEOITimeSeriesChart.destroy();
+		}
+		optionsPEOITimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
+				peOIDatasets, time);
 
 		// Update the price line chart
-		var ctx = $(OPTIONS_PRICE_TIME_SERIES_CHART);
-		if (optionsPriceTimeSeriesChart) {
-			optionsPriceTimeSeriesChart.destroy();
+		ctx = $(OPTIONS_CE_PRICE_TIME_SERIES_CHART);
+		if (optionsCEPriceTimeSeriesChart) {
+			optionsCEPriceTimeSeriesChart.destroy();
 		}
-		optionsPriceTimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
-				cePriceDatasets.concat(pePriceDatasets), time);
+		optionsCEPriceTimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
+				cePriceDatasets, time);
+
+		ctx = $(OPTIONS_PE_PRICE_TIME_SERIES_CHART);
+		if (optionsPEPriceTimeSeriesChart) {
+			optionsPEPriceTimeSeriesChart.destroy();
+		}
+		optionsPEPriceTimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
+				pePriceDatasets, time);
 	}
 }
 
