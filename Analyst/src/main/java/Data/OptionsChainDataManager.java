@@ -32,7 +32,7 @@ public class OptionsChainDataManager {
 		}
 
 		// Add stocks with expiry as monthly
-		stocksList = new ArrayList<String>();
+		/*stocksList = new ArrayList<String>();
 		stocksList.add(StockSymbols.RELIANCE.name);
 		stocksList.add(StockSymbols.TCS.name);
 		stocksList.add(StockSymbols.INFY.name);
@@ -40,7 +40,7 @@ public class OptionsChainDataManager {
 		for (String stock : stocksList) {
 			OptionsChainDownloader optionsChainDownloader = new OptionsChainDownloader(stock, EXPIRY.MONTHLY);
 			optionsDownloaderMap.put(stock, optionsChainDownloader);
-		}
+		}*/
 	}
 
 	public static List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
