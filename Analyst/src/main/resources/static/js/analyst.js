@@ -250,6 +250,9 @@ var updateOptionTimeSeriesChart = function(data) {
 						cePriceMap[strikePrice] = [];
 					}
 					var cePriceArray = cePriceMap[strikePrice];
+					if (price == 0) {
+						price = cePriceArray[cePriceArray.length - 2];
+					}
 					cePriceArray.push(price);
 				}
 			}
@@ -274,6 +277,9 @@ var updateOptionTimeSeriesChart = function(data) {
 						pePriceMap[strikePrice] = [];
 					}
 					var pePriceArray = pePriceMap[strikePrice];
+					if (price == 0) {
+						price = pePriceArray[pePriceArray.length - 2];
+					}
 					pePriceArray.push(price);
 				}
 			}
