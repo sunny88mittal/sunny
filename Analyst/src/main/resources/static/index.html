@@ -28,14 +28,21 @@
 
 			<div class="col" id="indicators_block">
 				<div class="row mt-1">
-					<select class="col" id="symbol_selector" style="margin-left: 65%;">
-						<option value="BANKNIFTY">BANKNIFTY</option>
-						<option value="NIFTY">NIFTY</option>
-						<option value="RELIANCE">RELIANCE</option>
-						<option value="TCS">TCS</option>
-						<option value="INFY">INFY</option>
-						<option value="INFY">HDFCBANK</option>
-					</select>
+					<div class="col-sm" style="padding:0px">
+						<input type="date" id="trading_day">
+					</div>
+
+					<div class="col-sm" style="padding:0px">
+						<select class="col" id="symbol_selector" style="margin-right:0%;">
+							<option value="BANKNIFTY">BANKNIFTY</option>
+							<option value="NIFTY">NIFTY</option>
+							<option value="RELIANCE">RELIANCE</option>
+							<option value="TCS">TCS</option>
+							<option value="INFY">INFY</option>
+							<option value="INFY">HDFCBANK</option>
+						</select>
+					</div>
+
 				</div>
 
 				<div class="row mt-3">
@@ -45,7 +52,7 @@
 					<div class="col-sm divborder" id="maxpain_value">-</div>
 				</div>
 
-				<div class="row mt-4">
+				<div class="row mt-3">
 					<div class="col-sm divborder" id="pcr">PCR</div>
 					<div class="col-sm divborder" id="pcr_value">-</div>
 					<div class="col-sm divborder" id="pcr_signal">-</div>
@@ -67,7 +74,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<div class="row mt-3">
 			<div class="col-sm">
 				<canvas id="options_ce_interest_time_series"></canvas>
@@ -76,7 +83,7 @@
 				<canvas id="options_ce_price_time_series"></canvas>
 			</div>
 		</div>
-		
+
 		<div class="row mt-3">
 			<div class="col-sm">
 				<canvas id="options_pe_interest_time_series"></canvas>

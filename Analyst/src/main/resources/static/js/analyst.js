@@ -5,6 +5,9 @@ var optionsPEOITimeSeriesChart;
 var optionsPEPriceTimeSeriesChart;
 
 var infiniteLoader = function() {
+	var date = new Date();
+	date = date.toISOString().split("T")[0];
+	$(TRADING_DAY).val(date);
 	updateData();
 	setInterval(reloadData, 3 * 60 * 1000);
 }
