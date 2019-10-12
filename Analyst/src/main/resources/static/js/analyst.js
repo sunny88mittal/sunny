@@ -3,6 +3,7 @@ var optionsCEOITimeSeriesChart;
 var optionsCEPriceTimeSeriesChart;
 var optionsPEOITimeSeriesChart;
 var optionsPEPriceTimeSeriesChart;
+var optionsChainBarChart;
 
 var infiniteLoader = function() {
 	var date = new Date();
@@ -45,6 +46,7 @@ var updateData = function() {
 	});
 	$.get(optionsChainDataURL, function(data, status) {
 		updateOptionsChain(data);
+		updateOptionsChainBarChart(data);
 	});
 	$.get(optionsChainInterpretationURL, function(data, status) {
 		updateOptionChainInterpretations(data);
@@ -142,6 +144,39 @@ var updateOptionsChain = function(data) {
 
 			$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).append(row);
 		}
+	}
+}
+
+/**
+ * Draws the options chain bar chart
+ * 
+ * @data options chain data
+ */
+var updateOptionsChainBarChart = function(data) {
+	if (data != undefined) {
+		var callOptionsData = [];
+		var putOptionsData = [];
+		var strikesList = [];
+		for (var i = 0; i < data.callOptions.length; i++) {
+			var callOpenInterest = data.callOptions[i].openInterest;
+			var putOpenInterest = data.putOptions[i].openInterest;
+			var strikePrice = data.callOptions[i].strikePrice;
+
+			callOptionsData.push(callOpenInterest);
+			putOptionsData.push(putOpenInterest);
+			strikesList.push(strikePrice);
+		}
+
+		var ctx = $(OPEN_INTEREST_BAR_CHART);
+		if (optionsChainBarChart) {
+			optionsChainBarChart.destroy();
+		}
+
+		var datasets = [];
+		datasets.push(getDataset("Call OI", callOptionsData, CHART_TYPE_BAR, COLOUR_RED));
+		datasets.push(getDataset("Put OI", putOptionsData, CHART_TYPE_BAR, COLOUR_BLACK));
+		optionsChainBarChart = getChart(ctx, CHART_TYPE_BAR, datasets,
+				strikesList);
 	}
 }
 
