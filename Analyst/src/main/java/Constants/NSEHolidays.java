@@ -12,6 +12,7 @@ public class NSEHolidays {
 	static {
 		holidays.add("02-10-2019");
 		holidays.add("08-10-2019");
+		holidays.add("21-10-2019");
 		holidays.add("28-10-2019");
 		holidays.add("12-11-2019");
 		holidays.add("25-12-2019");
