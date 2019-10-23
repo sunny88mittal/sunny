@@ -9,8 +9,6 @@ public enum StockSymbols {
 	VIX("VIX", "264969"),
 	NIFTY("NIFTY", "256265"), 
 	BANKNIFTY("BANKNIFTY", "260105"),
-	BANKNIFTYFUT("BANKNIFTYFUT", "13176834"),
-	NIFTYFUT("NIFTYFUT", "13177346"),
 	
 	ICICIBANK("ICICIBANK", "1270529"),
 	SBIN("SBIN", "779521"),
@@ -199,8 +197,6 @@ public enum StockSymbols {
 		List<StockSymbols> stocksList = new ArrayList<StockSymbols>();
 		stocksList.addAll(Arrays.asList(StockSymbols.values()));
 		stocksList.remove(StockSymbols.VIX);
-		stocksList.remove(StockSymbols.BANKNIFTYFUT);
-		stocksList.remove(StockSymbols.NIFTYFUT);
 		return stocksList;
 	}
 	
