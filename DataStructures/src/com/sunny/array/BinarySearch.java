@@ -15,14 +15,17 @@ public class BinarySearch {
 	private static int binarySearch(int start, int end, int[] arr, int element) {
 		int mid = (start + end) / 2;
 
+		//Compare element with mid
 		if (element == arr[mid]) {
 			return mid;
 		}
 
+		//If array exhausted
 		if (start == end) {
 			return -1;
 		}
 
+		//Choose the array half for next iteration
 		if (element < arr[mid]) {
 			return binarySearch(start, mid - 1, arr, element);
 		} else {
