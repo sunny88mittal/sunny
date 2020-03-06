@@ -1,4 +1,4 @@
-package com.sunny.array;
+package com.sunny.matrix;
 
 
 public class MaximumSumSubMatrix {
@@ -51,7 +51,7 @@ public class MaximumSumSubMatrix {
     		for (int right=left; right<cols; right++) {
     	    	for (int k=0; k<rows; k++) {
     	    		temp[k] +=  matrix[k][right];
-    	    	}
+    	    	} 
     	    	int iMaxSum = getMaxSum(temp);
     	    	if (iMaxSum > maxSum) {
     	    	    maxSum = iMaxSum;
