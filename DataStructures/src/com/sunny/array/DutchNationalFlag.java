@@ -1,5 +1,7 @@
 package com.sunny.array;
 
+import java.util.Arrays;
+
 /**
  * Dutch national flag. Given an array of N buckets, each containing a red, white, or blue pebble, sort them by color. The allowed operations are:
       swap(i,j): swap the pebble in bucket i with the pebble in bucket j.
@@ -48,8 +50,6 @@ public class DutchNationalFlag {
 			}
 		}
 		
-		for (int i=0; i<length; i++) {
-			System.out.print(arr[i] + ",");
-		}
+		System.out.println(Arrays.toString(arr));
 	}
 }
