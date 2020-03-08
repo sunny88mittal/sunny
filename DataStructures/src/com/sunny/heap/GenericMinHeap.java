@@ -65,11 +65,14 @@ public class GenericMinHeap<T extends Comparable<T>> {
 			T rootElement = elements.get(rootPos);
 			T leftChildElement = elements.get(leftChildPos);
 			int newRootPos = rootPos;
+			
+			//Compare root to left child
 			if (rootElement.compareTo(leftChildElement) > 0) {
 				rootElement = leftChildElement;
 				newRootPos = leftChildPos;
 			}
 			
+			//Compare root to right child if present
 			if (rightChildPos < heapSize) {
 				T rightChildElement = elements.get(rightChildPos);
 				if (rootElement.compareTo(rightChildElement) > 0) {
