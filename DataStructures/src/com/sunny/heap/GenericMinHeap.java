@@ -85,7 +85,11 @@ public class GenericMinHeap<T extends Comparable<T>> {
 			if (rootPos == newRootPos) {
 				break;
 			}
+			
+			//Swap elements
 			Collections.swap(elements, rootPos, newRootPos);
+			
+			//Prepare for next iteration
 			rootPos = newRootPos;
 			leftChildPos = 2 * rootPos + 1;
 			rightChildPos = 2 * rootPos + 2;
