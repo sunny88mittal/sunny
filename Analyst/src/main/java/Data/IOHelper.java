@@ -40,7 +40,7 @@ public class IOHelper {
 		return line;
 	}
 
-	public static void writeToZipFile(String fileLocation, byte[] data) throws IOException {
+	public static void writeToFile(String fileLocation, byte[] data) throws IOException {
 		FileOutputStream out = new FileOutputStream(fileLocation);
 		out.write(data, 0, data.length);
 		out.flush();
@@ -76,6 +76,11 @@ public class IOHelper {
 		if (!file.exists()) {
 			file.mkdir();
 		}
+	}
+	
+	public static boolean fileAlreadyExists(String fileLocation) {
+		File file = new File(fileLocation);
+		return file.exists();
 	}
 
 	public static boolean isDataAlreadyUpdated(String fileLocation) {

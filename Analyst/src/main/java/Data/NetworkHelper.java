@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class NetworkHelper {
 
@@ -44,11 +46,21 @@ public class NetworkHelper {
 		con.setRequestProperty("User-Agent", USER_AGENT);
 
 		InputStream is = con.getInputStream();
-		return is.readAllBytes();
+		ZipInputStream zipStream = new ZipInputStream(is);
+
+		ZipEntry zipEntry = zipStream.getNextEntry();
+		byte[] bytes = zipStream.readAllBytes();
+		
+		return bytes;
 	}
 	
 	public static void main(String args[]) throws IOException {
 		String url = "https://www.nseindia.com/content/historical/DERIVATIVES/2019/AUG/fo02AUG2019bhav.csv.zip";
+		url = "https://kitecharts-aws.zerodha.com" + "/api/chart/SYMBOL/INTERVAL?"
+				+ "public_token=px7RlNQX3W7rg9Vm2WOUDbGzo6WBxUqy&" + "user_id=YF3210&oi=1" + "&api_key=kitefront&"
+				+ "access_token=&" + "from=2019-09-01" + "&to=TODATE&" + "ciqrandom=1564301727399";
+		url = url.replace("SYMBOL", "INFY");
+		url = url.replace("TODATE", "2020-01-28");
 		makeGetRequest(url);
 	}
 }

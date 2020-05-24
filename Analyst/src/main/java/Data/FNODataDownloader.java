@@ -14,8 +14,6 @@ public class FNODataDownloader {
 
 	private static final String YEAR = "YEAR";
 
-	private static final String FNO_URL = "https://www.nseindia.com/content/historical/DERIVATIVES/YEAR/MONTH/foDATEMONTHYEARbhav.csv.zip";
-
 	public static void updateFNOData() throws IOException {
 		LocalDateTime date = LocalDateTime.now();
 
@@ -36,7 +34,7 @@ public class FNODataDownloader {
 			dateString = "0" + dateValue;
 		}
 
-		String url = FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
+		String url = URLConstants.FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
 				"" + yearValue);
 
 		getFNOData(url);
@@ -44,13 +42,12 @@ public class FNODataDownloader {
 
 	private static void getFNOData(String url) throws IOException {
 		String[] tokens = url.split("/");
-		String fileName = tokens[tokens.length - 1];
+		String fileName = tokens[tokens.length - 1].replace(".zip", "");
 
 		String fileLocation = FileConstants.FNO_BASE_PATH + fileName;
-		if (!IOHelper.isDataAlreadyUpdated(fileLocation.replace(".zip", ""))) {
+		if (!IOHelper.fileAlreadyExists(fileLocation.replace(".zip", ""))) {
 			byte[] data = NetworkHelper.makeGetRequestBytes(url);
-			IOHelper.writeToZipFile(fileLocation, data);
-			IOHelper.extractZipFile(fileLocation);
+			IOHelper.writeToFile(fileLocation, data);
 			System.out.println("Data updated for : " + fileName);
 		} else {
 			System.out.println("Data already updated for : " + fileName);
@@ -75,18 +72,18 @@ public class FNODataDownloader {
 				dateString = "0" + dateValue;
 			}
 
-			String url = FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
-					"" + yearValue);
+			String url = URLConstants.FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "")
+					.replaceAll(YEAR, "" + yearValue);
 			try {
 				getFNOData(url);
 			} catch (IOException e) {
 				System.out.println("Error for : " + url);
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			}
 		}
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		getPastFNOData(620);
+		getPastFNOData(770);
 	}
 }
