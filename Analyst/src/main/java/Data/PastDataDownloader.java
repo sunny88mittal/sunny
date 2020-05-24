@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 import Constants.FileConstants;
 
-public class FNODataDownloader {
+public class PastDataDownloader {
 
 	private static final String DATE = "DATE";
 
@@ -14,7 +14,7 @@ public class FNODataDownloader {
 
 	private static final String YEAR = "YEAR";
 
-	public static void updateFNOData() throws IOException {
+	public static void updateDailyData(String urlFormat, String writeLocationBase) throws IOException {
 		LocalDateTime date = LocalDateTime.now();
 
 		int dateValue = date.getDayOfMonth();
@@ -34,18 +34,18 @@ public class FNODataDownloader {
 			dateString = "0" + dateValue;
 		}
 
-		String url = URLConstants.FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
+		String url = urlFormat.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
 				"" + yearValue);
 
-		getFNOData(url);
+		getData(url, writeLocationBase);
 	}
 
-	private static void getFNOData(String url) throws IOException {
+	private static void getData(String url, String writeLocationBase) throws IOException {
 		String[] tokens = url.split("/");
 		String fileName = tokens[tokens.length - 1].replace(".zip", "");
+		String fileLocation = writeLocationBase + fileName;
 
-		String fileLocation = FileConstants.FNO_BASE_PATH + fileName;
-		if (!IOHelper.fileAlreadyExists(fileLocation.replace(".zip", ""))) {
+		if (!IOHelper.fileAlreadyExists(fileLocation)) {
 			byte[] data = NetworkHelper.makeGetRequestBytes(url);
 			IOHelper.writeToFile(fileLocation, data);
 			System.out.println("Data updated for : " + fileName);
@@ -54,7 +54,7 @@ public class FNODataDownloader {
 		}
 	}
 
-	private static void getPastFNOData(int days) throws InterruptedException {
+	private static void getPastData(int days, String urlFormat, String writeLocationBase) throws InterruptedException {
 		LocalDateTime date = LocalDateTime.now();
 		for (int i = 0; i < days; i++) {
 			date = date.minusDays(1);
@@ -72,10 +72,10 @@ public class FNODataDownloader {
 				dateString = "0" + dateValue;
 			}
 
-			String url = URLConstants.FNO_URL.replaceAll(DATE, dateString).replaceAll(MONTH, month + "")
-					.replaceAll(YEAR, "" + yearValue);
+			String url = urlFormat.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
+					"" + yearValue);
 			try {
-				getFNOData(url);
+				getData(url, writeLocationBase);
 			} catch (IOException e) {
 				System.out.println("Error for : " + url);
 				Thread.sleep(5000);
@@ -84,6 +84,7 @@ public class FNODataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		getPastFNOData(770);
+		getPastData(770, URLConstants.FNO_URL, FileConstants.FNO_BASE_PATH);
+		getPastData(770, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
 	}
 }
