@@ -252,8 +252,8 @@ public class OptionsChainDownloader {
 	}
 
 	private void updateInterpretations(OptionsChain optionsChain) {
-		EMAIndicator shortEMA = new EMAIndicator(closePriceIndicator, 5);
-		EMAIndicator longEMA = new EMAIndicator(closePriceIndicator, 13);
+		EMAIndicator shortEMA = new EMAIndicator(closePriceIndicator, 7);
+		EMAIndicator longEMA = new EMAIndicator(closePriceIndicator, 17);
 
 		LocalTime date = series.getLastBar().getEndTime().toLocalTime();
 		double pcr = optionsChain.putOI / optionsChain.callOI;
