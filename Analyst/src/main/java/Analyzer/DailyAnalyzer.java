@@ -21,7 +21,7 @@ import Constants.CandleStickInterval;
 import Constants.FileConstants;
 import Constants.NSEHolidays;
 import Constants.StockSymbols;
-import Data.FNODataDownloader;
+import Data.PastDataDownloader;
 import Data.StocksDataDownloader;
 import DataUtil.DataUtil;
 import Entities.DailyAnalysis;
@@ -53,7 +53,7 @@ public class DailyAnalyzer {
 		System.out.println("Started at : " + LocalDateTime.now());
 
 		updateData();
-		analyze(LocalDate.now());
+		/*analyze(LocalDate.now());
 		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
 		for (final StockSymbols stockSymbol : StockSymbols.getAllStocksList()) {
 			Thread th = new Thread() {
@@ -74,7 +74,7 @@ public class DailyAnalyzer {
 		}
 		executor.shutdown();
 		// doPastAnalysis(90);
-		System.out.println("Ended at : " + LocalDateTime.now());
+		System.out.println("Ended at : " + LocalDateTime.now());*/
 	}
 
 	private static void doPastAnalysis(int days) throws InterruptedException {
@@ -104,7 +104,7 @@ public class DailyAnalyzer {
 		StocksDataDownloader.updateDailyDataAllStocks();
 
 		// Update FNO Data
-		FNODataDownloader.updateFNOData();
+		PastDataDownloader.updateFNOData();
 	}
 
 	private static void analyzeStock(StockSymbols stockSymbol, int days)
