@@ -84,7 +84,6 @@ public class PastDataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		getPastData(770, URLConstants.FNO_URL, FileConstants.FNO_BASE_PATH);
-		getPastData(770, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
+		getPastData(1800, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
 	}
 }
