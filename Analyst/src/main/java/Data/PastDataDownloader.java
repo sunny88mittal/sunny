@@ -11,6 +11,8 @@ public class PastDataDownloader {
 	private static final String DATE = "DATE";
 
 	private static final String MONTH = "MONTH";
+	
+	private static final String MONTH1 = "MM";
 
 	private static final String YEAR = "YEAR";
 
@@ -63,6 +65,7 @@ public class PastDataDownloader {
 			}
 			int dateValue = date.getDayOfMonth();
 			int yearValue = date.getYear();
+			int monthValue = date.getMonthValue();
 
 			String month = date.getMonth().toString();
 			month = month.subSequence(0, 3).toString().toUpperCase();
@@ -71,9 +74,15 @@ public class PastDataDownloader {
 			if (dateValue < 10) {
 				dateString = "0" + dateValue;
 			}
+			
+			String month1 = "" + monthValue;
+			if (monthValue < 10) {
+				month1  = "0" + month1;
+			}
 
 			String url = urlFormat.replaceAll(DATE, dateString).replaceAll(MONTH, month + "").replaceAll(YEAR,
-					"" + yearValue);
+					"" + yearValue).replaceAll(MONTH1, month1);
+			
 			try {
 				getData(url, writeLocationBase);
 			} catch (IOException e) {
@@ -84,6 +93,8 @@ public class PastDataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		getPastData(1800, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
+		getPastData(30, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
+		getPastData(30, URLConstants.OI_DATA_URL, FileConstants.OI_BASE_PATH);
+		getPastData(30, URLConstants.FNO_URL, FileConstants.FNO_BASE_PATH);
 	}
 }
