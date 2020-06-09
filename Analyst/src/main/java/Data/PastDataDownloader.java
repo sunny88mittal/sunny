@@ -48,8 +48,14 @@ public class PastDataDownloader {
 		String fileLocation = writeLocationBase + fileName;
 
 		if (!IOHelper.fileAlreadyExists(fileLocation)) {
-			byte[] data = NetworkHelper.makeGetRequestBytes(url);
-			IOHelper.writeToFile(fileLocation, data);
+			if (url.endsWith(".csv")) {
+				String data = NetworkHelper.makeGetRequest(url);
+				IOHelper.writeToFile(fileLocation, data);
+			} else {
+				byte[] data = NetworkHelper.makeGetRequestBytes(url);
+				IOHelper.writeToFile(fileLocation, data);
+			}
+			
 			System.out.println("Data updated for : " + fileName);
 		} else {
 			System.out.println("Data already updated for : " + fileName);
@@ -59,7 +65,7 @@ public class PastDataDownloader {
 	private static void getPastData(int days, String urlFormat, String writeLocationBase) throws InterruptedException {
 		LocalDateTime date = LocalDateTime.now();
 		for (int i = 0; i < days; i++) {
-			date = date.minusDays(1);
+			date = date.minusDays(i);
 			if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
 				continue;
 			}
@@ -87,14 +93,14 @@ public class PastDataDownloader {
 				getData(url, writeLocationBase);
 			} catch (IOException e) {
 				System.out.println("Error for : " + url);
-				Thread.sleep(5000);
+				Thread.sleep(100);
 			}
 		}
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		getPastData(30, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
-		getPastData(30, URLConstants.OI_DATA_URL, FileConstants.OI_BASE_PATH);
-		getPastData(30, URLConstants.FNO_URL, FileConstants.FNO_BASE_PATH);
+		getPastData(7, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
+		getPastData(7, URLConstants.OI_DATA_URL, FileConstants.OI_BASE_PATH);
+		getPastData(7, URLConstants.FNO_URL, FileConstants.FNO_BASE_PATH);
 	}
 }
