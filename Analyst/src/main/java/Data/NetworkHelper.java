@@ -27,6 +27,7 @@ public class NetworkHelper {
 		StringBuffer response = new StringBuffer();
 
 		while ((inputLine = in.readLine()) != null) {
+			response.append("\n");
 			response.append(inputLine);
 		}
 		in.close();
