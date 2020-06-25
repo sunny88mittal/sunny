@@ -9,6 +9,8 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class NetworkHelper {
 
 	public static String makeGetRequest(String url) throws IOException {
@@ -34,7 +36,7 @@ public class NetworkHelper {
 
 		return response.toString();
 	}
-	
+
 	public static byte[] makeGetRequestBytes(String url) throws IOException {
 		String USER_AGENT = "Mozilla/5.0";
 		URL obj = new URL(url);
@@ -45,23 +47,23 @@ public class NetworkHelper {
 
 		// add request header
 		con.setRequestProperty("User-Agent", USER_AGENT);
+		
+		System.out.println(con.getResponseCode());
 
 		InputStream is = con.getInputStream();
 		ZipInputStream zipStream = new ZipInputStream(is);
 
 		ZipEntry zipEntry = zipStream.getNextEntry();
 		byte[] bytes = zipStream.readAllBytes();
-		
+
 		return bytes;
 	}
-	
+
 	public static void main(String args[]) throws IOException {
-		String url = "https://www.nseindia.com/content/historical/DERIVATIVES/2019/AUG/fo02AUG2019bhav.csv.zip";
-		url = "https://kitecharts-aws.zerodha.com" + "/api/chart/SYMBOL/INTERVAL?"
-				+ "public_token=px7RlNQX3W7rg9Vm2WOUDbGzo6WBxUqy&" + "user_id=YF3210&oi=1" + "&api_key=kitefront&"
-				+ "access_token=&" + "from=2019-09-01" + "&to=TODATE&" + "ciqrandom=1564301727399";
-		url = url.replace("SYMBOL", "INFY");
-		url = url.replace("TODATE", "2020-01-28");
-		makeGetRequest(url);
+		String url = "http://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=OPTIDX&date=25JUN2020&segmentLink=17&symbolCount=2&segmentLink=17";
+
+		url = url.replace("SYMBOL", "NIFTY").replace("DATE", "25JUN2020");
+
+		System.out.println(makeGetRequest(url));
 	}
 }

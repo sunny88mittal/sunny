@@ -1,5 +1,9 @@
 package Data;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import Constants.FileConstants;
 import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsDataRow;
@@ -115,5 +120,12 @@ public class OptionsChainBuilder {
 			doubleValue = Double.parseDouble(value);
 		}
 		return doubleValue;
+	}
+
+	public static void main(String args[]) throws IOException {
+		File file = new File("C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\Data\\LiveOptionsChain\\25-06-2020\\BANKNIFTY1593057131487.html");
+		String fileContents = IOHelper.readFile(file.getAbsolutePath());
+		OptionsChain optionsChain = getOptionsChain(fileContents, System.currentTimeMillis());
+		System.out.println(optionsChain);
 	}
 }
