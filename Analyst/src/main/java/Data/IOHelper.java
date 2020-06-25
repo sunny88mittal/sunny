@@ -1,17 +1,17 @@
 package Data;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -26,18 +26,19 @@ public class IOHelper {
 	}
 
 	public static String readFile(String fileLocation) {
-		String line = "";
+		String finalContent = "";
 		try {
-			Scanner scanner = new Scanner(new File(fileLocation));
-			while (scanner.hasNextLine()) {
-				line = scanner.nextLine();
-				break;
+			FileReader fr = new FileReader(new File(fileLocation));
+			BufferedReader br = new BufferedReader(fr);
+			String line = "";
+			while ((line = br.readLine()) != null) {
+				finalContent += line;
 			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return line;
+		return finalContent;
 	}
 
 	public static void writeToFile(String fileLocation, byte[] data) throws IOException {
@@ -77,7 +78,7 @@ public class IOHelper {
 			file.mkdir();
 		}
 	}
-	
+
 	public static boolean fileAlreadyExists(String fileLocation) {
 		File file = new File(fileLocation);
 		return file.exists();
