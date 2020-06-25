@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import Constants.NSEHolidays;
@@ -55,14 +54,14 @@ public class OptionsChainDataManager {
 		return optionsDownloaderMap.get(symbol).getOptionsChainTimeSeries();
 	}
 
-	@Scheduled(cron = "0 0 9 * * MON-FRI")
+	// @Scheduled(cron = "0 0 9 * * MON-FRI")
 	public static void updateOptionsURLs() {
 		for (OptionsChainDownloader optionsChainDownloader : optionsDownloaderMap.values()) {
 			optionsChainDownloader.updateOptionsURLs();
 		}
 	}
 
-	@Scheduled(cron = "0 0 9 * * MON-FRI")
+	// @Scheduled(cron = "0 0 9 * * MON-FRI")
 	public static void loadPreviousDataFromDisk() {
 		LocalDateTime now = LocalDateTime.now();
 		if (!NSEHolidays.isHoliday(now)) {
@@ -72,7 +71,7 @@ public class OptionsChainDataManager {
 		}
 	}
 
-	@Scheduled(cron = "0 */3 9-15 * * MON-FRI")
+	// @Scheduled(cron = "0 */3 9-15 * * MON-FRI")
 	public static void updateOptionsData() throws IOException, InterruptedException {
 		// Constants to keep track of time and day
 		LocalDateTime nineFourteenAM = LocalDateTime.now().withHour(9).withMinute(14);
