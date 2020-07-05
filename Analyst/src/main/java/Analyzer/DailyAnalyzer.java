@@ -21,8 +21,6 @@ import Constants.CandleStickInterval;
 import Constants.FileConstants;
 import Constants.NSEHolidays;
 import Constants.StockSymbols;
-import Data.PastDataDownloader;
-import Data.StocksDataDownloader;
 import DataUtil.DataUtil;
 import Entities.DailyAnalysis;
 import Entities.ExcelSheet;
@@ -100,11 +98,8 @@ public class DailyAnalyzer {
 	}
 
 	private static void updateData() throws IOException {
-		// Update Stocks Data
-		StocksDataDownloader.updateDailyDataAllStocks();
-
-		// Update FNO Data
-		PastDataDownloader.updateFNOData();
+		// Update all data
+		//PastDataDownloader.updateFNOData();
 	}
 
 	private static void analyzeStock(StockSymbols stockSymbol, int days)

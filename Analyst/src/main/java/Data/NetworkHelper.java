@@ -48,8 +48,6 @@ public class NetworkHelper {
 		// add request header
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		
-		System.out.println(con.getResponseCode());
-
 		InputStream is = con.getInputStream();
 		ZipInputStream zipStream = new ZipInputStream(is);
 
