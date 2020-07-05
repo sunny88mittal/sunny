@@ -29,17 +29,6 @@ public class OptionsChainDataManager {
 			OptionsChainDownloader optionsChainDownloader = new OptionsChainDownloader(stock, EXPIRY.WEEKLY);
 			optionsDownloaderMap.put(stock, optionsChainDownloader);
 		}
-
-		// Add stocks with expiry as monthly
-		/*stocksList = new ArrayList<String>();
-		stocksList.add(StockSymbols.RELIANCE.name);
-		stocksList.add(StockSymbols.TCS.name);
-		stocksList.add(StockSymbols.INFY.name);
-		stocksList.add(StockSymbols.HDFCBANK.name);
-		for (String stock : stocksList) {
-			OptionsChainDownloader optionsChainDownloader = new OptionsChainDownloader(stock, EXPIRY.MONTHLY);
-			optionsDownloaderMap.put(stock, optionsChainDownloader);
-		}*/
 	}
 
 	public static List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
