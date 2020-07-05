@@ -33,7 +33,8 @@ var updateData = function() {
 	// Get the selected symbol from select dropdown
 	var selectedSymbol = $(SYMBOL_SELECTOR).find(":selected").text();
 
-	var indicatorsURL = getURLWithParams(INDICATORS_DATA, selectedSymbol);
+	//var indicatorsURL = getURLWithParams(INDICATORS_DATA, selectedSymbol);
+	
 	var optionsChainDataURL = getURLWithParams(OPTIONS_CHAIN_DATA,
 			selectedSymbol);
 	var optionsChainInterpretationURL = getURLWithParams(
@@ -41,9 +42,10 @@ var updateData = function() {
 	var optionsChainTimeSeriesURL = getURLWithParams(OPTIONS_CHAIN_TIMESERIES,
 			selectedSymbol);
 
-	$.get(indicatorsURL, function(data, status) {
+	/*$.get(indicatorsURL, function(data, status) {
 		updateIndicators(data);
-	});
+	});*/
+	
 	$.get(optionsChainDataURL, function(data, status) {
 		updateOptionsChain(data);
 		updateOptionsChainBarChart(data);

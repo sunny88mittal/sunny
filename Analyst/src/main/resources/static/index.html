@@ -28,12 +28,12 @@
 
 			<div class="col" id="indicators_block">
 				<div class="row mt-1">
-					<div class="col-sm" style="padding:0px; visibility:hidden">
+					<div class="col-sm" style="padding: 0px; visibility: hidden">
 						<input type="date" id="trading_day">
 					</div>
 
-					<div class="col-sm" style="padding:0px">
-						<select class="col" id="symbol_selector" style="margin-right:0%;">
+					<div class="col-sm" style="padding: 0px">
+						<select class="col" id="symbol_selector" style="margin-right: 0%;">
 							<option value="BANKNIFTY">BANKNIFTY</option>
 							<option value="NIFTY">NIFTY</option>
 							<!-- option value="RELIANCE">RELIANCE</option>
@@ -58,7 +58,7 @@
 					<div class="col-sm divborder" id="pcr_signal">-</div>
 				</div>
 
-				<div class="row mt-4" id="indicators">
+				<!--div class="row mt-4" id="indicators">
 					<table class="table" id="indicators_table">
 						<thead class="thead-dark">
 							<tr>
@@ -71,8 +71,12 @@
 						<tbody>
 						</tbody>
 					</table>
-				</div>
+			   </div-->
 			</div>
+		</div>
+
+		<div class="row mt-3">
+			<canvas id="open_interest_bar_chart" height="100"></canvas>
 		</div>
 
 		<div class="row mt-3">
@@ -92,7 +96,7 @@
 				<canvas id="options_pe_price_time_series"></canvas>
 			</div>
 		</div>
-		
+
 		<div class="row mt-3 px-2">
 			<div class="col-sm" align="center">CALLS</div>
 			<div class="col-sm" align="center">PUTS</div>
@@ -125,10 +129,6 @@
 				<tbody>
 				</tbody>
 			</table>
-		</div>
-		
-		<div class="row mt-3">
-			<canvas id="open_interest_bar_chart" height="100"></canvas>
 		</div>
 
 	</div>
