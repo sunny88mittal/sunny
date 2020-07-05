@@ -2,8 +2,6 @@ package Data;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +10,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import Constants.FileConstants;
 import Constants.TradeConstants;
 import Entities.OptionsChain;
 import Entities.OptionsDataRow;
