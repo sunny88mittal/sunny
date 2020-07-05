@@ -72,38 +72,43 @@ public class OptionsChainDataProvider {
 		return optionChainsMap.get(instrument).get(optionChainsMap.get(instrument).size() - 1);
 	}
 
-	public void updateData() {
+	public synchronized void updateData() {
 		String dateFolder = getFolderName(LocalDateTime.now());
 
 		for (String instrument : instruments) {
 			String dirLocation = FileConstants.OPTIONS_FILE_BASE_PATH + "\\" + dateFolder + "\\" + instrument;
 			for (File file : IOHelper.getFilesInDir(dirLocation)) {
 				if (!filesAlreadyRead.contains(file.getAbsolutePath())) {
-					String fileContents = IOHelper.readFile(file.getAbsolutePath());
+					try {
+						String fileContents = IOHelper.readFile(file.getAbsolutePath());
 
-					long lastModifiedTime = file.lastModified();
+						long lastModifiedTime = file.lastModified();
 
-					OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
+						OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
 
-					List<OptionsChain> optionsChainList = optionChainsMap.get(instrument);
-					if (optionsChainList == null) {
-						optionsChainList = new ArrayList<OptionsChain>();
-						optionChainsMap.put(instrument, optionsChainList);
+						List<OptionsChain> optionsChainList = optionChainsMap.get(instrument);
+						if (optionsChainList == null) {
+							optionsChainList = new ArrayList<OptionsChain>();
+							optionChainsMap.put(instrument, optionsChainList);
+						}
+
+						optionsChainList.add(optionsChain);
+
+						// Interpret Options Chain
+						OptionsChainInterpreter.interpretOptionsChain(optionsChain);
+
+						// Update time series
+						updateTimeSeries(instrument, optionsChain);
+
+						// Update interpretations
+						updateInterpretations(instrument, optionsChain);
+
+					} catch (Exception ex) {
+						System.out.println(ex);
 					}
 
-					optionsChainList.add(optionsChain);
-
-					// Interpret Options Chain
-					OptionsChainInterpreter.interpretOptionsChain(optionsChain);
-
-					// Update time series
-					updateTimeSeries(instrument, optionsChain);
-
-					// Update interpretations
-					updateInterpretations(instrument, optionsChain);
+					filesAlreadyRead.add(file.getAbsolutePath());
 				}
-
-				filesAlreadyRead.add(file.getAbsolutePath());
 			}
 		}
 	}
