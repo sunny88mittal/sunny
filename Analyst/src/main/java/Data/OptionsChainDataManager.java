@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import Constants.NSEHolidays;
@@ -20,6 +21,9 @@ public class OptionsChainDataManager {
 
 	private static Map<String, OptionsChainDownloader> optionsDownloaderMap = new HashMap<String, OptionsChainDownloader>();
 
+	@Autowired
+	OptionsChainDataProvider optionsChainDataProvider;
+
 	static {
 		// Added indexes with weekly expiry
 		List<String> stocksList = new ArrayList<String>();
@@ -31,16 +35,19 @@ public class OptionsChainDataManager {
 		}
 	}
 
-	public static List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
-		return optionsDownloaderMap.get(symbol).getOptionschainInterpretations();
+	public List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
+		optionsChainDataProvider.updateData();
+		return optionsChainDataProvider.getOptionschainInterpretations(symbol);
 	}
 
-	public static OptionsChain getLatestOptionsChain(String symbol) throws IOException, InterruptedException {
-		return optionsDownloaderMap.get(symbol).getLatestOptionsChain();
+	public OptionsChain getLatestOptionsChain(String symbol) throws IOException, InterruptedException {
+		optionsChainDataProvider.updateData();
+		return optionsChainDataProvider.getLatestOptionsChain(symbol);
 	}
-	
-	public static List<OptionsChain> getOptionsChainTimeSeries(String symbol) {
-		return optionsDownloaderMap.get(symbol).getOptionsChainTimeSeries();
+
+	public List<OptionsChain> getOptionsChainTimeSeries(String symbol) {
+		optionsChainDataProvider.updateData();
+		return optionsChainDataProvider.getOptionsChainTimeSeries(symbol);
 	}
 
 	// @Scheduled(cron = "0 0 9 * * MON-FRI")
