@@ -7,6 +7,10 @@ public class OptionsDataRowMini {
 	public double strikePrice;
 
 	public double openInterest;
+	
+	public double openInterestChange;
 
 	public double LTP;
+	
+	public double netChange;
 }

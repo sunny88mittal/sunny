@@ -29,7 +29,9 @@ public class OptionsChainConvertor {
 				optionsDataRowMini.optionType = optionsDataRow.optionType;
 				optionsDataRowMini.strikePrice = optionsDataRow.strikePrice;
 				optionsDataRowMini.openInterest = optionsDataRow.openInterest;
+				optionsDataRowMini.openInterestChange = optionsDataRow.openInterestChange;
 				optionsDataRowMini.LTP = optionsDataRow.LTP;
+				optionsDataRowMini.netChange = optionsDataRow.netChange;
 				optionsChainMini.callOptions.add(optionsDataRowMini);
 			}
 
@@ -39,7 +41,9 @@ public class OptionsChainConvertor {
 				optionsDataRowMini.optionType = optionsDataRow.optionType;
 				optionsDataRowMini.strikePrice = optionsDataRow.strikePrice;
 				optionsDataRowMini.openInterest = optionsDataRow.openInterest;
+				optionsDataRowMini.openInterestChange = optionsDataRow.openInterestChange;
 				optionsDataRowMini.LTP = optionsDataRow.LTP;
+				optionsDataRowMini.netChange = optionsDataRow.netChange;
 				optionsChainMini.putOptions.add(optionsDataRowMini);
 			}
 
