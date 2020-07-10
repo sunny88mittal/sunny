@@ -63,8 +63,8 @@ public class PastDataDownloader {
 	}
 
 	private static void getPastData(int days, String urlFormat, String writeLocationBase) throws InterruptedException {
-		LocalDateTime date = LocalDateTime.now();
 		for (int i = 0; i < days; i++) {
+			LocalDateTime date = LocalDateTime.now();
 			date = date.minusDays(i);
 			if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
 				continue;
