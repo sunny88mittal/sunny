@@ -4,6 +4,7 @@ var optionsCEPriceTimeSeriesChart;
 var optionsPEOITimeSeriesChart;
 var optionsPEPriceTimeSeriesChart;
 var optionsChainBarChart;
+var optionsChainMiniData;
 
 var infiniteLoader = function() {
 	var date = new Date();
@@ -47,13 +48,17 @@ var updateData = function() {
 	});*/
 	
 	$.get(optionsChainDataURL, function(data, status) {
+		updateStrikeButtons(data);
 		updateOptionsChain(data);
 		updateOptionsChainBarChart(data);
 	});
+	
 	$.get(optionsChainInterpretationURL, function(data, status) {
 		updateOptionChainInterpretations(data);
 	});
+	
 	$.get(optionsChainTimeSeriesURL, function(data, status) {
+		optionsChainMiniData = data;
 		updateOptionTimeSeriesChart(data);
 	});
 }
@@ -147,6 +152,39 @@ var updateOptionsChain = function(data) {
 			$(OPTIONS_CHAIN_TABLE).find(TABLE_BODY).append(row);
 		}
 	}
+}
+
+/**
+ * Create the strikes buttons
+ * 
+ * @data options chain data
+ * 
+ */
+var updateStrikeButtons = function(data) {
+	if (data != undefined) {
+		$(STRIKE_BUTTONS).empty();
+		var spotPrice = data.price;
+		var range = (spotPrice * 5) / 100
+		for (var i = 0; i < data.callOptions.length; i++) {
+			var strikePrice = data.callOptions[i].strikePrice;
+			if (Math.abs(strikePrice - spotPrice) <= range) {
+				var link = '<div class="col-lg-2 text-center"><a href="#" onclick = updateStrikeCharts(\'' + strikePrice  +'\')>' 
+					+ strikePrice + '</a></div>';
+				$(STRIKE_BUTTONS).append(link);
+			}
+		}
+	}
+}
+
+/**
+ * Update the strike charts
+ * 
+ * @strike Strike Price
+ * @optionsChain Options Chain 
+ */
+var updateStrikeCharts = function(strike) {
+	console.log(strike);
+	console.log(optionsChainMiniData);
 }
 
 /**
