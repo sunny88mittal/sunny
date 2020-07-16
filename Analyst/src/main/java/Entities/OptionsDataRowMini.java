@@ -13,4 +13,6 @@ public class OptionsDataRowMini {
 	public double LTP;
 	
 	public double netChange;
+	
+	public double IV;
 }
