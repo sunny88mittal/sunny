@@ -1,4 +1,4 @@
-var getChart = function(ctx, chartType, datatsetsArray, labelsArray) {
+var getChart = function(ctx, chartType, datatsetsArray, labelsArray, chartTitle) {
 	var chart = new Chart(ctx, {
 		type : chartType,
 		data : {
@@ -6,6 +6,10 @@ var getChart = function(ctx, chartType, datatsetsArray, labelsArray) {
 			labels : labelsArray
 		},
 		options : {
+			title : {
+				display : true,
+				text : chartTitle
+			},
 			scales : {
 				yAxes : [ {
 					ticks : {
@@ -19,7 +23,7 @@ var getChart = function(ctx, chartType, datatsetsArray, labelsArray) {
 	return chart;
 }
 
-var getMultiAxisChart = function(ctx, datatsetsArray, labelsArray) {
+var getMultiAxisChart = function(ctx, datatsetsArray, labelsArray, chartTitle) {
 	var yaxis = getYAxis();
 
 	var chart = new Chart.Line(ctx, {
@@ -28,6 +32,10 @@ var getMultiAxisChart = function(ctx, datatsetsArray, labelsArray) {
 			labels : labelsArray
 		},
 		options : {
+			title : {
+				display : true,
+				text : chartTitle
+			},
 			scales : {
 				yAxes : yaxis
 			}

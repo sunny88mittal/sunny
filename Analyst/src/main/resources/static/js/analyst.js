@@ -53,10 +53,13 @@ var updateData = function() {
 		updateIndicators(data);
 	});*/
 	
+	var selectedStrike;
+	
 	$.get(optionsChainDataURL, function(data, status) {
 		updateStrikeButtons(data);
 		updateOptionsChain(data);
 		updateOptionsChainBarChart(data);
+		selectedStrike = data.price - (data.price % 100);
 	});
 	
 	$.get(optionsChainInterpretationURL, function(data, status) {
@@ -66,6 +69,7 @@ var updateData = function() {
 	$.get(optionsChainTimeSeriesURL, function(data, status) {
 		optionsChainMiniData = data;
 		updateOptionTimeSeriesChart(data);
+		updateStrikeCharts(selectedStrike);
 	});
 }
 
@@ -255,7 +259,7 @@ var updateStrikeCharts = function(strike) {
 		var datasets = [];
 		datasets.push(ceOpenInterestDs);
 		datasets.push(cePriceDs);
-		selectedStrikeCEOptionChart = getMultiAxisChart(ctx, datasets, time);
+		selectedStrikeCEOptionChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
 		
 		// Update the pe chart
@@ -268,7 +272,7 @@ var updateStrikeCharts = function(strike) {
 		datasets = [];
 		datasets.push(peOpenInterestDs);
 		datasets.push(pePriceDs);
-		selectedStrikePEOptionChart = getMultiAxisChart(ctx, datasets, time);
+		selectedStrikePEOptionChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
 		//Update the ce and pe relative oi chart
 		var ceOIDs = getDataset("CE OI Change", ceOpenInterestChange, CHART_TYPE_LINE, null, COLOUR_GREEN);
@@ -280,7 +284,7 @@ var updateStrikeCharts = function(strike) {
 		datasets = [];
 		datasets.push(ceOIDs);
 		datasets.push(peOIDs);
-		selectedStrikeOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time);
+		selectedStrikeOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, strike);
 		
 		//Update the pcr chart
 		var pcrDs =  getDataset("PCR", pcr, CHART_TYPE_LINE, null, COLOUR_BLACK);
@@ -290,7 +294,7 @@ var updateStrikeCharts = function(strike) {
 		}
 		datasets = [];
 		datasets.push(pcrDs);
-		selectedStrikePCRChart = getChart(ctx, CHART_TYPE_LINE, datasets, time);
+		selectedStrikePCRChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, strike);
 	}
 }
 
@@ -323,7 +327,7 @@ var updateOptionsChainBarChart = function(data) {
 		datasets.push(getDataset("Call OI", callOptionsData, CHART_TYPE_BAR, COLOUR_RED));
 		datasets.push(getDataset("Put OI", putOptionsData, CHART_TYPE_BAR, COLOUR_BLACK));
 		optionsChainBarChart = getChart(ctx, CHART_TYPE_BAR, datasets,
-				strikesList);
+				strikesList, "OI Bar Chart");
 	}
 }
 
