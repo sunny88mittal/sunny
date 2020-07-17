@@ -58,7 +58,7 @@ public class NewOptionsChainBuilder {
 			optionsDataRow.volume = nseOptionsData.totalTradedVolume;
 			optionsDataRow.IV = nseOptionsData.impliedVolatility;
 			optionsDataRow.LTP = nseOptionsData.lastPrice;
-			optionsDataRow.netChange = (int)nseOptionsData.pChange;
+			optionsDataRow.netChange = (int)nseOptionsData.change;
 			optionsDataRow.bidQty = nseOptionsData.bidQty;
 			optionsDataRow.bidPrice = nseOptionsData.bidprice;
 			optionsDataRow.askQty = nseOptionsData.askQty;
@@ -86,7 +86,7 @@ public class NewOptionsChainBuilder {
 			optionsDataRow.volume = nseOptionsData.totalTradedVolume;
 			optionsDataRow.IV = nseOptionsData.impliedVolatility;
 			optionsDataRow.LTP = nseOptionsData.lastPrice;
-			optionsDataRow.netChange = (int)nseOptionsData.pChange;
+			optionsDataRow.netChange = (int)nseOptionsData.change;
 			optionsDataRow.bidQty = nseOptionsData.bidQty;
 			optionsDataRow.bidPrice = nseOptionsData.bidprice;
 			optionsDataRow.askQty = nseOptionsData.askQty;
