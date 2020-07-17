@@ -379,7 +379,7 @@ var updateOptionChainInterpretations = function(data) {
 				COLOUR_BLACK));
 
 		// Create Chart
-		pcrChart = getChart(ctx, CHART_TYPE_BAR, datasets, time);
+		pcrChart = getChart(ctx, CHART_TYPE_BAR, datasets, time, "Total PCR");
 	}
 }
 
