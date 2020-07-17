@@ -58,10 +58,7 @@ public class NetworkHelper {
 	}
 
 	public static void main(String args[]) throws IOException {
-		String url = "http://www1.nseindia.com/live_market/dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-10006&symbol=NIFTY&symbol=NIFTY&instrument=OPTIDX&date=25JUN2020&segmentLink=17&symbolCount=2&segmentLink=17";
-
-		url = url.replace("SYMBOL", "NIFTY").replace("DATE", "25JUN2020");
-
+		String url = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY";
 		System.out.println(makeGetRequest(url));
 	}
 }

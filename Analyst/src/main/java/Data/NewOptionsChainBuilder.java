@@ -44,16 +44,21 @@ public class NewOptionsChainBuilder {
 		List<OptionsDataRow> ceOptionsList = new ArrayList<OptionsDataRow>();
 
 		for (NSEOptionsDataRow nseOptionsDataRow : nseOptionsChain.filtered.data) {
+			if (nseOptionsDataRow.CE == null || nseOptionsDataRow.PE == null) {
+				continue;
+			}
+
 			NSEOptionsData nseOptionsData = nseOptionsDataRow.CE;
+
 			OptionsDataRow optionsDataRow = new OptionsDataRow();
-			optionsDataRow.optionType = TradeConstants.CALL;
 			optionsDataRow.strikePrice = nseOptionsData.strikePrice;
+			optionsDataRow.optionType = TradeConstants.CALL;
 			optionsDataRow.openInterest = nseOptionsData.openInterest;
 			optionsDataRow.openInterestChange = nseOptionsData.changeinOpenInterest;
 			optionsDataRow.volume = nseOptionsData.totalTradedVolume;
 			optionsDataRow.IV = nseOptionsData.impliedVolatility;
 			optionsDataRow.LTP = nseOptionsData.lastPrice;
-			optionsDataRow.netChange = nseOptionsData.pChange;
+			optionsDataRow.netChange = (int)nseOptionsData.pChange;
 			optionsDataRow.bidQty = nseOptionsData.bidQty;
 			optionsDataRow.bidPrice = nseOptionsData.bidprice;
 			optionsDataRow.askQty = nseOptionsData.askQty;
@@ -68,16 +73,20 @@ public class NewOptionsChainBuilder {
 		List<OptionsDataRow> peOptionsList = new ArrayList<OptionsDataRow>();
 
 		for (NSEOptionsDataRow nseOptionsDataRow : nseOptionsChain.filtered.data) {
+			if (nseOptionsDataRow.CE == null || nseOptionsDataRow.PE == null) {
+				continue;
+			}
 			NSEOptionsData nseOptionsData = nseOptionsDataRow.PE;
+
 			OptionsDataRow optionsDataRow = new OptionsDataRow();
-			optionsDataRow.optionType = TradeConstants.PUT;
 			optionsDataRow.strikePrice = nseOptionsData.strikePrice;
+			optionsDataRow.optionType = TradeConstants.PUT;
 			optionsDataRow.openInterest = nseOptionsData.openInterest;
 			optionsDataRow.openInterestChange = nseOptionsData.changeinOpenInterest;
 			optionsDataRow.volume = nseOptionsData.totalTradedVolume;
 			optionsDataRow.IV = nseOptionsData.impliedVolatility;
 			optionsDataRow.LTP = nseOptionsData.lastPrice;
-			optionsDataRow.netChange = nseOptionsData.pChange;
+			optionsDataRow.netChange = (int)nseOptionsData.pChange;
 			optionsDataRow.bidQty = nseOptionsData.bidQty;
 			optionsDataRow.bidPrice = nseOptionsData.bidprice;
 			optionsDataRow.askQty = nseOptionsData.askQty;
