@@ -23,3 +23,6 @@ var INTERPRETATION_SHORT_UNWINDING = "Short Unwinding";
 
 var CHART_TYPE_LINE = 'line';
 var CHART_TYPE_BAR = 'bar';
+
+var YAXIS1 = "yaxis1";
+var YAXIS2 = "yaxis2";

@@ -1,10 +1,16 @@
+var optionsChainBarChart;
+var optionsChainMiniData;
+
 var pcrChart;
 var optionsCEOITimeSeriesChart;
 var optionsCEPriceTimeSeriesChart;
 var optionsPEOITimeSeriesChart;
 var optionsPEPriceTimeSeriesChart;
-var optionsChainBarChart;
-var optionsChainMiniData;
+
+var selectedStrikeCEOptionChart;
+var selectedStrikePEOptionChart;
+var selectedStrikePCRChart;
+var selectedStrikeIVChart;
 
 var infiniteLoader = function() {
 	var date = new Date();
@@ -183,8 +189,107 @@ var updateStrikeButtons = function(data) {
  * @optionsChain Options Chain 
  */
 var updateStrikeCharts = function(strike) {
-	console.log(strike);
-	console.log(optionsChainMiniData);
+	if (optionsChainMiniData != undefined && optionsChainMiniData.length > 0) {
+		var length = optionsChainMiniData.length;
+		
+		// Variables to hold data points
+		var time = [];
+		
+		var ceOpenInterest = [];
+		var cePrice = [];
+		var ceIV = [];
+		
+		var peOpenInterest = [];
+		var pePrice = [];
+		var peIV = [];
+		
+		var pcr = [];
+		
+		// Prepare time data for the charts
+		for (var i = 0; i < length; i++) {
+			time.push(optionsChainMiniData[i].time.split(".")[0]);
+		}
+		
+		//Prepare data for the charts
+		for (var i = 0; i < length; i++) {
+			var datai = optionsChainMiniData[i];
+			
+			var callOptions = datai.callOptions;	
+			for (var j = 0; j < callOptions.length; j++) {
+				var callOption = callOptions[j];
+				var strikePrice = callOption.strikePrice;
+				if (strikePrice == strike) {
+					ceOpenInterest.push(callOption.openInterest);
+					cePrice.push(callOption.LTP);
+					ceIV.push(callOption.IV);
+				}
+			}
+			
+			var putOptions = datai.putOptions;	
+			for (var j = 0; j < putOptions.length; j++) {
+				var putOption = putOptions[j];
+				var strikePrice = putOption.strikePrice;
+				if (strikePrice == strike) {
+					peOpenInterest.push(putOption.openInterest);
+					pePrice.push(putOption.LTP);
+					peIV.push(putOption.IV);
+				}
+			}
+		}
+		
+		for (var i=0; i<length; i++) {
+			pcr.push(peOpenInterest[i] / peOpenInterest[i]);
+		}
+		
+		// Update the ce chart
+		var ceOpenInterestDs = getMultiAxisDataset('CE OI', ceOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_RED);
+		var cePriceDs = getMultiAxisDataset('CE Price', cePrice, CHART_TYPE_LINE, YAXIS2, null, COLOUR_BLACK);
+		ctx = $(SELECTED_STRIKE_CE_OPTION_CHART);
+		if (selectedStrikeCEOptionChart) {
+			selectedStrikeCEOptionChart.destroy();
+		}
+		var datasets = [];
+		datasets.push(ceOpenInterestDs);
+		datasets.push(cePriceDs);
+		selectedStrikeCEOptionChart = getMultiAxisChart(ctx, datasets, time);
+		
+		
+		// Update the pe chart
+		var peOpenInterestDs = getMultiAxisDataset('PE OI', peOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_RED);
+		var pePriceDs = getMultiAxisDataset('PE Price', pePrice, CHART_TYPE_LINE, YAXIS2, null, COLOUR_BLACK);
+		ctx = $(SELECTED_STRIKE_PE_OPTION_CHART);
+		if (selectedStrikePEOptionChart) {
+			selectedStrikePEOptionChart.destroy();
+		}
+		datasets = [];
+		datasets.push(peOpenInterestDs);
+		datasets.push(pePriceDs);
+		selectedStrikePEOptionChart = getMultiAxisChart(ctx, datasets, time);
+		
+		//Update the ce and pe relative oi chart
+		var ceOIDs = getDataset("CE OI", ceOpenInterest, CHART_TYPE_LINE, null, COLOUR_GREEN);
+		var peOIDs = getDataset("PE OI", peOpenInterest, CHART_TYPE_LINE, null, COLOUR_RED);
+		ctx = $(SELECTED_STRIKE_PCR_CHART);
+		if (selectedStrikePCRChart) {
+			selectedStrikePCRChart.destroy();
+		}
+		datasets = [];
+		datasets.push(ceOIDs);
+		datasets.push(peOIDs);
+		selectedStrikePCRChart = getChart(ctx, CHART_TYPE_LINE, datasets, time);
+		
+		//Update the ce and pe relative iv chart
+		var ceIVDs = getDataset("CE IV", ceIV, CHART_TYPE_LINE, null, COLOUR_GREEN);
+		var peIVDs = getDataset("PE IV", peIV, CHART_TYPE_LINE, null, COLOUR_RED);
+		ctx = $(SELECTED_STRIKE_IV_CHART);
+		if (selectedStrikeIVChart) {
+			selectedStrikeIVChart.destroy();
+		}
+		datasets = [];
+		datasets.push(ceIVDs);
+		datasets.push(peIVDs);
+		selectedStrikeIVChart = getChart(ctx, CHART_TYPE_LINE, datasets, time);
+	}
 }
 
 /**
