@@ -19,5 +19,5 @@ var TRADING_DAY = "#trading_day";
 var STRIKE_BUTTONS = "#strike_options";
 var SELECTED_STRIKE_CE_OPTION_CHART= "#selected_strike_ce_option_details";
 var SELECTED_STRIKE_PE_OPTION_CHART= "#selected_strike_pe_option_details";
+var SELECTED_STRIKE_OI_CHANGE_CHART= "#selected_strike_oichange_details";
 var SELECTED_STRIKE_PCR_CHART= "#selected_strike_pcr_details";
-var SELECTED_STRIKE_IV_CHART= "#selected_strike_iv_details";

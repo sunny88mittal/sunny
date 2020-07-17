@@ -9,8 +9,8 @@ var optionsPEPriceTimeSeriesChart;
 
 var selectedStrikeCEOptionChart;
 var selectedStrikePEOptionChart;
+var selectedStrikeOIChangeChart;
 var selectedStrikePCRChart;
-var selectedStrikeIVChart;
 
 var infiniteLoader = function() {
 	var date = new Date();
@@ -196,10 +196,12 @@ var updateStrikeCharts = function(strike) {
 		var time = [];
 		
 		var ceOpenInterest = [];
+		var ceOpenInterestChange = [];
 		var cePrice = [];
 		var ceIV = [];
 		
 		var peOpenInterest = [];
+		var peOpenInterestChange = [];
 		var pePrice = [];
 		var peIV = [];
 		
@@ -220,6 +222,7 @@ var updateStrikeCharts = function(strike) {
 				var strikePrice = callOption.strikePrice;
 				if (strikePrice == strike) {
 					ceOpenInterest.push(callOption.openInterest);
+					ceOpenInterestChange.push(callOption.openInterestChange);
 					cePrice.push(callOption.LTP);
 					ceIV.push(callOption.IV);
 				}
@@ -231,6 +234,7 @@ var updateStrikeCharts = function(strike) {
 				var strikePrice = putOption.strikePrice;
 				if (strikePrice == strike) {
 					peOpenInterest.push(putOption.openInterest);
+					peOpenInterestChange.push(putOption.openInterestChange);
 					pePrice.push(putOption.LTP);
 					peIV.push(putOption.IV);
 				}
@@ -238,7 +242,7 @@ var updateStrikeCharts = function(strike) {
 		}
 		
 		for (var i=0; i<length; i++) {
-			pcr.push(peOpenInterest[i] / peOpenInterest[i]);
+			pcr.push(peOpenInterest[i] / ceOpenInterest[i]);
 		}
 		
 		// Update the ce chart
@@ -267,28 +271,26 @@ var updateStrikeCharts = function(strike) {
 		selectedStrikePEOptionChart = getMultiAxisChart(ctx, datasets, time);
 		
 		//Update the ce and pe relative oi chart
-		var ceOIDs = getDataset("CE OI", ceOpenInterest, CHART_TYPE_LINE, null, COLOUR_GREEN);
-		var peOIDs = getDataset("PE OI", peOpenInterest, CHART_TYPE_LINE, null, COLOUR_RED);
+		var ceOIDs = getDataset("CE OI Change", ceOpenInterestChange, CHART_TYPE_LINE, null, COLOUR_GREEN);
+		var peOIDs = getDataset("PE OI Change", peOpenInterestChange, CHART_TYPE_LINE, null, COLOUR_RED);
+		ctx = $(SELECTED_STRIKE_OI_CHANGE_CHART);
+		if (selectedStrikeOIChangeChart) {
+			selectedStrikeOIChangeChart.destroy();
+		}
+		datasets = [];
+		datasets.push(ceOIDs);
+		datasets.push(peOIDs);
+		selectedStrikeOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time);
+		
+		//Update the pcr chart
+		var pcrDs =  getDataset("PCR", pcr, CHART_TYPE_LINE, null, COLOUR_BLACK);
 		ctx = $(SELECTED_STRIKE_PCR_CHART);
 		if (selectedStrikePCRChart) {
 			selectedStrikePCRChart.destroy();
 		}
 		datasets = [];
-		datasets.push(ceOIDs);
-		datasets.push(peOIDs);
+		datasets.push(pcrDs);
 		selectedStrikePCRChart = getChart(ctx, CHART_TYPE_LINE, datasets, time);
-		
-		//Update the ce and pe relative iv chart
-		var ceIVDs = getDataset("CE IV", ceIV, CHART_TYPE_LINE, null, COLOUR_GREEN);
-		var peIVDs = getDataset("PE IV", peIV, CHART_TYPE_LINE, null, COLOUR_RED);
-		ctx = $(SELECTED_STRIKE_IV_CHART);
-		if (selectedStrikeIVChart) {
-			selectedStrikeIVChart.destroy();
-		}
-		datasets = [];
-		datasets.push(ceIVDs);
-		datasets.push(peIVDs);
-		selectedStrikeIVChart = getChart(ctx, CHART_TYPE_LINE, datasets, time);
 	}
 }
 
