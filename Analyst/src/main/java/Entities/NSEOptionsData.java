@@ -2,7 +2,7 @@ package Entities;
 
 public class NSEOptionsData {
 
-	public String strikePrice;
+	public double strikePrice;
 	
 	public String expiryDate;
 	
