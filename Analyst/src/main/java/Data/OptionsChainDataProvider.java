@@ -84,7 +84,7 @@ public class OptionsChainDataProvider {
 
 						long lastModifiedTime = file.lastModified();
 
-						OptionsChain optionsChain = OptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
+						OptionsChain optionsChain = NewOptionsChainBuilder.getOptionsChain(fileContents, lastModifiedTime);
 
 						List<OptionsChain> optionsChainList = optionChainsMap.get(instrument);
 						if (optionsChainList == null) {
