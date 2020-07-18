@@ -50,8 +50,9 @@ public class GapAnalyzer {
 			String symbol = tokens[0];
 			String series = tokens[1];
 			double open = Double.parseDouble(tokens[2]);
+			double close = Double.parseDouble(tokens[5]);
 			double previousClose = Double.parseDouble(tokens[7]);
-			if (series.equals("EQ") && (previousClose - open) * 100 / open > threshold) {
+			if (series.equals("EQ") && open > close && (previousClose - open) * 100 / open > threshold) {
 				gapUps.add(symbol);
 			}
 		}
@@ -68,8 +69,9 @@ public class GapAnalyzer {
 			String symbol = tokens[0];
 			String series = tokens[1];
 			double open = Double.parseDouble(tokens[2]);
+			double close = Double.parseDouble(tokens[5]);
 			double previousClose = Double.parseDouble(tokens[7]);
-			if (series.equals("EQ") && (open - previousClose) * 100 / previousClose > threshold) {
+			if (series.equals("EQ") && close > open && (open - previousClose) * 100 / previousClose > threshold) {
 				gapUps.add(symbol);
 			}
 		}
@@ -91,7 +93,16 @@ public class GapAnalyzer {
 	}
 
 	public static void main(String args[]) throws FileNotFoundException {
-		List<String> stockWithGaps = checkGapStocks(LocalDate.now().minusDays(1), 2);
-		System.out.println(stockWithGaps);
+		for (int i = 0; i < 120; i++) {
+			try {
+				System.out.println("Checking for :" + LocalDate.now().minusDays(i));
+				List<String> stockWithGaps = checkGapStocks(LocalDate.now().minusDays(i), 1.5);
+				System.out.println(stockWithGaps);
+				System.out.println();
+			} catch (Exception ex) {
+				// Nothing
+			}
+		}
+
 	}
 }
