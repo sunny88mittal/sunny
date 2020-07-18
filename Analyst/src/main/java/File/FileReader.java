@@ -46,13 +46,13 @@ public class FileReader {
 				.replaceAll("YEAR", "" + yearValue).replaceAll("MONTH", month);
 		String fileLocation = FileConstants.FNO_BASE_PATH + fileName;
 
-		List<String> fnoData = getFNOData(fileLocation);
+		List<String> fnoData = getCSVData(fileLocation);
 		fnoCache.put(date, fnoData);
 
 		return fnoData;
 	}
 
-	private static List<String> getFNOData(String fileLocation) throws FileNotFoundException {
+	public static List<String> getCSVData(String fileLocation) throws FileNotFoundException {
 		List<String> fnoData = new ArrayList<String>();
 		Scanner scanner = new Scanner(new File(fileLocation));
 		while (scanner.hasNextLine()) {
@@ -74,6 +74,6 @@ public class FileReader {
 		 * System.out.println(series.getBarCount());
 		 */
 
-		getFNOData("C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\FnoData\\fo16AUG2019bhav.csv");
+		getCSVData("C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\FnoData\\fo16AUG2019bhav.csv");
 	}
 }
