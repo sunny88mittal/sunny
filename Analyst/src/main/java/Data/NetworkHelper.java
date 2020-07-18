@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.net.ssl.HttpsURLConnection;
 
 public class NetworkHelper {
 
