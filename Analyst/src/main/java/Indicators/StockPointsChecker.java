@@ -54,6 +54,9 @@ public class StockPointsChecker {
 		List<StockPoint> stockPointsList = new ArrayList<StockPoint>();
 		List<String> stockPointsData = FileReader.getCSVData(FileConstants.STOCKS_POINTS_FILE);
 		for (int i = 1; i < stockPointsData.size(); i++) {
+			if (stockPointsData.get(i).equals("")) {
+				continue;
+			}
 			String tokens[] = stockPointsData.get(i).split(",");
 			StockPoint stockPointObj = new StockPoint();
 			stockPointObj.stock = tokens[0];
