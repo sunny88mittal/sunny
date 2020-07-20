@@ -65,7 +65,7 @@ public class StockPointsChecker {
 	}
 
 	public static void main(String args[]) throws FileNotFoundException {
-		for (int i=0; i< 120; i++) {
+		/*for (int i=0; i< 120; i++) {
 			try {
 				System.out.println("Checking for :" + LocalDate.now().minusDays(i).toString());
 				List<StockPoint> stockPointsList = getMatchingStockPoints(LocalDate.now().minusDays(i), 5);
@@ -76,6 +76,10 @@ public class StockPointsChecker {
 			} catch (Exception ex) {
 				
 			}
+		}*/
+		List<StockPoint> stockPointsList = getMatchingStockPoints(LocalDate.now().minusDays(3), 5);
+		for (StockPoint stockPoint : stockPointsList) {
+			System.out.println(stockPoint);
 		}
 	}
 }
