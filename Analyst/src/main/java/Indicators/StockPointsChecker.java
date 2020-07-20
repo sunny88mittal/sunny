@@ -23,12 +23,12 @@ public class StockPointsChecker {
 			String stockDataEntry = stockData.get(i);
 			String tokens[] = stockDataEntry.split(",");
 			String symbol = tokens[0];
-			double price = Double.parseDouble(tokens[4]);
+			double closePrice = Double.parseDouble(tokens[5]);
 
 			for (StockPoint stockPoint : stockPoints) {
 				String stockName = stockPoint.stock;
 				double value = stockPoint.value;
-				if (stockName.equals(symbol) && Math.abs((price - value) * 100 / value) < percentage) {
+				if (stockName.equals(symbol) && Math.abs((closePrice - value) * 100 / value) < percentage) {
 					stockPointsList.add(stockPoint);
 				}
 			}
@@ -80,7 +80,7 @@ public class StockPointsChecker {
 				
 			}
 		}*/
-		List<StockPoint> stockPointsList = getMatchingStockPoints(LocalDate.now().minusDays(3), 5);
+		List<StockPoint> stockPointsList = getMatchingStockPoints(LocalDate.now().minusDays(0), 5);
 		for (StockPoint stockPoint : stockPointsList) {
 			System.out.println(stockPoint);
 		}
