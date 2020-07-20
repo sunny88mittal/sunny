@@ -93,7 +93,7 @@ public class GapAnalyzer {
 	}
 
 	public static void main(String args[]) throws FileNotFoundException {
-		for (int i = 0; i < 120; i++) {
+		for (int i = 0; i < 1; i++) {
 			try {
 				System.out.println("Checking for :" + LocalDate.now().minusDays(i));
 				List<String> stockWithGaps = checkGapStocks(LocalDate.now().minusDays(i), 1.5);
