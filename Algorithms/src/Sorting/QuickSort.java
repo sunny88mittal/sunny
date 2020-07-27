@@ -17,6 +17,19 @@ public class QuickSort {
 		quickSort(arr, 0, arr.length - 1);
 		System.out.println(Arrays.toString(arr));
 	}
+	
+	private static void quickSort(int[] arr, int low, int high) {
+		if (low < high) {
+			// Get last element to correct position
+			int partitionIndex = partition(arr, low, high);
+
+			// Sort left half
+			quickSort(arr, low, partitionIndex - 1);
+
+			// Sort right half
+			quickSort(arr, partitionIndex + 1, high);
+		}
+	}
 
 	private static int partition(int[] arr, int low, int high) {
 		// Move all elements smaller to pivot to the left
@@ -39,18 +52,5 @@ public class QuickSort {
 		arr[high] = temp;
 
 		return i + 1;
-	}
-
-	private static void quickSort(int[] arr, int low, int high) {
-		if (low < high) {
-			// Get last element to correct position
-			int partitionIndex = partition(arr, low, high);
-
-			// Sort left half
-			quickSort(arr, low, partitionIndex - 1);
-
-			// Sort right half
-			quickSort(arr, partitionIndex + 1, high);
-		}
 	}
 }
