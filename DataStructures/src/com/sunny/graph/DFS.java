@@ -39,6 +39,7 @@ public class DFS {
         state[2] = 1;
         while (true) {
             int element = stack.get(0);
+            System.out.println(element);
             List<Integer> adj = graph.get(element -1);
             boolean found = false; 
             for (int a: adj) {
@@ -54,7 +55,6 @@ public class DFS {
                break;     
             }
         }
-        System.out.println(stack);
     }
     
     public static List<List<Integer>> getGraph() {
