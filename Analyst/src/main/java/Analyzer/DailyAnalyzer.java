@@ -21,6 +21,7 @@ import Constants.CandleStickInterval;
 import Constants.FileConstants;
 import Constants.NSEHolidays;
 import Constants.StockSymbols;
+import DataProvider.FNODataProvider;
 import DataUtil.DataUtil;
 import Entities.DailyAnalysis;
 import Entities.ExcelSheet;
@@ -44,35 +45,26 @@ public class DailyAnalyzer {
 
 	@Scheduled(cron = "0 0 21 * * MON-FRI")
 	public static void runanalyzer() throws Exception {
-		if (NSEHolidays.isHoliday( LocalDateTime.now())) {
+		if (NSEHolidays.isHoliday(LocalDateTime.now())) {
 			return;
 		}
-		
+
 		System.out.println("Started at : " + LocalDateTime.now());
 
 		updateData();
-		/*analyze(LocalDate.now());
-		ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(20);
-		for (final StockSymbols stockSymbol : StockSymbols.getAllStocksList()) {
-			Thread th = new Thread() {
-				public void run() {
-					try {
-						analyzeStock(stockSymbol, 90);
-					} catch (IllegalArgumentException | IllegalAccessException | IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			};
-			executor.execute(th);
-		}
-
-		while (executor.getActiveCount() > 0) {
-			Thread.sleep(1000 * 30);
-		}
-		executor.shutdown();
-		// doPastAnalysis(90);
-		System.out.println("Ended at : " + LocalDateTime.now());*/
+		/*
+		 * analyze(LocalDate.now()); ThreadPoolExecutor executor = (ThreadPoolExecutor)
+		 * Executors.newFixedThreadPool(20); for (final StockSymbols stockSymbol :
+		 * StockSymbols.getAllStocksList()) { Thread th = new Thread() { public void
+		 * run() { try { analyzeStock(stockSymbol, 90); } catch
+		 * (IllegalArgumentException | IllegalAccessException | IOException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); } } }; executor.execute(th);
+		 * }
+		 * 
+		 * while (executor.getActiveCount() > 0) { Thread.sleep(1000 * 30); }
+		 * executor.shutdown(); // doPastAnalysis(90); System.out.println("Ended at : "
+		 * + LocalDateTime.now());
+		 */
 	}
 
 	private static void doPastAnalysis(int days) throws InterruptedException {
@@ -99,7 +91,7 @@ public class DailyAnalyzer {
 
 	private static void updateData() throws IOException {
 		// Update all data
-		//PastDataDownloader.updateFNOData();
+		// PastDataDownloader.updateFNOData();
 	}
 
 	private static void analyzeStock(StockSymbols stockSymbol, int days)
@@ -232,7 +224,7 @@ public class DailyAnalyzer {
 		String psarSignal = psarValue >= closePrice ? "SELL" : "BUY";
 		String macdSignal = macdValue < 0 ? "SELL" : "BUY";
 
-		List<FNOData> fnoData = DataUtil.getFNOData(FileReader.getFNOData(date));
+		List<FNOData> fnoData = FNODataProvider.getFNOData(date);
 		fnoData = FNOHelper.removeExpiredEnteries(fnoData, date);
 
 		dailyAnalysis.stock = stockSymbol.name;

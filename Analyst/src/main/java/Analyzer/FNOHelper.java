@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Constants.StockSymbols;
+import DataProvider.FNODataProvider;
 import DataUtil.DataUtil;
 import Entities.FNOData;
 import File.FileReader;
@@ -126,8 +127,7 @@ public class FNOHelper {
 	public static void main(String args[]) throws FileNotFoundException {
 		String stockSymbol = StockSymbols.BANKNIFTY.name;
 		LocalDate date = LocalDate.of(2019, 8, 26);
-		List<String> rawData = FileReader.getFNOData(date);
-		List<FNOData> fnoData = DataUtil.getFNOData(rawData);
+		List<FNOData> fnoData = FNODataProvider.getFNOData(date);
 		System.out.println(getMaxPain(removeExpiredEnteries(fnoData, date), stockSymbol));
 		System.out.println(getPCR(removeExpiredEnteries(fnoData, date), stockSymbol));
 	}
