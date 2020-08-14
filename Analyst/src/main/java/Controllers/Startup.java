@@ -15,7 +15,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableScheduling
-@ComponentScan({ "Data", "Controllers", "Analyzer" })
+@ComponentScan({ "OptionsData", "Controllers", "Analyzer" })
 public class Startup implements SchedulingConfigurer {
 
 	public static void main(String[] args) throws Exception {
