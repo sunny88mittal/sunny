@@ -1,4 +1,4 @@
-package Data;
+package OptionsData;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 
 import Constants.NSEHolidays;
 import Constants.StockSymbols;
-import Data.OptionsChainDownloader.EXPIRY;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
+import OptionsData.OptionsChainDownloader.EXPIRY;
 
 @Component
 public class OptionsChainDataManager {

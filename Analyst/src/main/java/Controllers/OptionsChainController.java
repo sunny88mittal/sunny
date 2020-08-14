@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import Data.OptionsChainDataManager;
 import DataUtil.OptionsChainConvertor;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
 import Entities.OptionsChainMini;
+import OptionsData.OptionsChainDataManager;
 
 @RestController
 @RequestMapping("/optionschain")
