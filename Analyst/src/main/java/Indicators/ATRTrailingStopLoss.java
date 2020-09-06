@@ -49,7 +49,7 @@ public class ATRTrailingStopLoss extends CachedIndicator<Num> {
 				}
 			} else {
 				if (atrTSL.isLessThan(curClose)) {
-					if (curClose.isGreaterThan(invertedAt)) { // up trend starts or continues
+					if (curClose.isGreaterThan(invertedAt)) { // Up trend starts or continues
 						invertedAt = curClose;
 						atrTSL = curClose.minus(atrWithMultiplier);
 					}
