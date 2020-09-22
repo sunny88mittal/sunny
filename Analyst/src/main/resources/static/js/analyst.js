@@ -106,7 +106,7 @@ var updateOptionsChain = function(data) {
 		var maxPain = data.maxPainAt;
 
 		// Range for indexes 2.5%, for stocks 6%
-		var range = (spotPrice * 2.5) / 100;
+		var range = (spotPrice * 6) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
 			range = (spotPrice * 6) / 100;
 		}
@@ -174,7 +174,7 @@ var updateStrikeButtons = function(data) {
 	if (data != undefined) {
 		$(STRIKE_BUTTONS).empty();
 		var spotPrice = data.price;
-		var range = (spotPrice * 5) / 100
+		var range = (spotPrice * 10) / 100
 		for (var i = 0; i < data.callOptions.length; i++) {
 			var strikePrice = data.callOptions[i].strikePrice;
 			if (Math.abs(strikePrice - spotPrice) <= range) {
