@@ -23,4 +23,9 @@ public class FNODataProvider {
 		List<String> rawData = FileReader.getFNOData(date);
 		return DataUtil.convertToFNOData(rawData);
 	}
+	
+	public static void main (String args[]) throws FileNotFoundException {
+		List<FNOData> fnoData = getFNOData("OPTIDX", "BANKNIFTY", LocalDate.now().minusDays(2));
+		System.out.println(fnoData.size());
+	}
 }
