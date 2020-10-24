@@ -1,4 +1,4 @@
-package HedgedStrategy;
+package StrategyAnalyzer;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
