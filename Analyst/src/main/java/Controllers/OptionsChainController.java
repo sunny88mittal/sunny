@@ -22,6 +22,11 @@ public class OptionsChainController {
 	@Autowired
 	private OptionsChainDataManager optionsChainDataManager;
 
+	@GetMapping("/get/availableDates")
+	public List<String> getAvailableDates() throws IOException, InterruptedException {
+		return optionsChainDataManager.getAvailableDates(20);
+	}
+	
 	@GetMapping("/get/data")
 	public OptionsChain getOptionsChainData(@RequestParam String symbol) throws IOException, InterruptedException {
 		return optionsChainDataManager.getLatestOptionsChain(symbol);

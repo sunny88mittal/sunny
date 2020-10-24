@@ -1,38 +1,54 @@
 package OptionsData;
 
+import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import Constants.NSEHolidays;
-import Constants.StockSymbols;
+import Constants.FileConstants;
 import Entities.OptionsChain;
 import Entities.OptionsChainInterpretation;
-import OptionsData.OptionsChainDownloader.EXPIRY;
 
 @Component
 public class OptionsChainDataManager {
 
-	private static Map<String, OptionsChainDownloader> optionsDownloaderMap = new HashMap<String, OptionsChainDownloader>();
-
 	@Autowired
 	OptionsChainDataProvider optionsChainDataProvider;
 
-	static {
-		// Added indexes with weekly expiry
-		List<String> stocksList = new ArrayList<String>();
-		stocksList.add(StockSymbols.BANKNIFTY.name);
-		stocksList.add(StockSymbols.NIFTY.name);
-		for (String stock : stocksList) {
-			OptionsChainDownloader optionsChainDownloader = new OptionsChainDownloader(stock, EXPIRY.WEEKLY);
-			optionsDownloaderMap.put(stock, optionsChainDownloader);
+	public List<String> getAvailableDates(int noOfDays) {
+		String dirLocation = FileConstants.OPTIONS_FILE_BASE_PATH;
+		File file = new File(dirLocation);
+		List<String> availableDates = Arrays.asList(file.list());
+		int size = availableDates.size();
+
+		// Convert it to locat dates and sort
+		List<LocalDate> localDates = new ArrayList<LocalDate>();
+		for (String dateString : availableDates) {
+			String tokens[] = dateString.split("-");
+			int date = Integer.parseInt(tokens[0]);
+			int month = Integer.parseInt(tokens[1]);
+			int year = Integer.parseInt(tokens[2]);
+			LocalDate localDate = LocalDate.of(year, month, date);
+			localDates.add(localDate);
 		}
+		Collections.sort(localDates);
+
+		// Get last n days
+		localDates = localDates.subList(size - noOfDays, size);
+		List<String> dates = new ArrayList<String>();
+		for (LocalDate localDate : localDates) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+			dates.add(localDate.format(formatter));
+		}
+
+		return dates;
 	}
 
 	public List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
@@ -48,41 +64,5 @@ public class OptionsChainDataManager {
 	public List<OptionsChain> getOptionsChainTimeSeries(String symbol) {
 		optionsChainDataProvider.updateData();
 		return optionsChainDataProvider.getOptionsChainTimeSeries(symbol);
-	}
-
-	// @Scheduled(cron = "0 0 9 * * MON-FRI")
-	public static void updateOptionsURLs() {
-		for (OptionsChainDownloader optionsChainDownloader : optionsDownloaderMap.values()) {
-			optionsChainDownloader.updateOptionsURLs();
-		}
-	}
-
-	// @Scheduled(cron = "0 0 9 * * MON-FRI")
-	public static void loadPreviousDataFromDisk() {
-		LocalDateTime now = LocalDateTime.now();
-		if (!NSEHolidays.isHoliday(now)) {
-			for (OptionsChainDownloader optionsChainDownloader : optionsDownloaderMap.values()) {
-				optionsChainDownloader.loadPreviousDataFromDisk();
-			}
-		}
-	}
-
-	// @Scheduled(cron = "0 */3 9-15 * * MON-FRI")
-	public static void updateOptionsData() throws IOException, InterruptedException {
-		// Constants to keep track of time and day
-		LocalDateTime nineFourteenAM = LocalDateTime.now().withHour(9).withMinute(14);
-		LocalDateTime threeThirtyTwoPM = LocalDateTime.now().withHour(15).withMinute(34);
-		LocalDateTime now = LocalDateTime.now();
-
-		// Getting latest options chain
-		if (now.isAfter(nineFourteenAM) && now.isBefore(threeThirtyTwoPM) && !NSEHolidays.isHoliday(now)) {
-			for (OptionsChainDownloader optionsChainDownloader : optionsDownloaderMap.values()) {
-				optionsChainDownloader.updateOptionsData();
-			}
-		}
-	}
-
-	public static void main(String args[]) throws IOException, InterruptedException {
-		updateOptionsData();
 	}
 }
