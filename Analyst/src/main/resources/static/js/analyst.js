@@ -106,9 +106,9 @@ var updateOptionsChain = function(data) {
 		var maxPain = data.maxPainAt;
 
 		// Range for indexes 2.5%, for stocks 6%
-		var range = (spotPrice * 6) / 100;
+		var range = (spotPrice * 3) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
-			range = (spotPrice * 6) / 100;
+			range = (spotPrice * 3) / 100;
 		}
 
 		$(SYMBOL).text(symbol);
