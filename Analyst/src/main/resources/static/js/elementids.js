@@ -8,6 +8,7 @@ var PCR_CHART = "#pcr_chart";
 var OPTIONS_CHAIN_TABLE = "#optionschain_table";
 var OPTIONS_CHAIN_TABLE_HEADER = "#optionschain_table_header";
 var INDICATORS_TABLE = "#indicators_table";
+var DATE_SELECTOR = "#date_selector";
 var SYMBOL_SELECTOR = "#symbol_selector";
 var MAXPAIN_VALUE = "#maxpain_value";
 var OPTIONS_CE_INTEREST_TIME_SERIES_CHART = "#options_ce_interest_time_series";

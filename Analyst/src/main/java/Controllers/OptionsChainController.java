@@ -26,21 +26,22 @@ public class OptionsChainController {
 	public List<String> getAvailableDates() throws IOException, InterruptedException {
 		return optionsChainDataManager.getAvailableDates(20);
 	}
-	
+
 	@GetMapping("/get/data")
-	public OptionsChain getOptionsChainData(@RequestParam String symbol) throws IOException, InterruptedException {
-		return optionsChainDataManager.getLatestOptionsChain(symbol);
+	public OptionsChain getOptionsChainData(@RequestParam String symbol, @RequestParam String date)
+			throws IOException, InterruptedException {
+		return optionsChainDataManager.getLatestOptionsChain(symbol, date);
 	}
 
 	@GetMapping("/get/interpretations")
-	public List<OptionsChainInterpretation> getOptionsChainInterpretations(@RequestParam String symbol)
-			throws IOException, InterruptedException {
-		return optionsChainDataManager.getOptionschainInterpretations(symbol);
+	public List<OptionsChainInterpretation> getOptionsChainInterpretations(@RequestParam String symbol,
+			@RequestParam String date) throws IOException, InterruptedException {
+		return optionsChainDataManager.getOptionschainInterpretations(symbol, date);
 	}
 
 	@GetMapping("/get/timeseries")
-	public List<OptionsChainMini> getOptionsChainTimeSeries(@RequestParam String symbol) {
-		List<OptionsChain> optionsChainList = optionsChainDataManager.getOptionsChainTimeSeries(symbol);
+	public List<OptionsChainMini> getOptionsChainTimeSeries(@RequestParam String symbol, @RequestParam String date) {
+		List<OptionsChain> optionsChainList = optionsChainDataManager.getOptionsChainTimeSeries(symbol, date);
 		return OptionsChainConvertor.convertToMiniOptionsChain(optionsChainList);
 	}
 }

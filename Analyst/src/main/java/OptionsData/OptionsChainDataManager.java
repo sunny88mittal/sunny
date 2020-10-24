@@ -51,18 +51,18 @@ public class OptionsChainDataManager {
 		return dates;
 	}
 
-	public List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol) {
-		optionsChainDataProvider.updateData();
-		return optionsChainDataProvider.getOptionschainInterpretations(symbol);
+	public List<OptionsChainInterpretation> getOptionschainInterpretations(String symbol, String date) {
+		optionsChainDataProvider.updateData(date);
+		return optionsChainDataProvider.getOptionschainInterpretations(symbol, date);
 	}
 
-	public OptionsChain getLatestOptionsChain(String symbol) throws IOException, InterruptedException {
-		optionsChainDataProvider.updateData();
-		return optionsChainDataProvider.getLatestOptionsChain(symbol);
+	public OptionsChain getLatestOptionsChain(String symbol, String date) throws IOException, InterruptedException {
+		optionsChainDataProvider.updateData(date);
+		return optionsChainDataProvider.getLatestOptionsChain(symbol, date);
 	}
 
-	public List<OptionsChain> getOptionsChainTimeSeries(String symbol) {
-		optionsChainDataProvider.updateData();
-		return optionsChainDataProvider.getOptionsChainTimeSeries(symbol);
+	public List<OptionsChain> getOptionsChainTimeSeries(String symbol, String date) {
+		optionsChainDataProvider.updateData(date);
+		return optionsChainDataProvider.getOptionsChainTimeSeries(symbol, date);
 	}
 }

@@ -15,11 +15,20 @@ var selectedStrikeIVChart;
 var selectedStrikePCRChart;
 
 var infiniteLoader = function() {
-	var date = new Date();
-	date = date.toISOString().split("T")[0];
-	$(TRADING_DAY).val(date);
-	updateData();
-	setInterval(reloadData, 3 * 60 * 1000);
+	$.get(AVIALABLE_DATES_URL, function(data, status) {
+		updateDatePicker(data.reverse());
+		updateData();
+		setInterval(reloadData, 3 * 60 * 1000);
+	});
+}
+
+var updateDatePicker = function(data) {
+	var dateSelector =  $(DATE_SELECTOR);
+	dateSelector.empty();
+	var date;
+	for (date of data) {
+		dateSelector.append('<option value="'+date+'">'+date+'</option>');
+	}
 }
 
 var reloadData = function() {
@@ -30,7 +39,7 @@ var reloadData = function() {
 
 	if (day > 0 && day < 6) {
 		if ((hour >= 9 && minute >= 14) || (hour <= 15 && minute <= 32)) {
-			updateData();
+			updateData(selectedDate);
 		}
 	}
 }
@@ -38,23 +47,20 @@ var reloadData = function() {
 /**
  * Function which updates all the data
  */
-var updateData = function() {
+var updateData = function(selectedDate) {
 	// Get the selected symbol from select dropdown
 	var selectedSymbol = $(SYMBOL_SELECTOR).find(":selected").text();
-
-	//var indicatorsURL = getURLWithParams(INDICATORS_DATA, selectedSymbol);
 	
+	//Get the selected date
+	var selectedDate =  $(DATE_SELECTOR).find(":selected").text();
+
 	var optionsChainDataURL = getURLWithParams(OPTIONS_CHAIN_DATA,
-			selectedSymbol);
+			selectedSymbol, selectedDate);
 	var optionsChainInterpretationURL = getURLWithParams(
-			OPTIONS_CHAIN_INTERPRETATION, selectedSymbol);
+			OPTIONS_CHAIN_INTERPRETATION, selectedSymbol, selectedDate);
 	var optionsChainTimeSeriesURL = getURLWithParams(OPTIONS_CHAIN_TIMESERIES,
-			selectedSymbol);
+			selectedSymbol, selectedDate);
 
-	/*$.get(indicatorsURL, function(data, status) {
-		updateIndicators(data);
-	});*/
-	
 	var selectedStrike;
 	
 	$.get(optionsChainDataURL, function(data, status) {
@@ -191,7 +197,7 @@ var updateStrikeButtons = function(data) {
  * Update the strike charts
  * 
  * @strike Strike Price
- * @optionsChain Options Chain 
+ * @optionsChain Options Chain
  */
 var updateStrikeCharts = function(strike) {
 	if (optionsChainMiniData != undefined && optionsChainMiniData.length > 0) {
@@ -217,7 +223,7 @@ var updateStrikeCharts = function(strike) {
 			time.push(optionsChainMiniData[i].time.split(".")[0]);
 		}
 		
-		//Prepare data for the charts
+		// Prepare data for the charts
 		for (var i = 0; i < length; i++) {
 			var datai = optionsChainMiniData[i];
 			
@@ -275,7 +281,7 @@ var updateStrikeCharts = function(strike) {
 		datasets.push(pePriceDs);
 		selectedStrikePEOptionChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
-		//Update the ce and pe oi chart
+		// Update the ce and pe oi chart
 		var ceOIDs = getMultiAxisDataset("CE OI", ceOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_GREEN);
 		var peOIDs = getMultiAxisDataset("PE OI", peOpenInterest, CHART_TYPE_LINE, YAXIS2, null, COLOUR_RED);
 		ctx = $(SELECTED_STRIKE_OI_CHART);
@@ -287,7 +293,7 @@ var updateStrikeCharts = function(strike) {
 		datasets.push(peOIDs);
 		selectedStrikeOIChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
-		//Update the ce and pe oi change chart
+		// Update the ce and pe oi change chart
 		var ceOIChangeDs = getMultiAxisDataset("CE OI Change", ceOpenInterestChange, CHART_TYPE_LINE, YAXIS1, null, COLOUR_GREEN);
 		var peOIChangeDs = getMultiAxisDataset("PE OI Change", peOpenInterestChange, CHART_TYPE_LINE, YAXIS2, null, COLOUR_RED);
 		ctx = $(SELECTED_STRIKE_OI_CHANGE_CHART);
@@ -299,7 +305,7 @@ var updateStrikeCharts = function(strike) {
 		datasets.push(peOIChangeDs);
 		selectedStrikeOIChangeChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
-		//Update the ce and pe IV chart
+		// Update the ce and pe IV chart
 		var ceIVDs = getDataset("CE IV", ceIV, CHART_TYPE_LINE, null, COLOUR_GREEN);
 		var peIVDs = getDataset("PE IV", peIV, CHART_TYPE_LINE, null, COLOUR_RED);
 		ctx = $(SELECTED_STRIKE_IV_CHART);
@@ -312,7 +318,7 @@ var updateStrikeCharts = function(strike) {
 		selectedStrikeIVChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, strike);
 		
 		
-		//Update the pcr chart
+		// Update the pcr chart
 		var pcrDs =  getDataset("PCR", pcr, CHART_TYPE_LINE, null, COLOUR_BLACK);
 		ctx = $(SELECTED_STRIKE_PCR_CHART);
 		if (selectedStrikePCRChart) {
