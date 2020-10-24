@@ -41,14 +41,13 @@
 
 			<div class="col" id="indicators_block">
 				<div class="row mt-1">
-					<!--div class="col-sm" style="padding: 0px">
-						<select class="col" id="time_selector" style="margin-right: 0%;">
-							<option value="3">3 min</option>
-							<option value="15">15 min</option>
-							<option value="30">30 min</option>
-							<option value="60">60 min</option>
+				
+					<div class="col-sm" style="padding: 0px">
+						<select class="col" id="date_selector" style="margin-right: 0%;">
+							<option value="BANKNIFTY">BANKNIFTY</option>
+							<option value="NIFTY">NIFTY</option>
 						</select>
-					</div-->
+					</div>
 
 					<div class="col-sm" style="padding: 0px">
 						<select class="col" id="symbol_selector" style="margin-right: 0%;">
@@ -89,36 +88,21 @@
 		
 		<div class="row mt-3">
 			<div class="col-sm">
+				<canvas id="selected_strike_oi_details"></canvas>
+			</div>
+			<div class="col-sm">
 				<canvas id="selected_strike_oichange_details"></canvas>
+			</div>
+		</div>
+		
+		<div class="row mt-3">
+			<div class="col-sm">
+				<canvas id="selected_strike_iv_details"></canvas>
 			</div>
 			<div class="col-sm">
 				<canvas id="selected_strike_pcr_details"></canvas>
 			</div>
 		</div>
-		
-		<!--div class="row mt-1 px-2">
-			<table class="table" id="option_movement"
-				style="font-size: smaller;">
-				<thead class="thead-dark">
-					<tr id="option_movement_table_header">
-						<th scope="col">Time</th>
-						<th scope="col">Call OI</th>
-						<th scope="col">Call OI Change</th>
-						<th scope="col">Call LTP</th>
-						<th scope="col">Call Change</th>
-						<th scope="col">Call OI Interpretation</th>
-						
-						<th scope="col">Put OI Interpretation</th>
-						<th scope="col">Put Change</th>
-						<th scope="col">Put LTP</th>
-						<th scope="col">Put OI Change</th>
-						<th scope="col">Put OI</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div-->
 		
 		<div class="row mt-3">
 			<canvas id="open_interest_bar_chart" height="100"></canvas>

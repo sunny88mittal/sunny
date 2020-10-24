@@ -10,6 +10,8 @@ var optionsPEPriceTimeSeriesChart;
 var selectedStrikeCEOptionChart;
 var selectedStrikePEOptionChart;
 var selectedStrikeOIChangeChart;
+var selectedStrikeOIChart;
+var selectedStrikeIVChart;
 var selectedStrikePCRChart;
 
 var infiniteLoader = function() {
@@ -68,7 +70,6 @@ var updateData = function() {
 	
 	$.get(optionsChainTimeSeriesURL, function(data, status) {
 		optionsChainMiniData = data;
-		updateOptionTimeSeriesChart(data);
 		updateStrikeCharts(selectedStrike);
 	});
 }
@@ -174,7 +175,7 @@ var updateStrikeButtons = function(data) {
 	if (data != undefined) {
 		$(STRIKE_BUTTONS).empty();
 		var spotPrice = data.price;
-		var range = (spotPrice * 10) / 100
+		var range = (spotPrice * 6) / 100
 		for (var i = 0; i < data.callOptions.length; i++) {
 			var strikePrice = data.callOptions[i].strikePrice;
 			if (Math.abs(strikePrice - spotPrice) <= range) {
@@ -249,7 +250,7 @@ var updateStrikeCharts = function(strike) {
 			pcr.push(peOpenInterest[i] / ceOpenInterest[i]);
 		}
 		
-		// Update the ce chart
+		// Update the ce oi vs price chart
 		var ceOpenInterestDs = getMultiAxisDataset('CE OI', ceOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_RED);
 		var cePriceDs = getMultiAxisDataset('CE Price', cePrice, CHART_TYPE_LINE, YAXIS2, null, COLOUR_BLACK);
 		ctx = $(SELECTED_STRIKE_CE_OPTION_CHART);
@@ -262,7 +263,7 @@ var updateStrikeCharts = function(strike) {
 		selectedStrikeCEOptionChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
 		
-		// Update the pe chart
+		// Update the pe oi vs price chart
 		var peOpenInterestDs = getMultiAxisDataset('PE OI', peOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_RED);
 		var pePriceDs = getMultiAxisDataset('PE Price', pePrice, CHART_TYPE_LINE, YAXIS2, null, COLOUR_BLACK);
 		ctx = $(SELECTED_STRIKE_PE_OPTION_CHART);
@@ -274,17 +275,42 @@ var updateStrikeCharts = function(strike) {
 		datasets.push(pePriceDs);
 		selectedStrikePEOptionChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
-		//Update the ce and pe relative oi chart
-		var ceOIDs = getDataset("CE OI Change", ceOpenInterestChange, CHART_TYPE_LINE, null, COLOUR_GREEN);
-		var peOIDs = getDataset("PE OI Change", peOpenInterestChange, CHART_TYPE_LINE, null, COLOUR_RED);
+		//Update the ce and pe oi chart
+		var ceOIDs = getMultiAxisDataset("CE OI", ceOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_GREEN);
+		var peOIDs = getMultiAxisDataset("PE OI", peOpenInterest, CHART_TYPE_LINE, YAXIS2, null, COLOUR_RED);
+		ctx = $(SELECTED_STRIKE_OI_CHART);
+		if (selectedStrikeOIChart) {
+			selectedStrikeOIChart.destroy();
+		}
+		datasets = [];
+		datasets.push(ceOIDs);
+		datasets.push(peOIDs);
+		selectedStrikeOIChart = getMultiAxisChart(ctx, datasets, time, strike);
+		
+		//Update the ce and pe oi change chart
+		var ceOIChangeDs = getMultiAxisDataset("CE OI Change", ceOpenInterestChange, CHART_TYPE_LINE, YAXIS1, null, COLOUR_GREEN);
+		var peOIChangeDs = getMultiAxisDataset("PE OI Change", peOpenInterestChange, CHART_TYPE_LINE, YAXIS2, null, COLOUR_RED);
 		ctx = $(SELECTED_STRIKE_OI_CHANGE_CHART);
 		if (selectedStrikeOIChangeChart) {
 			selectedStrikeOIChangeChart.destroy();
 		}
 		datasets = [];
-		datasets.push(ceOIDs);
-		datasets.push(peOIDs);
-		selectedStrikeOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, strike);
+		datasets.push(ceOIChangeDs);
+		datasets.push(peOIChangeDs);
+		selectedStrikeOIChangeChart = getMultiAxisChart(ctx, datasets, time, strike);
+		
+		//Update the ce and pe IV chart
+		var ceIVDs = getDataset("CE IV", ceIV, CHART_TYPE_LINE, null, COLOUR_GREEN);
+		var peIVDs = getDataset("PE IV", peIV, CHART_TYPE_LINE, null, COLOUR_RED);
+		ctx = $(SELECTED_STRIKE_IV_CHART);
+		if (selectedStrikeIVChart) {
+			selectedStrikeIVChart.destroy();
+		}
+		datasets = [];
+		datasets.push(ceIVDs);
+		datasets.push(peIVDs);
+		selectedStrikeIVChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, strike);
+		
 		
 		//Update the pcr chart
 		var pcrDs =  getDataset("PCR", pcr, CHART_TYPE_LINE, null, COLOUR_BLACK);
@@ -380,161 +406,6 @@ var updateOptionChainInterpretations = function(data) {
 
 		// Create Chart
 		pcrChart = getChart(ctx, CHART_TYPE_BAR, datasets, time, "Total PCR");
-	}
-}
-
-/**
- * Function to draw the option time series chart
- * 
- * @data Options Chain time series data
- */
-var updateOptionTimeSeriesChart = function(data) {
-
-	if (data != undefined && data.length > 0) {
-		var length = data.length;
-		var lastOptionChain = data[length - 1];
-		var spotPrice = lastOptionChain.price;
-		var symbol = lastOptionChain.symbol;
-
-		// Range for indexes 1%, for stocks 2%
-		var range = (spotPrice * 1) / 100;
-		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
-			range = (spotPrice * 4) / 100;
-		}
-
-		// Prepare time data for the charts
-		var time = [];
-		for (var i = 0; i < length; i++) {
-			time.push(data[i].time.split(".")[0]);
-		}
-
-		// Prepare open interest and price data for the charts
-		var ceOIMap = {};
-		var peOIMap = {};
-		var cePriceMap = {};
-		var pePriceMap = {};
-
-		for (var i = 0; i < length; i++) {
-			var datai = data[i];
-			var callOptions = datai.callOptions;
-			var putOptions = datai.putOptions;
-
-			// Generate maps for call options
-			for (var j = 0; j < callOptions.length; j++) {
-				var callOption = callOptions[j];
-				var strikePrice = callOption.strikePrice;
-				var openInterest = callOption.openInterest;
-				var price = callOption.LTP;
-
-				if (Math.abs(strikePrice - spotPrice) <= range) {
-					// Open Interest
-					if (!ceOIMap[strikePrice]) {
-						ceOIMap[strikePrice] = [];
-					}
-					var ceOIArray = ceOIMap[strikePrice];
-					ceOIArray.push(openInterest);
-
-					// Open Interest
-					if (!cePriceMap[strikePrice]) {
-						cePriceMap[strikePrice] = [];
-					}
-					var cePriceArray = cePriceMap[strikePrice];
-					if (price == 0) {
-						price = cePriceArray[cePriceArray.length - 2];
-					}
-					cePriceArray.push(price);
-				}
-			}
-
-			// Generate maps for put options
-			for (var j = 0; j < putOptions.length; j++) {
-				var putOption = putOptions[j];
-				var strikePrice = putOption.strikePrice;
-				var openInterest = putOption.openInterest;
-				var price = putOption.LTP;
-
-				if (Math.abs(spotPrice - strikePrice) <= range) {
-					// Open Interest
-					if (!peOIMap[strikePrice]) {
-						peOIMap[strikePrice] = [];
-					}
-					var peOIArray = peOIMap[strikePrice];
-					peOIArray.push(openInterest);
-
-					// Open Interest
-					if (!pePriceMap[strikePrice]) {
-						pePriceMap[strikePrice] = [];
-					}
-					var pePriceArray = pePriceMap[strikePrice];
-					if (price == 0) {
-						price = pePriceArray[pePriceArray.length - 2];
-					}
-					pePriceArray.push(price);
-				}
-			}
-		}
-
-		// Create the datasets
-		var ceOIDatasets = [];
-		var peOIDatasets = [];
-		var cePriceDatasets = [];
-		var pePriceDatasets = [];
-
-		Object.keys(ceOIMap).forEach(
-				function(key) {
-					ceOIDatasets.push(getDataset(key + "CE", ceOIMap[key],
-							CHART_TYPE_LINE, null, COLOUR_RED));
-				});
-
-		Object.keys(peOIMap).forEach(
-				function(key) {
-					peOIDatasets.push(getDataset(key + "PE", peOIMap[key],
-							CHART_TYPE_LINE, null, COLOUR_BLACK));
-				});
-
-		Object.keys(cePriceMap).forEach(
-				function(key) {
-					cePriceDatasets
-							.push(getDataset(key + "CE", cePriceMap[key],
-									CHART_TYPE_LINE, null, COLOUR_RED));
-				});
-
-		Object.keys(pePriceMap).forEach(
-				function(key) {
-					pePriceDatasets.push(getDataset(key + "PE",
-							pePriceMap[key], CHART_TYPE_LINE, null,
-							COLOUR_BLACK));
-				});
-
-		// Update the open interest line chart
-		var ctx = $(OPTIONS_CE_INTEREST_TIME_SERIES_CHART);
-		if (optionsCEOITimeSeriesChart) {
-			optionsCEOITimeSeriesChart.destroy();
-		}
-		optionsCEOITimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
-				ceOIDatasets, time);
-
-		ctx = $(OPTIONS_PE_INTEREST_TIME_SERIES_CHART);
-		if (optionsPEOITimeSeriesChart) {
-			optionsPEOITimeSeriesChart.destroy();
-		}
-		optionsPEOITimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
-				peOIDatasets, time);
-
-		// Update the price line chart
-		ctx = $(OPTIONS_CE_PRICE_TIME_SERIES_CHART);
-		if (optionsCEPriceTimeSeriesChart) {
-			optionsCEPriceTimeSeriesChart.destroy();
-		}
-		optionsCEPriceTimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
-				cePriceDatasets, time);
-
-		ctx = $(OPTIONS_PE_PRICE_TIME_SERIES_CHART);
-		if (optionsPEPriceTimeSeriesChart) {
-			optionsPEPriceTimeSeriesChart.destroy();
-		}
-		optionsPEPriceTimeSeriesChart = getChart(ctx, CHART_TYPE_LINE,
-				pePriceDatasets, time);
 	}
 }
 
