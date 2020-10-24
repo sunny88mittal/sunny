@@ -11,6 +11,8 @@ public class FileConstants {
 	public static String FNO_BASE_PATH = DATA_FILE_BASE_PATH + "\\FnoData\\";
 
 	public static String OI_BASE_PATH = DATA_FILE_BASE_PATH + "\\OIData\\";
+	
+	public static String STOCKS_DATA_ZERODHA_BASE_PATH = DATA_FILE_BASE_PATH + "Stocks Data\\";
 
 	public static String STOCKS_DATA_FILE_BASE_PATH = DATA_FILE_BASE_PATH + "StocksRawData\\";
 	
