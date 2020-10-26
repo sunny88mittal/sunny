@@ -1,7 +1,7 @@
 $(SYMBOL_SELECTOR).change(function() {
-	updateData();
+	reloadData();
 });
 
 $(DATE_SELECTOR).change(function() {
-	updateData();
+	reloadData();
 });

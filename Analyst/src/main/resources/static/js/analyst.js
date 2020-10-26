@@ -39,7 +39,7 @@ var reloadData = function() {
 
 	if (day > 0 && day < 6) {
 		if ((hour >= 9 && minute >= 14) || (hour <= 15 && minute <= 32)) {
-			updateData(selectedDate);
+			updateData();
 		}
 	}
 }
@@ -47,7 +47,7 @@ var reloadData = function() {
 /**
  * Function which updates all the data
  */
-var updateData = function(selectedDate) {
+var updateData = function() {
 	// Get the selected symbol from select dropdown
 	var selectedSymbol = $(SYMBOL_SELECTOR).find(":selected").text();
 	
