@@ -18,7 +18,6 @@ var infiniteLoader = function() {
 	$.get(AVIALABLE_DATES_URL, function(data, status) {
 		updateDatePicker(data.reverse());
 		updateData();
-		setInterval(reloadData, 3 * 60 * 1000);
 	});
 }
 
@@ -28,19 +27,6 @@ var updateDatePicker = function(data) {
 	var date;
 	for (date of data) {
 		dateSelector.append('<option value="'+date+'">'+date+'</option>');
-	}
-}
-
-var reloadData = function() {
-	var date = new Date();
-	var day = date.getDay();
-	var hour = date.getHours();
-	var minute = date.getMinutes();
-
-	if (day > 0 && day < 6) {
-		if ((hour >= 9 && minute >= 14) || (hour <= 15 && minute <= 32)) {
-			updateData();
-		}
 	}
 }
 
@@ -78,6 +64,8 @@ var updateData = function() {
 		optionsChainMiniData = data;
 		updateStrikeCharts(selectedStrike);
 	});
+	
+	setInterval(updateData, 1 * 60 * 1000);
 }
 
 /**
