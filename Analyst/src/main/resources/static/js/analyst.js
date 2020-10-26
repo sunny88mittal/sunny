@@ -13,6 +13,7 @@ var selectedStrikeOIChangeChart;
 var selectedStrikeOIChart;
 var selectedStrikeIVChart;
 var selectedStrikePCRChart;
+var isRefreshSet = false;
 
 var infiniteLoader = function() {
 	$.get(AVIALABLE_DATES_URL, function(data, status) {
@@ -65,7 +66,10 @@ var updateData = function() {
 		updateStrikeCharts(selectedStrike);
 	});
 	
-	setInterval(updateData, 1 * 60 * 1000);
+	if (!isRefreshSet) {
+		setInterval(updateData, 3 * 60 * 1000);
+		isRefreshSet = true;
+	}
 }
 
 /**
