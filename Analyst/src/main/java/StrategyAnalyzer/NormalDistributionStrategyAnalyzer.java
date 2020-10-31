@@ -11,7 +11,9 @@ import org.ta4j.core.TimeSeries;
 
 import Constants.CandleStickInterval;
 import Constants.StockSymbols;
+import DataProvider.FNODataProvider;
 import DataUtil.DataUtil;
+import Entities.FNOData;
 
 public class NormalDistributionStrategyAnalyzer {
 
@@ -19,11 +21,26 @@ public class NormalDistributionStrategyAnalyzer {
 		TimeSeries series = DataUtil.getTimeSeries(instrument, CandleStickInterval.DAY);
 		List<Bar> expiryBars = getExpiryDayBars(series);
 		for (int i = 0; i < expiryBars.size() - 1; i++) {
-			Bar endBar = expiryBars.get(i);
 			Bar startBar = expiryBars.get(i + 1);
-			float percentageChange = 100 * (endBar.getClosePrice().floatValue() - startBar.getClosePrice().floatValue())
-					/ startBar.getClosePrice().floatValue();
+			Bar endBar = expiryBars.get(i);
+
+			// Print weekly expiry based returns
+			float startPrice = startBar.getClosePrice().floatValue();
+			float endPrice = endBar.getClosePrice().floatValue();
+			float percentageChange = 100 * (endPrice - startPrice) / startPrice;
 			System.out.println(startBar.getSimpleDateName() + "," + percentageChange);
+
+			// Print option startegy returns
+			/*int range = (int) (startPrice * percentage / 100);
+			int lowerRange = (int) (startPrice - range);
+			lowerRange = (lowerRange / 100) * 100 - 100;
+			int upperRange = (int) (startPrice + range);
+			upperRange = (upperRange / 100) * 100 + 100;
+			System.out.println(startBar.getSimpleDateName() + ":" + startPrice + ":" + lowerRange + ":" + upperRange);
+			List<FNOData> startDayFNOData = FNODataProvider.getFNOData("OPTIDX", instrument,
+					startBar.getEndTime().toLocalDate());
+			List<FNOData> endDayFNOData = FNODataProvider.getFNOData("OPTIDX", instrument,
+					endBar.getEndTime().toLocalDate());*/
 		}
 	}
 
