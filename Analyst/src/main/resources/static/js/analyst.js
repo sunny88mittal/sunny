@@ -13,6 +13,7 @@ var selectedStrikeOIChangeChart;
 var selectedStrikeOIChart;
 var selectedStrikeIVChart;
 var selectedStrikePCRChart;
+var nearStrikesOIChangeChart;
 var isRefreshSet = false;
 
 var infiniteLoader = function() {
@@ -38,7 +39,7 @@ var updateData = function() {
 	// Get the selected symbol from select dropdown
 	var selectedSymbol = $(SYMBOL_SELECTOR).find(":selected").text();
 	
-	//Get the selected date
+	// Get the selected date
 	var selectedDate =  $(DATE_SELECTOR).find(":selected").text();
 
 	var optionsChainDataURL = getURLWithParams(OPTIONS_CHAIN_DATA,
@@ -51,10 +52,10 @@ var updateData = function() {
 	var selectedStrike;
 	
 	$.get(optionsChainDataURL, function(data, status) {
+		selectedStrike = data.price - (data.price % 100);
 		updateStrikeButtons(data);
 		updateOptionsChain(data);
 		updateOptionsChainBarChart(data);
-		selectedStrike = data.price - (data.price % 100);
 	});
 	
 	$.get(optionsChainInterpretationURL, function(data, status) {
@@ -64,11 +65,75 @@ var updateData = function() {
 	$.get(optionsChainTimeSeriesURL, function(data, status) {
 		optionsChainMiniData = data;
 		updateStrikeCharts(selectedStrike);
+		//updateNearStrikeOIChange(data, selectedStrike);
 	});
 	
 	if (!isRefreshSet) {
 		setInterval(updateData, 3 * 60 * 1000);
 		isRefreshSet = true;
+	}
+}
+
+/**
+ * Update the chart with near strikes change in open interest data
+ * 
+ * @data options chain data time series
+ * @selectedStrike current ATM strike
+ */
+var updateNearStrikeOIChange = function(data, selectedStrike) {
+	if (optionsChainMiniData != undefined && optionsChainMiniData.length > 0) {
+		var length = optionsChainMiniData.length;
+		
+		// Variables to hold data points
+		var time = [];
+		var oiChangeDiff = [];
+		
+		// Prepare time data for the chart
+		for (var i = 0; i < length; i++) {
+			time.push(optionsChainMiniData[i].time.split(".")[0]);
+		}
+		
+		// Prepare OI change diff data for nearby strikes
+		var noOfStrikes = 6;
+		for (var i = 0; i < length; i++) {
+			var datai = optionsChainMiniData[i];
+			//selectedStrike = datai.price - (datai.price % 100);
+			
+			// Get strike index
+			var selectedStrikeIndex = -1;
+			var callOptions = datai.callOptions;	
+			for (var j = 0; j < callOptions.length; j++) {
+				var callOption = datai.callOptions[j];
+				var strikePrice = callOption.strikePrice;
+				if (strikePrice == selectedStrike) {
+					selectedStrikeIndex = j;
+					break;
+				}
+			}
+			
+			var startIndex = selectedStrikeIndex - noOfStrikes;
+			var endIndex = selectedStrikeIndex + noOfStrikes;
+			var callOIChange = 0;
+			var putOIChange = 0;
+			for (var j=startIndex; j<endIndex; j++) {
+				var callOption = datai.callOptions[j];
+				var putOption = datai.putOptions[j];
+				callOIChange += callOption.openInterest;
+				putOIChange += putOption.openInterest;
+			}
+			
+			oiChangeDiff[i] = putOIChange / callOIChange;
+		}
+		
+		//Prepare the chart
+		var oiChangeDs =  getDataset("OIChange", oiChangeDiff, CHART_TYPE_LINE, null, COLOUR_BLACK);
+		ctx = $(NEAR_STRIKES_OI_CHANGE_DETAILS);
+		if (nearStrikesOIChangeChart) {
+			nearStrikesOIChangeChart.destroy();
+		}
+		datasets = [];
+		datasets.push(oiChangeDs);
+		nearStrikesOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, "OI Change Trend");
 	}
 }
 
@@ -105,7 +170,7 @@ var updateOptionsChain = function(data) {
 		var maxPain = data.maxPainAt;
 
 		// Range for indexes 2.5%, for stocks 6%
-		var range = (spotPrice * 3) / 100;
+		var range = (spotPrice * 6) / 100;
 		if (symbol != "NIFTY" && symbol != "BANKNIFTY") {
 			range = (spotPrice * 3) / 100;
 		}
@@ -173,7 +238,7 @@ var updateStrikeButtons = function(data) {
 	if (data != undefined) {
 		$(STRIKE_BUTTONS).empty();
 		var spotPrice = data.price;
-		var range = (spotPrice * 6) / 100
+		var range = (spotPrice * 10) / 100
 		for (var i = 0; i < data.callOptions.length; i++) {
 			var strikePrice = data.callOptions[i].strikePrice;
 			if (Math.abs(strikePrice - spotPrice) <= range) {

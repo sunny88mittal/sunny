@@ -24,3 +24,4 @@ var SELECTED_STRIKE_OI_CHANGE_CHART= "#selected_strike_oichange_details";
 var SELECTED_STRIKE_OI_CHART= "#selected_strike_oi_details";
 var SELECTED_STRIKE_IV_CHART= "#selected_strike_iv_details";
 var SELECTED_STRIKE_PCR_CHART= "#selected_strike_pcr_details";
+var NEAR_STRIKES_OI_CHANGE_DETAILS = "#near_strikes_oi_change_details";
