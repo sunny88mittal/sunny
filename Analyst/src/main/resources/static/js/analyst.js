@@ -14,6 +14,7 @@ var selectedStrikeOIChart;
 var selectedStrikeIVChart;
 var selectedStrikePCRChart;
 var nearStrikesOIChangeChart;
+var openInterestChangeChart;
 var isRefreshSet = false;
 
 var infiniteLoader = function() {
@@ -65,12 +66,64 @@ var updateData = function() {
 	$.get(optionsChainTimeSeriesURL, function(data, status) {
 		optionsChainMiniData = data;
 		updateStrikeCharts(selectedStrike);
-		//updateNearStrikeOIChange(data, selectedStrike);
+		updateNearStrikeOIChange(data, selectedStrike);
+		updateOpenInterestChange(data);
 	});
 	
 	if (!isRefreshSet) {
 		setInterval(updateData, 3 * 60 * 1000);
 		isRefreshSet = true;
+	}
+}
+
+/**
+ * Update the open interest change chart
+ * @data options chain time series
+ */
+var updateOpenInterestChange = function(data) {
+	if (optionsChainMiniData != undefined && optionsChainMiniData.length > 0) {
+		var length = optionsChainMiniData.length;
+		
+		// Variables to hold data points
+		var time = [];
+		var ceOIChangeSeries = [];
+		var peOIChangeSeries = [];
+		
+		// Prepare time data for the chart
+		for (var i = 0; i < length; i++) {
+			var datai = optionsChainMiniData[i];
+			
+			//Time
+			time.push(optionsChainMiniData[i].time.split(".")[0]);
+			
+			//CE
+			var callOptions = datai.callOptions;
+			var ceOIChange = 0;
+			for (var j = 0; j < callOptions.length; j++) {
+				ceOIChange += datai.callOptions[j].openInterestChange;
+			}
+			ceOIChangeSeries.push(ceOIChange);
+			
+			//PE
+			var putOptions = datai.putOptions;
+			var peOIChange = 0;
+			for (var j = 0; j < putOptions.length; j++) {
+				peOIChange += datai.putOptions[j].openInterestChange;
+			}
+			peOIChangeSeries.push(peOIChange);
+			
+			//Create the chart
+			var ceOIChangeDs =  getDataset("CE OI Change", ceOIChangeSeries, CHART_TYPE_LINE, null, COLOUR_RED);
+			var peOIChangeDs =  getDataset("PE OI Change", peOIChangeSeries, CHART_TYPE_LINE, null, COLOUR_GREEN);
+			ctx = $(OPEN_INTEREST_CHANGE_DETAILS);
+			if (openInterestChangeChart) {
+				openInterestChangeChart.destroy();
+			}
+			datasets = [];
+			datasets.push(ceOIChangeDs);
+			datasets.push(peOIChangeDs);
+			openInterestChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, "OI Change");
+		}	
 	}
 }
 
@@ -97,7 +150,6 @@ var updateNearStrikeOIChange = function(data, selectedStrike) {
 		var noOfStrikes = 6;
 		for (var i = 0; i < length; i++) {
 			var datai = optionsChainMiniData[i];
-			//selectedStrike = datai.price - (datai.price % 100);
 			
 			// Get strike index
 			var selectedStrikeIndex = -1;
@@ -118,11 +170,11 @@ var updateNearStrikeOIChange = function(data, selectedStrike) {
 			for (var j=startIndex; j<endIndex; j++) {
 				var callOption = datai.callOptions[j];
 				var putOption = datai.putOptions[j];
-				callOIChange += callOption.openInterest;
-				putOIChange += putOption.openInterest;
+				callOIChange += callOption.openInterestChange;
+				putOIChange += putOption.openInterestChange;
 			}
 			
-			oiChangeDiff[i] = putOIChange / callOIChange;
+			oiChangeDiff[i] = putOIChange - callOIChange;
 		}
 		
 		//Prepare the chart
@@ -133,7 +185,7 @@ var updateNearStrikeOIChange = function(data, selectedStrike) {
 		}
 		datasets = [];
 		datasets.push(oiChangeDs);
-		nearStrikesOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, "OI Change Trend");
+		nearStrikesOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, "Near Strike OI Change Trend");
 	}
 }
 
