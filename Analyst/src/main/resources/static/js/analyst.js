@@ -185,7 +185,7 @@ var updateNearStrikeOIChange = function(data, selectedStrike) {
 		}
 		datasets = [];
 		datasets.push(oiChangeDs);
-		nearStrikesOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, "Near Strike OI Change Trend");
+		nearStrikesOIChangeChart = getChart(ctx, CHART_TYPE_LINE, datasets, time, "Near Strike OI Change (PUT - CALL)");
 	}
 }
 
