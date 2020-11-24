@@ -391,8 +391,8 @@ var updateStrikeCharts = function(strike) {
 		selectedStrikePEOptionChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
 		// Update the ce and pe oi chart
-		var ceOIDs = getMultiAxisDataset("CE OI", ceOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_GREEN);
-		var peOIDs = getMultiAxisDataset("PE OI", peOpenInterest, CHART_TYPE_LINE, YAXIS2, null, COLOUR_RED);
+		var ceOIDs = getMultiAxisDataset("CE OI", ceOpenInterest, CHART_TYPE_LINE, YAXIS1, null, COLOUR_RED);
+		var peOIDs = getMultiAxisDataset("PE OI", peOpenInterest, CHART_TYPE_LINE, YAXIS2, null, COLOUR_GREEN);
 		ctx = $(SELECTED_STRIKE_OI_CHART);
 		if (selectedStrikeOIChart) {
 			selectedStrikeOIChart.destroy();
@@ -403,8 +403,8 @@ var updateStrikeCharts = function(strike) {
 		selectedStrikeOIChart = getMultiAxisChart(ctx, datasets, time, strike);
 		
 		// Update the ce and pe oi change chart
-		var ceOIChangeDs = getMultiAxisDataset("CE OI Change", ceOpenInterestChange, CHART_TYPE_LINE, YAXIS1, null, COLOUR_GREEN);
-		var peOIChangeDs = getMultiAxisDataset("PE OI Change", peOpenInterestChange, CHART_TYPE_LINE, YAXIS2, null, COLOUR_RED);
+		var ceOIChangeDs = getMultiAxisDataset("CE OI Change", ceOpenInterestChange, CHART_TYPE_LINE, YAXIS1, null, COLOUR_RED);
+		var peOIChangeDs = getMultiAxisDataset("PE OI Change", peOpenInterestChange, CHART_TYPE_LINE, YAXIS2, null, COLOUR_GREEN);
 		ctx = $(SELECTED_STRIKE_OI_CHANGE_CHART);
 		if (selectedStrikeOIChangeChart) {
 			selectedStrikeOIChangeChart.destroy();
