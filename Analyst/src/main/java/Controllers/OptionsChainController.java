@@ -24,7 +24,7 @@ public class OptionsChainController {
 
 	@GetMapping("/get/availableDates")
 	public List<String> getAvailableDates() throws IOException, InterruptedException {
-		return optionsChainDataManager.getAvailableDates(50);
+		return optionsChainDataManager.getAvailableDates(100);
 	}
 
 	@GetMapping("/get/data")
