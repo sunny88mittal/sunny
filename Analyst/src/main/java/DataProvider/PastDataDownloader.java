@@ -102,7 +102,7 @@ public class PastDataDownloader {
 	}
 
 	public static void main(String args[]) throws IOException, InterruptedException {
-		getPastData(7, URLConstants.STOCKS_URL, FileConstants.STOCKS_DATA_FILE_BASE_PATH);
+		getPastData(7, URLConstants.STOCKS_URL, FileConstants.STOCKS_RAW_DATA_FILE_BASE_PATH);
 		getPastData(7, URLConstants.OI_DATA_URL, FileConstants.OI_BASE_PATH);
 		getPastData(7, URLConstants.FNO_URL, FileConstants.FNO_BASE_PATH);
 	}

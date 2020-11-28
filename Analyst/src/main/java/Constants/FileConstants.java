@@ -14,9 +14,11 @@ public class FileConstants {
 	
 	public static String STOCKS_DATA_ZERODHA_BASE_PATH = DATA_FILE_BASE_PATH + "Stocks Data\\";
 
-	public static String STOCKS_DATA_FILE_BASE_PATH = DATA_FILE_BASE_PATH + "StocksRawData\\";
+	public static String STOCKS_RAW_DATA_FILE_BASE_PATH = DATA_FILE_BASE_PATH + "StocksRawData\\";
 	
-	public static String STOCKS_DATA_FILE_NAME = STOCKS_DATA_FILE_BASE_PATH + "cmDDMONYYYYbhav.csv";
+	public static String STOCKS_DATA_FOLDER_PATH = DATA_FILE_BASE_PATH + "StocksData\\";
+	
+	public static String STOCKS_DATA_FILE_NAME = STOCKS_RAW_DATA_FILE_BASE_PATH + "cmDDMONYYYYbhav.csv";
 
 	public static String DAILY_ANALYSIS_FILE_BASE_PATH = ANALYSIS_FILE_BASE_PATH + "DailyAnalysis\\";
 
