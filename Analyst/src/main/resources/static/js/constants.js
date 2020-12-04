@@ -6,6 +6,10 @@ var COLOUR_WHITE = 'white';
 var COLOUR_GREY = 'grey';
 var COLOUR_BLACK = 'black';
 var COLOUR_LIGHT_YELLOW = 'LightYellow';
+var COLOUR_PINK = "pink";
+var COLOUR_BROWN = "brown";
+var COLOUR_NAVY = "navy";
+var COLOUR_PURPLE = "purple";
 
 var TREND_BEARISH = "Bearish";
 var TREND_BULLISH = "Bullish";

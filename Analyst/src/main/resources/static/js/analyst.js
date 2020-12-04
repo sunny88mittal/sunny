@@ -15,6 +15,8 @@ var selectedStrikeIVChart;
 var selectedStrikePCRChart;
 var nearStrikesOIChangeChart;
 var openInterestChangeChart;
+var veryNearStrikeCEOIChart;
+var veryNearStrikePEOIChart;
 var isRefreshSet = false;
 
 var infiniteLoader = function() {
@@ -67,12 +69,102 @@ var updateData = function() {
 		optionsChainMiniData = data;
 		updateStrikeCharts(selectedStrike);
 		updateNearStrikeOIChange(data, selectedStrike);
+		updateVeryNearStrikeOI(selectedStrike);
 		updateOpenInterestChange(data);
 	});
 	
 	if (!isRefreshSet) {
 		setInterval(updateData, 3 * 60 * 1000);
 		isRefreshSet = true;
+	}
+}
+
+/**
+ * Plots a chart for open interest for 1 strike below and above the selected strike 
+ * 
+ * @data options chain data time series
+ * @selectedStrike current ATM strike
+ */
+var updateVeryNearStrikeOI = function(selectedStrike) {
+	if (optionsChainMiniData != undefined && optionsChainMiniData.length > 0) {
+		var length = optionsChainMiniData.length;
+		
+		//Variables to hold data points
+		var time = [];
+		var selectedStrikeCEOI = [];
+		var selectedStrikePEOI = [];
+		var upperStrikeCEOI = [];
+		var upperStrikePEOI = [];
+		var belowStrikeCEOI = [];
+		var belowStrikePEOI = [];
+		
+		var upperStrike;
+		var belowStrike;
+		
+		//Create Data
+		for (var i = 0; i < length; i++) {
+			var datai = optionsChainMiniData[i];
+			
+			//Time
+			time.push(optionsChainMiniData[i].time.split(".")[0]);
+			
+			//CE
+			var callOptions = datai.callOptions;
+			for (var j = 0; j < callOptions.length; j++) {
+				if (callOptions[j].strikePrice == selectedStrike) {
+					selectedStrikeCEOI.push(callOptions[j].openInterest);
+					upperStrikeCEOI.push(callOptions[j+1].openInterest);
+					belowStrikeCEOI.push(callOptions[j-1].openInterest);
+					
+					upperStrike = callOptions[j+1].strikePrice;
+					belowStrike = callOptions[j-1].strikePrice;
+						
+					break;
+				}
+			}
+			
+			//PE
+			var putOptions = datai.putOptions;
+			for (var j = 0; j < putOptions.length; j++) {
+				if (putOptions[j].strikePrice == selectedStrike) {
+					selectedStrikePEOI.push(putOptions[j].openInterest);
+					upperStrikePEOI.push(putOptions[j+1].openInterest);
+					belowStrikePEOI.push( putOptions[j-1].openInterest);
+					break;
+				}
+			}
+		}
+		
+		//Create the chart
+		var selectedStrikeCEOIDs =  getDataset(selectedStrike + " CE", selectedStrikeCEOI, CHART_TYPE_LINE, null, COLOUR_RED);
+		var upperStrikeCEOIDs =  getDataset(upperStrike + " CE", upperStrikeCEOI, CHART_TYPE_LINE, null, COLOUR_GREEN);
+		var belowStrikeCEOIDs =  getDataset(belowStrike + " CE", belowStrikeCEOI, CHART_TYPE_LINE, null, COLOUR_BLACK);
+		
+		var selectedStrikePEOIDs =  getDataset(selectedStrike + " PE", selectedStrikePEOI, CHART_TYPE_LINE, null, COLOUR_NAVY);
+		var upperStrikePEOIDs =  getDataset(upperStrike + " PE", upperStrikePEOI, CHART_TYPE_LINE, null, COLOUR_PURPLE);
+		var belowStrikePEOIDs =  getDataset(belowStrike + " PE", belowStrikePEOI, CHART_TYPE_LINE, null, COLOUR_BROWN);
+		
+		cedatasets = [];
+		cedatasets.push(upperStrikeCEOIDs);
+		cedatasets.push(selectedStrikeCEOIDs);
+		cedatasets.push(belowStrikeCEOIDs);
+		
+		pedatasets = [];
+		pedatasets.push(upperStrikePEOIDs);
+		pedatasets.push(selectedStrikePEOIDs);
+		pedatasets.push(belowStrikePEOIDs);
+		
+		ctx = $(VERY_NEAR_STRIKES_CE_OI_DETAILS);
+		if (veryNearStrikeCEOIChart) {
+			veryNearStrikeCEOIChart.destroy();
+		}
+		veryNearStrikeCEOIChart = getChart(ctx, CHART_TYPE_LINE, cedatasets, time, "Near Strikes CE OI");
+		
+		ctx = $(VERY_NEAR_STRIKES_PE_OI_DETAILS);
+		if (veryNearStrikePEOIChart) {
+			veryNearStrikePEOIChart.destroy();
+		}
+		veryNearStrikePEOIChart = getChart(ctx, CHART_TYPE_LINE, pedatasets, time, "Near Strikes PE OI");
 	}
 }
 
@@ -313,6 +405,8 @@ var updateStrikeButtons = function(data) {
  * @optionsChain Options Chain
  */
 var updateStrikeCharts = function(strike) {
+	updateVeryNearStrikeOI(strike);
+	
 	if (optionsChainMiniData != undefined && optionsChainMiniData.length > 0) {
 		var length = optionsChainMiniData.length;
 		

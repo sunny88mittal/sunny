@@ -26,3 +26,5 @@ var SELECTED_STRIKE_IV_CHART= "#selected_strike_iv_details";
 var SELECTED_STRIKE_PCR_CHART= "#selected_strike_pcr_details";
 var NEAR_STRIKES_OI_CHANGE_DETAILS = "#near_strikes_oi_change_details";
 var OPEN_INTEREST_CHANGE_DETAILS = "#open_interest_change_details";
+var VERY_NEAR_STRIKES_CE_OI_DETAILS = "#very_near_strikes_ce_oi_details";
+var VERY_NEAR_STRIKES_PE_OI_DETAILS = "#very_near_strikes_pe_oi_details";
