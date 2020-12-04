@@ -170,8 +170,12 @@ var updateNearStrikeOIChange = function(data, selectedStrike) {
 			for (var j=startIndex; j<endIndex; j++) {
 				var callOption = datai.callOptions[j];
 				var putOption = datai.putOptions[j];
-				callOIChange += callOption.openInterestChange;
-				putOIChange += putOption.openInterestChange;
+				if (callOption != undefined) {
+					callOIChange += callOption.openInterestChange;
+				}
+				if (putOption != undefined) {
+					putOIChange += putOption.openInterestChange;
+				}
 			}
 			
 			oiChangeDiff[i] = putOIChange - callOIChange;
