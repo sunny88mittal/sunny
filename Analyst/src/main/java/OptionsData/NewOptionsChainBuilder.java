@@ -31,7 +31,12 @@ public class NewOptionsChainBuilder {
 		optionsChain.putOIVol = nseOptionsChain.filtered.PE.totVol;
 		optionsChain.price = nseOptionsChain.records.underlyingValue;
 		optionsChain.expiryDate = optionsDataRowSample.expiryDate;
-		optionsChain.symbol = optionsDataRowSample.CE.underlying;
+		if (optionsDataRowSample.CE != null) {
+			optionsChain.symbol = optionsDataRowSample.CE.underlying;
+		} else {
+			optionsChain.symbol = optionsDataRowSample.PE.underlying;
+		}
+		
 		optionsChain.timeStamp = lastModifiedTime;
 
 		optionsChain.callOptions = getCEList(nseOptionsChain);
