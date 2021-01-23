@@ -98,6 +98,13 @@ var updateVeryNearStrikeOI = function(selectedStrike) {
 		var belowStrikeCEOI = [];
 		var belowStrikePEOI = [];
 		
+		var selectedStrikeChangeInCEOI = [];
+		var selectedStrikeChangeInPEOI = [];
+		var upperStrikeChangeInCEOI = [];
+		var upperStrikeChangeInPEOI = [];
+		var belowStrikeChangeInCEOI = [];
+		var belowStrikeChangeInPEOI = [];
+		
 		var upperStrike;
 		var belowStrike;
 		
@@ -116,6 +123,10 @@ var updateVeryNearStrikeOI = function(selectedStrike) {
 					upperStrikeCEOI.push(callOptions[j+1].openInterest);
 					belowStrikeCEOI.push(callOptions[j-1].openInterest);
 					
+					selectedStrikeChangeInCEOI.push(callOptions[j].openInterestChange);
+					upperStrikeChangeInCEOI.push(callOptions[j+1].openInterestChange);
+					belowStrikeChangeInCEOI.push(callOptions[j-1].openInterestChange);
+					
 					upperStrike = callOptions[j+1].strikePrice;
 					belowStrike = callOptions[j-1].strikePrice;
 						
@@ -130,6 +141,10 @@ var updateVeryNearStrikeOI = function(selectedStrike) {
 					selectedStrikePEOI.push(putOptions[j].openInterest);
 					upperStrikePEOI.push(putOptions[j+1].openInterest);
 					belowStrikePEOI.push( putOptions[j-1].openInterest);
+					
+					selectedStrikeChangeInPEOI.push(putOptions[j].openInterestChange);
+					upperStrikeChangeInPEOI.push(putOptions[j+1].openInterestChange);
+					belowStrikeChangeInPEOI.push( putOptions[j-1].openInterestChange);
 					break;
 				}
 			}
@@ -139,32 +154,44 @@ var updateVeryNearStrikeOI = function(selectedStrike) {
 		var selectedStrikeCEOIDs =  getDataset(selectedStrike + " CE", selectedStrikeCEOI, CHART_TYPE_LINE, null, COLOUR_RED);
 		var upperStrikeCEOIDs =  getDataset(upperStrike + " CE", upperStrikeCEOI, CHART_TYPE_LINE, null, COLOUR_GREEN);
 		var belowStrikeCEOIDs =  getDataset(belowStrike + " CE", belowStrikeCEOI, CHART_TYPE_LINE, null, COLOUR_BLACK);
-		
 		var selectedStrikePEOIDs =  getDataset(selectedStrike + " PE", selectedStrikePEOI, CHART_TYPE_LINE, null, COLOUR_NAVY);
 		var upperStrikePEOIDs =  getDataset(upperStrike + " PE", upperStrikePEOI, CHART_TYPE_LINE, null, COLOUR_PURPLE);
 		var belowStrikePEOIDs =  getDataset(belowStrike + " PE", belowStrikePEOI, CHART_TYPE_LINE, null, COLOUR_BROWN);
 		
-		cedatasets = [];
-		cedatasets.push(upperStrikeCEOIDs);
-		cedatasets.push(selectedStrikeCEOIDs);
-		cedatasets.push(belowStrikeCEOIDs);
+		var selectedStrikeChangeInCEOIDs =  getDataset(selectedStrike + " CE", selectedStrikeChangeInCEOI, CHART_TYPE_LINE, null, COLOUR_RED);
+		var upperStrikeChangeInCEOIDs =  getDataset(upperStrike + " CE", upperStrikeChangeInCEOI, CHART_TYPE_LINE, null, COLOUR_GREEN);
+		var belowStrikeChangeInCEOIDs =  getDataset(belowStrike + " CE", belowStrikeChangeInCEOI, CHART_TYPE_LINE, null, COLOUR_BLACK);
+		var selectedStrikeChangeInPEOIDs =  getDataset(selectedStrike + " PE", selectedStrikeChangeInPEOI, CHART_TYPE_LINE, null, COLOUR_NAVY);
+		var upperStrikeChangeInPEOIDs =  getDataset(upperStrike + " PE", upperStrikeChangeInPEOI, CHART_TYPE_LINE, null, COLOUR_PURPLE);
+		var belowStrikeChangeInPEOIDs =  getDataset(belowStrike + " PE", belowStrikeChangeInPEOI, CHART_TYPE_LINE, null, COLOUR_BROWN);
 		
-		pedatasets = [];
-		pedatasets.push(upperStrikePEOIDs);
-		pedatasets.push(selectedStrikePEOIDs);
-		pedatasets.push(belowStrikePEOIDs);
+		nearStrikeOIDatasets = [];
+		nearStrikeOIDatasets.push(upperStrikeCEOIDs);
+		nearStrikeOIDatasets.push(selectedStrikeCEOIDs);
+		nearStrikeOIDatasets.push(belowStrikeCEOIDs);
+		nearStrikeOIDatasets.push(upperStrikePEOIDs);
+		nearStrikeOIDatasets.push(selectedStrikePEOIDs);
+		nearStrikeOIDatasets.push(belowStrikePEOIDs);
+		
+		nearStrikeeChangeInOIDatasets = [];
+		nearStrikeeChangeInOIDatasets.push(upperStrikeChangeInCEOIDs);
+		nearStrikeeChangeInOIDatasets.push(selectedStrikeChangeInCEOIDs);
+		nearStrikeeChangeInOIDatasets.push(belowStrikeChangeInCEOIDs);
+		nearStrikeeChangeInOIDatasets.push(upperStrikeChangeInPEOIDs);
+		nearStrikeeChangeInOIDatasets.push(selectedStrikeChangeInPEOIDs);
+		nearStrikeeChangeInOIDatasets.push(belowStrikeChangeInPEOIDs);
 		
 		ctx = $(VERY_NEAR_STRIKES_CE_OI_DETAILS);
 		if (veryNearStrikeCEOIChart) {
 			veryNearStrikeCEOIChart.destroy();
 		}
-		veryNearStrikeCEOIChart = getChart(ctx, CHART_TYPE_LINE, cedatasets, time, "Near Strikes CE OI");
+		veryNearStrikeCEOIChart = getChart(ctx, CHART_TYPE_LINE, nearStrikeOIDatasets, time, "Near Strikes OI");
 		
 		ctx = $(VERY_NEAR_STRIKES_PE_OI_DETAILS);
 		if (veryNearStrikePEOIChart) {
 			veryNearStrikePEOIChart.destroy();
 		}
-		veryNearStrikePEOIChart = getChart(ctx, CHART_TYPE_LINE, pedatasets, time, "Near Strikes PE OI");
+		veryNearStrikePEOIChart = getChart(ctx, CHART_TYPE_LINE, nearStrikeeChangeInOIDatasets, time, "Near Strikes change in OI");
 	}
 }
 
