@@ -233,6 +233,10 @@ var updateNearStrikeOIChange = function(data, selectedStrike) {
 		var time = [];
 		var oiChangeDiff = [];
 		
+		//Price to consider
+		var price = optionsChainMiniData[0].price;
+		selectedStrike = price - (price % 100);
+		
 		// Prepare time data for the chart
 		for (var i = 0; i < length; i++) {
 			time.push(optionsChainMiniData[i].time.split(".")[0]);
