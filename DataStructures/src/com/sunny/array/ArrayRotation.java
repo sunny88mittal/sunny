@@ -1,5 +1,10 @@
 package com.sunny.array;
 
+
+/**
+ * https://www.geeksforgeeks.org/array-rotation/
+ * @author sunmitta
+ */
 public class ArrayRotation {
 
 	public static void main(String args[]) {
