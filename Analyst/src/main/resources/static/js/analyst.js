@@ -1,4 +1,5 @@
 var optionsChainBarChart;
+var openInterestChangeBarChart;
 var optionsChainMiniData;
 
 var pcrChart;
@@ -59,6 +60,7 @@ var updateData = function() {
 		updateStrikeButtons(data);
 		updateOptionsChain(data);
 		updateOptionsChainBarChart(data);
+		updateOptionInterestChangeBarChart(data);
 	});
 	
 	$.get(optionsChainInterpretationURL, function(data, status) {
@@ -598,6 +600,39 @@ var updateOptionsChainBarChart = function(data) {
 		datasets.push(getDataset("Put OI", putOptionsData, CHART_TYPE_BAR, COLOUR_BLACK));
 		optionsChainBarChart = getChart(ctx, CHART_TYPE_BAR, datasets,
 				strikesList, "OI Bar Chart");
+	}
+}
+
+/**
+ * Draws the open interest change bar chart
+ * 
+ * @data options chain data
+ */
+var updateOptionInterestChangeBarChart = function(data) {
+	if (data != undefined) {
+		var callOptionsData = [];
+		var putOptionsData = [];
+		var strikesList = [];
+		for (var i = 0; i < data.callOptions.length; i++) {
+			var callOpenInterest = data.callOptions[i].openInterestChange;
+			var putOpenInterest = data.putOptions[i].openInterestChange;
+			var strikePrice = data.callOptions[i].strikePrice;
+
+			callOptionsData.push(callOpenInterest);
+			putOptionsData.push(putOpenInterest);
+			strikesList.push(strikePrice);
+		}
+
+		var ctx = $(OPEN_INTEREST_CHANGE_BAR_CHART);
+		if (openInterestChangeBarChart) {
+			openInterestChangeBarChart.destroy();
+		}
+
+		var datasets = [];
+		datasets.push(getDataset("Call OI Change", callOptionsData, CHART_TYPE_BAR, COLOUR_RED));
+		datasets.push(getDataset("Put OI Change", putOptionsData, CHART_TYPE_BAR, COLOUR_BLACK));
+		openInterestChangeBarChart = getChart(ctx, CHART_TYPE_BAR, datasets,
+				strikesList, "OI Change Bar Chart");
 	}
 }
 

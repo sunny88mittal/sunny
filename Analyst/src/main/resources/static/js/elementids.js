@@ -16,6 +16,7 @@ var OPTIONS_CE_PRICE_TIME_SERIES_CHART = "#options_ce_price_time_series";
 var OPTIONS_PE_INTEREST_TIME_SERIES_CHART = "#options_pe_interest_time_series";
 var OPTIONS_PE_PRICE_TIME_SERIES_CHART = "#options_pe_price_time_series";
 var OPEN_INTEREST_BAR_CHART = "#open_interest_bar_chart";
+var OPEN_INTEREST_CHANGE_BAR_CHART = "#open_interest_change_bar_chart";
 var TRADING_DAY = "#trading_day";
 var STRIKE_BUTTONS = "#strike_options";
 var SELECTED_STRIKE_CE_OPTION_CHART= "#selected_strike_ce_option_details";
