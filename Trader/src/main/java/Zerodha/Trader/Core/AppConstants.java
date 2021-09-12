@@ -16,7 +16,7 @@ public class AppConstants {
 
 	public static String USER_ID = "";
 
-	public static String API_KEY = "";
+	public static String API_KEY = " ";
 
 	public static String API_SECRET = "";
 
