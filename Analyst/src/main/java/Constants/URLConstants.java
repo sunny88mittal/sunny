@@ -2,7 +2,7 @@ package Constants;
 
 public class URLConstants {
 
-	public static final String FNO_URL = "https://www1.nseindia.com/content/historical/DERIVATIVES/YEAR/MONTH/foDATEMONTHYEARbhav.csv.zip";
+	public static final String FNO_URL = "https://www1.nseindia.com/content/historical/DERIVATIVES/2021/MAR/fo30MAR2021bhav.csv.zip";
 
 	public static final String STOCKS_URL = "https://www1.nseindia.com/content/historical/EQUITIES/YEAR/MONTH/cmDATEMONTHYEARbhav.csv.zip";
 
