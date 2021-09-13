@@ -67,7 +67,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 						this.lastTradedAt = lastTradedAt;
 						this.isTradeOpen = true;
 					} else {
-						file.delete();
+						clearCheckPoint();
 					}
 				}
 				System.out.println("Initialization Complete");
@@ -104,7 +104,8 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	private void doCheckPointing(int price) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(AppConstants.SSWA_CHECK_POINT_FILE));
-			writer.write(price + "");
+			String toWrite = price > 0 ? price + "" : "";
+			writer.write(toWrite);
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Error in adding check point");
@@ -112,8 +113,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	}
 
 	private void clearCheckPoint() {
-		File file = new File(AppConstants.SSWA_CHECK_POINT_FILE);
-		file.delete();
+		doCheckPointing(0);
 	}
 
 	private void tradeOptions(double price, String transactionType) {
