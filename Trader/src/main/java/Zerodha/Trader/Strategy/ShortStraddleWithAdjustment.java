@@ -79,6 +79,9 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	public void doNext(double price) {
 		LocalDateTime now = LocalDateTime.now();
+		if (now.getMinute() % 15 == 0 && now.getSecond() % 30 == 0) {
+			System.out.println("Price is :" + price);
+		}
 		if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
 			tradeOptions(price, Constants.TRANSACTION_TYPE_SELL);
 			isTradeOpen = true;
@@ -122,10 +125,8 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		String callOptionSymbol = getCallOptionSymbol(strike);
 
 		try {
-			// orderHandler.placeOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO,
-			// transactionType);
-			// orderHandler.placeOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO,
-			// transactionType);
+			orderHandler.placeOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+			orderHandler.placeOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
 			System.out.println(qty + ":" + putOptionSymbol + ":" + transactionType);
 			System.out.println(qty + ":" + callOptionSymbol + ":" + transactionType);
 		} catch (Throwable e) {
