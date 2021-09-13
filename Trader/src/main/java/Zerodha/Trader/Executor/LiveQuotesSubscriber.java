@@ -59,9 +59,7 @@ public class LiveQuotesSubscriber {
 
 		tickerProvider.setOnTickerArrivalListener(new OnTicks() {
 			public void onTicks(ArrayList<Tick> ticks) {
-				System.out.println("ticks size " + ticks.size());
 				if (ticks.size() > 0) {
-					System.out.println(ticks.get(0).getLastTradedPrice());
 					strategy.doNext(ticks.get(0).getLastTradedPrice());
 				}
 			}

@@ -56,8 +56,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 					String putOptionSymbol = getPutOptionSymbol(strikeTradedAt);
 					boolean hasPosition = false;
 					for (Position position : positions) {
-						if (position.netQuantity > 0 && (position.tradingSymbol.equals(putOptionSymbol)
-								|| position.instrumentToken.equals(putOptionSymbol))) {
+						if (Math.abs(position.netQuantity) > 0 && position.tradingSymbol.equals(putOptionSymbol)) {
 							hasPosition = true;
 							break;
 						}
@@ -80,7 +79,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	public void doNext(double price) {
 		LocalDateTime now = LocalDateTime.now();
-		if (!isTradeOpen && now.getHour() == 11 && now.getMinute() >= 10) {
+		if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
 			tradeOptions(price, Constants.TRANSACTION_TYPE_SELL);
 			isTradeOpen = true;
 			lastTradedAt = price;
