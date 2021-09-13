@@ -79,7 +79,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	public void doNext(double price) {
 		LocalDateTime now = LocalDateTime.now();
-		if (now.getMinute() % 15 == 0 && now.getSecond() % 30 == 0) {
+		if (now.getMinute() % 15 == 0 && now.getSecond() == 0) {
 			System.out.println("Price is :" + price);
 		}
 		if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
