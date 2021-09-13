@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 
+import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
 import com.zerodhatech.models.Position;
 
@@ -52,15 +53,9 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 					int strikeTradedAt = getStrikeToTrade(lastTradedAt);
 
 					// Confirm if the position is still open
-					List<Position> positions = positionsProvider.getPositions().get("net");
 					String putOptionSymbol = getPutOptionSymbol(strikeTradedAt);
-					boolean hasPosition = false;
-					for (Position position : positions) {
-						if (Math.abs(position.netQuantity) > 0 && position.tradingSymbol.equals(putOptionSymbol)) {
-							hasPosition = true;
-							break;
-						}
-					}
+					String callOptionSymbol = getCallOptionSymbol(strikeTradedAt);
+					boolean hasPosition = isPositionOpen(callOptionSymbol) && isPositionOpen(putOptionSymbol);
 
 					// Initialize class attributes or remove the checkpoint file
 					if (hasPosition) {
@@ -125,13 +120,34 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		String callOptionSymbol = getCallOptionSymbol(strike);
 
 		try {
-			orderHandler.placeOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
-			orderHandler.placeOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
-			System.out.println(qty + ":" + putOptionSymbol + ":" + transactionType);
-			System.out.println(qty + ":" + callOptionSymbol + ":" + transactionType);
+			//Close Put position 
+			if (isPositionOpen(putOptionSymbol)) {
+				orderHandler.placeOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+				System.out.println(qty + ":" + putOptionSymbol + ":" + transactionType);
+			} else {
+				System.out.println("Position already closed for :" + putOptionSymbol);
+			}
+
+			//Close call position
+			if (isPositionOpen(callOptionSymbol)) {
+				orderHandler.placeOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+				System.out.println(qty + ":" + callOptionSymbol + ":" + transactionType);
+			} else {
+				System.out.println("Position already closed for :" + callOptionSymbol);
+			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+	}
+
+	private boolean isPositionOpen(String tradingSymbol) throws IOException, KiteException {
+		List<Position> positions = positionsProvider.getPositions().get("net");
+		for (Position position : positions) {
+			if (Math.abs(position.netQuantity) > 0 && position.tradingSymbol.equals(tradingSymbol)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private String getPutOptionSymbol(int strike) {
