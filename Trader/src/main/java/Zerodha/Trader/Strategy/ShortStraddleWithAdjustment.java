@@ -93,7 +93,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 			isTradeOpen = true;
 			lastTradedAt = price;
 			doCheckPointing((int) lastTradedAt);
-		} else if (isTradeOpen && now.getHour() == 15 && now.getMinute() >= 28) {
+		} else if (isTradeOpen && now.getHour() == 15 && now.getMinute() >= 29) {
 			tradeOptions(lastTradedAt, Constants.TRANSACTION_TYPE_BUY);
 			isTradeOpen = false;
 			lastTradedAt = 0;
