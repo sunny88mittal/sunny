@@ -61,8 +61,10 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 					if (hasPosition) {
 						this.lastTradedAt = lastTradedAt;
 						this.isTradeOpen = true;
+						System.out.println("Trade already open");
 					} else {
 						clearCheckPoint();
+						System.out.println("No Trade open");
 					}
 				}
 				System.out.println("Initialization Complete");
