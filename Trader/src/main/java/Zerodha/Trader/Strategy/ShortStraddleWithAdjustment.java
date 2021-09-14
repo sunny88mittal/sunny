@@ -118,18 +118,20 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	private void placeOrders(int strike, String transactionType) {
 		String putOptionSymbol = getPutOptionSymbol(strike);
 		String callOptionSymbol = getCallOptionSymbol(strike);
+		boolean isBuyOrder = Constants.TRANSACTION_TYPE_BUY.equals(transactionType);
+		boolean isSellOrder = Constants.TRANSACTION_TYPE_SELL.equals(transactionType);
 
 		try {
-			//Close Put position 
-			if (isPositionOpen(putOptionSymbol)) {
+			// Trade Put position
+			if ((isBuyOrder && isPositionOpen(putOptionSymbol)) || isSellOrder) {
 				orderHandler.placeOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
 				System.out.println(qty + ":" + putOptionSymbol + ":" + transactionType);
 			} else {
 				System.out.println("Position already closed for :" + putOptionSymbol);
 			}
 
-			//Close call position
-			if (isPositionOpen(callOptionSymbol)) {
+			// Close call position
+			if ((isBuyOrder && isPositionOpen(callOptionSymbol)) || isSellOrder) {
 				orderHandler.placeOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
 				System.out.println(qty + ":" + callOptionSymbol + ":" + transactionType);
 			} else {
