@@ -33,6 +33,7 @@ public class LiveQuotesSubscriber {
 			public void onConnected() {
 				tickerProvider.subscribe(tokens);
 				tickerProvider.setMode(tokens, KiteTicker.modeLTP);
+				System.out.println("Ticker Connected");
 			}
 		});
 
