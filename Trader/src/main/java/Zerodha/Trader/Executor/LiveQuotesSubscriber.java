@@ -34,28 +34,28 @@ public class LiveQuotesSubscriber {
 			public void onConnected() {
 				tickerProvider.subscribe(tokens);
 				tickerProvider.setMode(tokens, KiteTicker.modeLTP);
-				Logger.print(this.getClass().getName(), "Ticker Connected");
+				Logger.print(this.getClass(), "Ticker Connected");
 			}
 		});
 
 		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
 			public void onDisconnected() {
-				Logger.print(this.getClass().getName(), "Ticker disconnected");
+				Logger.print(this.getClass(), "Ticker disconnected");
 			}
 		});
 
 		/** Set error listener to listen to errors. */
 		tickerProvider.setOnErrorListener(new OnError() {
 			public void onError(Exception exception) {
-				Logger.print(this.getClass().getName(), exception.getMessage());
+				Logger.print(this.getClass(), exception.getMessage());
 			}
 
 			public void onError(KiteException kiteException) {
-				Logger.print(this.getClass().getName(), kiteException.getMessage());
+				Logger.print(this.getClass(), kiteException.getMessage());
 			}
 
 			public void onError(String error) {
-				Logger.print(this.getClass().getName(), error);
+				Logger.print(this.getClass(), error);
 			}
 		});
 
@@ -78,7 +78,6 @@ public class LiveQuotesSubscriber {
 
 		tickerProvider.connect();
 
-		Logger.print(this.getClass().getName(),
-				"Tikcer Provider Connection Open : " + tickerProvider.isConnectionOpen());
+		Logger.print(this.getClass(), "Tikcer Provider Connection Open : " + tickerProvider.isConnectionOpen());
 	}
 }
