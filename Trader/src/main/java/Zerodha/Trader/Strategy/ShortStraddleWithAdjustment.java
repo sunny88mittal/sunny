@@ -16,6 +16,7 @@ import Zerodha.Trader.Core.AppConstants;
 import Zerodha.Trader.Core.OrderHandler;
 import Zerodha.Trader.Core.PositionsProvider;
 import Zerodha.Trader.Core.TradingSymbolHelper;
+import Zerodha.Trader.Logging.Logger;
 
 public class ShortStraddleWithAdjustment implements IStrategy {
 
@@ -61,15 +62,15 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 					if (hasPosition) {
 						this.lastTradedAt = lastTradedAt;
 						this.isTradeOpen = true;
-						System.out.println("Trade already open");
+						Logger.print(this.getClass().getName(), "Trade already open");
 					} else {
 						clearCheckPoint();
-						System.out.println("No Trade open");
+						Logger.print(this.getClass().getName(), "No Trade open");
 					}
 				}
-				System.out.println("Initialization Complete");
+				Logger.print(this.getClass().getName(), "Initialization Complete");
 			} catch (Throwable e) {
-				System.out.println("Error in initializing :" + this.getClass().getName());
+				Logger.print(this.getClass().getName(), "Error in initializing");
 			}
 		}
 	}
@@ -77,7 +78,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	public void doNext(double price) {
 		LocalDateTime now = LocalDateTime.now();
 		if (now.getMinute() % 15 == 0 && now.getSecond() == 0) {
-			System.out.println("Price is :" + price);
+			Logger.print(this.getClass().getName(), "Price is :" + price);
 		}
 		if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
 			tradeOptions(price, Constants.TRANSACTION_TYPE_SELL);
@@ -105,7 +106,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 			writer.write(toWrite);
 			writer.close();
 		} catch (IOException e) {
-			System.out.println("Error in adding check point");
+			Logger.print(this.getClass().getName(), "Error in adding check point");
 		}
 	}
 
@@ -127,7 +128,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 			// Trade Put position
 			if ((isBuyOrder && isPositionOpen(putOptionSymbol)) || isSellOrder) {
 				orderHandler.placeOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
-				System.out.println(qty + ":" + putOptionSymbol + ":" + transactionType);
+				Logger.print(this.getClass().getName(), qty + ":" + putOptionSymbol + ":" + transactionType);
 			} else {
 				System.out.println("Position already closed for :" + putOptionSymbol);
 			}
@@ -135,9 +136,9 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 			// Close call position
 			if ((isBuyOrder && isPositionOpen(callOptionSymbol)) || isSellOrder) {
 				orderHandler.placeOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
-				System.out.println(qty + ":" + callOptionSymbol + ":" + transactionType);
+				Logger.print(this.getClass().getName(), qty + ":" + callOptionSymbol + ":" + transactionType);
 			} else {
-				System.out.println("Position already closed for :" + callOptionSymbol);
+				Logger.print(this.getClass().getName(), "Position already closed for :" + callOptionSymbol);
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();

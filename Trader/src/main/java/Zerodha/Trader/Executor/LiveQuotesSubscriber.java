@@ -11,6 +11,7 @@ import com.zerodhatech.ticker.OnDisconnect;
 import com.zerodhatech.ticker.OnError;
 import com.zerodhatech.ticker.OnTicks;
 
+import Zerodha.Trader.Logging.Logger;
 import Zerodha.Trader.Strategy.IStrategy;
 
 public class LiveQuotesSubscriber {
@@ -33,28 +34,28 @@ public class LiveQuotesSubscriber {
 			public void onConnected() {
 				tickerProvider.subscribe(tokens);
 				tickerProvider.setMode(tokens, KiteTicker.modeLTP);
-				System.out.println("Ticker Connected");
+				Logger.print(this.getClass().getName(), "Ticker Connected");
 			}
 		});
 
 		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
 			public void onDisconnected() {
-				System.out.println("Ticker disconnected");
+				Logger.print(this.getClass().getName(), "Ticker disconnected");
 			}
 		});
 
 		/** Set error listener to listen to errors. */
 		tickerProvider.setOnErrorListener(new OnError() {
 			public void onError(Exception exception) {
-				System.out.println(exception);
+				Logger.print(this.getClass().getName(), exception.getMessage());
 			}
 
 			public void onError(KiteException kiteException) {
-				System.out.println(kiteException);
+				Logger.print(this.getClass().getName(), kiteException.getMessage());
 			}
 
 			public void onError(String error) {
-				System.out.println(error);
+				Logger.print(this.getClass().getName(), error);
 			}
 		});
 
@@ -77,6 +78,7 @@ public class LiveQuotesSubscriber {
 
 		tickerProvider.connect();
 
-		System.out.println("Tikcer Provider Connection Open : " + tickerProvider.isConnectionOpen());
+		Logger.print(this.getClass().getName(),
+				"Tikcer Provider Connection Open : " + tickerProvider.isConnectionOpen());
 	}
 }
