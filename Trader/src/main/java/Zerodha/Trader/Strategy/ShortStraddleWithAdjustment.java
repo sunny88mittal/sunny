@@ -31,7 +31,9 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	private OrderHandler orderHandler;
 
 	private PositionsProvider positionsProvider;
-
+	
+	private static String SSWA_CHECK_POINT_FILE = "C:\\Code\\sunny\\Trader\\SSWACheckPointFile.txt";
+	
 	public ShortStraddleWithAdjustment(int qty, String optionDateValue, OrderHandler orderHandler,
 			PositionsProvider positionsProvider) {
 		this.qty = qty;
@@ -43,7 +45,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	}
 
 	public void initialize() {
-		File file = new File(AppConstants.SSWA_CHECK_POINT_FILE);
+		File file = new File(SSWA_CHECK_POINT_FILE);
 		if (file.exists()) {
 			try {
 				Scanner sc = new Scanner(file);
@@ -101,7 +103,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	private void doCheckPointing(int price) {
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(AppConstants.SSWA_CHECK_POINT_FILE));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(SSWA_CHECK_POINT_FILE));
 			String toWrite = price > 0 ? price + "" : "";
 			writer.write(toWrite);
 			writer.close();
@@ -127,7 +129,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		try {
 			// Trade Put position
 			if ((isBuyOrder && isPositionOpen(putOptionSymbol)) || isSellOrder) {
-				orderHandler.placeOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+				orderHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
 				Logger.print(this.getClass(), qty + ":" + putOptionSymbol + ":" + transactionType);
 			} else {
 				System.out.println("Position already closed for :" + putOptionSymbol);
@@ -135,7 +137,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 			// Close call position
 			if ((isBuyOrder && isPositionOpen(callOptionSymbol)) || isSellOrder) {
-				orderHandler.placeOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+				orderHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
 				Logger.print(this.getClass(), qty + ":" + callOptionSymbol + ":" + transactionType);
 			} else {
 				Logger.print(this.getClass(), "Position already closed for :" + callOptionSymbol);

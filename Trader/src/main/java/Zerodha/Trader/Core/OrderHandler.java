@@ -18,17 +18,30 @@ public class OrderHandler {
 		this.kiteConnect = kiteConnect;
 	}
 
-	public Order placeOrder(int qty, String tradingSymbol, String exchange, String orderType)
+	public Order placeMarketOrder(int qty, String tradingSymbol, String exchange, String orderType)
 			throws JSONException, IOException, KiteException {
 		OrderParams orderParams = new OrderParams();
-		orderParams.quantity = qty;
 		orderParams.orderType = Constants.ORDER_TYPE_MARKET;
+		return placeOrder(qty, tradingSymbol, exchange, orderType, orderParams);
+	}
+
+	public Order placeLimitOrder(int qty, String tradingSymbol, String exchange, String orderType, int price)
+			throws JSONException, IOException, KiteException {
+		OrderParams orderParams = new OrderParams();
+		orderParams.orderType = Constants.ORDER_TYPE_SL;
+		orderParams.price = (double) price;
+		orderParams.triggerPrice = (double) price;
+		return placeOrder(qty, tradingSymbol, exchange, orderType, orderParams);
+	}
+
+	private Order placeOrder(int qty, String tradingSymbol, String exchange, String orderType, OrderParams orderParams)
+			throws JSONException, IOException, KiteException {
+		orderParams.quantity = qty;
 		orderParams.tradingsymbol = tradingSymbol;
 		orderParams.product = Constants.PRODUCT_NRML;
 		orderParams.exchange = exchange;
 		orderParams.transactionType = orderType;
 		orderParams.validity = Constants.VALIDITY_DAY;
-		
 		return kiteConnect.placeOrder(orderParams, Constants.VARIETY_REGULAR);
 	}
 }

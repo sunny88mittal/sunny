@@ -24,7 +24,7 @@ public class OrderTesting {
 
 		OrderHandler orderHandler = new OrderHandler(connection);
 
-		orderHandler.placeOrder(25, "BANKNIFTY2191634500PE", Constants.EXCHANGE_NFO, Constants.TRANSACTION_TYPE_SELL);
+		orderHandler.placeMarketOrder(25, "BANKNIFTY2191634500PE", Constants.EXCHANGE_NFO, Constants.TRANSACTION_TYPE_SELL);
 
 		PositionsProvider positionsProvider = new PositionsProvider(connection);
 

@@ -22,6 +22,8 @@ public class LiveQuotesSubscriber {
 
 	private final IStrategy strategy;
 
+	private final int TICKER_RECONNECT_TIME = 15 * 1000;
+
 	public LiveQuotesSubscriber(KiteConnect kiteConnect, ArrayList<Long> tokens, IStrategy strategy) {
 		super();
 		this.tokens = tokens;
@@ -41,17 +43,27 @@ public class LiveQuotesSubscriber {
 		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
 			public void onDisconnected() {
 				Logger.print(this.getClass(), "Ticker disconnected");
+				while (!tickerProvider.isConnectionOpen()) {
+					try {
+						Thread.sleep(TICKER_RECONNECT_TIME);
+						connectTicker(tickerProvider);
+					} catch (KiteException ke) {
+						Logger.print(this.getClass(), "Error connecting ticker");
+					} catch (InterruptedException e) {
+						Logger.print(this.getClass(), "Error connecting ticker");
+					}
+				}
 			}
 		});
 
 		/** Set error listener to listen to errors. */
 		tickerProvider.setOnErrorListener(new OnError() {
 			public void onError(Exception exception) {
-				Logger.print(this.getClass(), exception.getMessage());
+				Logger.print(this.getClass(), "Error in ticker connection");
 			}
 
 			public void onError(KiteException kiteException) {
-				Logger.print(this.getClass(), kiteException.getMessage());
+				Logger.print(this.getClass(), "Error in ticker connection");
 			}
 
 			public void onError(String error) {
@@ -66,12 +78,16 @@ public class LiveQuotesSubscriber {
 				}
 			}
 		});
+		
+		connectTicker(tickerProvider);
+	}
 
+	private void connectTicker(KiteTicker tickerProvider) throws KiteException {
 		// Make sure this is called before calling connect.
 		tickerProvider.setTryReconnection(true);
 
 		// maximum retries and should be greater than 0
-		tickerProvider.setMaximumRetries(10);
+		tickerProvider.setMaximumRetries(100);
 
 		// set maximum retry interval in seconds
 		tickerProvider.setMaximumRetryInterval(30);
