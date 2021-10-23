@@ -70,11 +70,11 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 						Logger.print(this.getClass(), "No Trade open");
 					}
 				}
-				Logger.print(this.getClass(), "Initialization Complete");
 			} catch (Throwable e) {
 				Logger.print(this.getClass(), "Error in initializing");
 			}
 		}
+		Logger.print(this.getClass(), "Initialization Complete");
 	}
 
 	public void doNext(double price) {

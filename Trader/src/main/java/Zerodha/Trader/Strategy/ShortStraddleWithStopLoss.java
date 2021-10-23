@@ -57,28 +57,15 @@ public class ShortStraddleWithStopLoss implements IStrategy {
 					// Read the banknifty price at which last trade happened
 					String line = sc.nextLine();
 					int lastTradedAt = Integer.parseInt(line);
-					int strikeTradedAt = getStrikeToTrade(lastTradedAt);
-
-					// Confirm if the position is still open
-					String putOptionSymbol = getPutOptionSymbol(strikeTradedAt);
-					String callOptionSymbol = getCallOptionSymbol(strikeTradedAt);
-					boolean hasPosition = isPositionOpen(callOptionSymbol) && isPositionOpen(putOptionSymbol);
-
-					// Initialize class attributes or remove the checkpoint file
-					if (hasPosition) {
-						this.lastTradedAt = lastTradedAt;
-						this.isTradeOpen = true;
-						Logger.print(this.getClass(), "Trade already open");
-					} else {
-						clearCheckPoint();
-						Logger.print(this.getClass(), "No Trade open");
-					}
+					this.lastTradedAt = lastTradedAt;
+					this.isTradeOpen = true;
+					Logger.print(this.getClass(), "Trade already open");
 				}
-				Logger.print(this.getClass(), "Initialization Complete");
 			} catch (Throwable e) {
 				Logger.print(this.getClass(), "Error in initializing");
 			}
 		}
+		Logger.print(this.getClass(), "Initialization Complete");
 	}
 
 	public void doNext(double price) {
