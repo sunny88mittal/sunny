@@ -31,9 +31,9 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	private OrderHandler orderHandler;
 
 	private PositionsProvider positionsProvider;
-	
+
 	private static String SSWA_CHECK_POINT_FILE = "C:\\Code\\sunny\\Trader\\SSWACheckPointFile.txt";
-	
+
 	public ShortStraddleWithAdjustment(int qty, String optionDateValue, OrderHandler orderHandler,
 			PositionsProvider positionsProvider) {
 		this.qty = qty;
@@ -89,7 +89,15 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 			doCheckPointing((int) lastTradedAt);
 		} else if (isTradeOpen && (price >= 1.01 * lastTradedAt || price <= .99 * lastTradedAt)) {
 			tradeOptions(lastTradedAt, Constants.TRANSACTION_TYPE_BUY);
+
+			try {
+				Thread.sleep(2 * 1000);
+			} catch (Exception ex) {
+				Logger.print(this.getClass(), "Error in sleeping");
+			}
+
 			tradeOptions(price, Constants.TRANSACTION_TYPE_SELL);
+
 			isTradeOpen = true;
 			lastTradedAt = price;
 			doCheckPointing((int) lastTradedAt);
