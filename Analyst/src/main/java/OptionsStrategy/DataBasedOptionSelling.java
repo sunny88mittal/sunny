@@ -95,14 +95,14 @@ public class DataBasedOptionSelling {
 				}
 
 				// If data reversal happens
-				if (trade.ceEntryPrice > 1 && putOIChange > callOIChange) {
+				if (trade.ceEntryPrice > 1 && putOIChange > callOIChange && trade.entry < price) {
 					System.out.println("Data reversal");
 					trade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, trade.strike);
 					trade.exit = price;
 					break;
 				}
 				
-				if (trade.peEntryPrice > 1 && putOIChange < callOIChange) {
+				if (trade.peEntryPrice > 1 && putOIChange < callOIChange &&  trade.entry > price) {
 					System.out.println("Data reversal");
 					trade.exit = price;
 					trade.peExitPrice = OptionsChainHelper.getCEPrice(optionsChain, trade.strike);
@@ -116,7 +116,7 @@ public class DataBasedOptionSelling {
 	
 	public static void main(String args[]) {
 		DataBasedOptionSelling dbos = new DataBasedOptionSelling();
-		List<Trade> trades = dbos.execute("19-04-2022");
+		List<Trade> trades = dbos.execute("11-03-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
 			netProfit += trade.getNetPoints();
