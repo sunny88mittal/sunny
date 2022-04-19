@@ -36,7 +36,7 @@ public class ShortStraddleWithStopLoss implements IStrategy {
 
 	private int STOP_LOSS_PER = 25;
 
-	private static String SSWSL_CHECK_POINT_FILE = "C:\\Code\\sunny\\Trader\\SSWSLCheckPointFile.txt";
+	private static String SSWSL_CHECK_POINT_FILE = "..\\SSWSLCheckPointFile.txt";
 
 	public ShortStraddleWithStopLoss(int qty, String optionDateValue, OrderHandler orderHandler,
 			PositionsProvider positionsProvider) {

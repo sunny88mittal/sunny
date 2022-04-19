@@ -10,6 +10,7 @@ import java.util.Scanner;
 
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
+import com.zerodhatech.models.Order;
 import com.zerodhatech.models.Position;
 
 import Zerodha.Trader.Core.AppConstants;
@@ -83,6 +84,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 			Logger.print(this.getClass(), "Price is :" + price);
 		}
 		if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
+			Logger.print(this.getClass(), "Initialted Straddle at :" + price);
 			tradeOptions(price, Constants.TRANSACTION_TYPE_SELL);
 			isTradeOpen = true;
 			lastTradedAt = price;
@@ -92,6 +94,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 			try {
 				Thread.sleep(2 * 1000);
+				Logger.print(this.getClass(), "Initialted Straddle at :" + price);
 			} catch (Exception ex) {
 				Logger.print(this.getClass(), "Error in sleeping");
 			}
@@ -137,16 +140,16 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		try {
 			// Trade Put position
 			if ((isBuyOrder && isPositionOpen(putOptionSymbol)) || isSellOrder) {
-				orderHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
-				Logger.print(this.getClass(), qty + ":" + putOptionSymbol + ":" + transactionType);
+				Order order = orderHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+				Logger.print(this.getClass(), qty + ":" + putOptionSymbol + ":" + transactionType + ":" + order.price);
 			} else {
 				System.out.println("Position already closed for :" + putOptionSymbol);
 			}
 
 			// Close call position
 			if ((isBuyOrder && isPositionOpen(callOptionSymbol)) || isSellOrder) {
-				orderHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
-				Logger.print(this.getClass(), qty + ":" + callOptionSymbol + ":" + transactionType);
+				Order order = orderHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+				Logger.print(this.getClass(), qty + ":" + callOptionSymbol + ":" + transactionType +  ":" + order.price);
 			} else {
 				Logger.print(this.getClass(), "Position already closed for :" + callOptionSymbol);
 			}

@@ -13,4 +13,6 @@ public class NSERecords {
 	public String underlyingValue;
 
 	public List<String> strikePrices;
+	
+	public NSEIndex index;
 }

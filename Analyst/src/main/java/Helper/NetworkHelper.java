@@ -51,13 +51,14 @@ public class NetworkHelper {
 		ZipInputStream zipStream = new ZipInputStream(is);
 
 		ZipEntry zipEntry = zipStream.getNextEntry();
-		byte[] bytes = zipStream.readAllBytes();
+		byte[] bytes = new byte[20 * 1000 * 1000];
+		zipStream.read(bytes);
 
 		return bytes;
 	}
 
 	public static void main(String args[]) throws IOException {
-		String url = "https://www.nseindia.com/api/option-chain-indices?symbol=NIFTY";
+		String url = "https://www1.nseindia.com/content/historical/EQUITIES/2021/FEB/cm22FEB2021bhav.csv.zip";
 		System.out.println(makeGetRequest(url));
 	}
 }

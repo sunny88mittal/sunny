@@ -77,6 +77,6 @@ public class NormalDistributionStrategyAnalyzer {
 	}
 
 	public static void main(String args[]) throws FileNotFoundException {
-		analyze(StockSymbols.NIFTY.name, 29, 6);
+		analyze(StockSymbols.BANKNIFTY.name, 52, 5);
 	}
 }

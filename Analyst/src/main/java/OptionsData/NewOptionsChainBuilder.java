@@ -29,7 +29,7 @@ public class NewOptionsChainBuilder {
 		optionsChain.callOIVol = nseOptionsChain.filtered.CE.totVol;
 		optionsChain.putOI = nseOptionsChain.filtered.PE.totOI;
 		optionsChain.putOIVol = nseOptionsChain.filtered.PE.totVol;
-		optionsChain.price = nseOptionsChain.records.underlyingValue;
+		optionsChain.price = nseOptionsChain.records.index.last;
 		optionsChain.expiryDate = optionsDataRowSample.expiryDate;
 		if (optionsDataRowSample.CE != null) {
 			optionsChain.symbol = optionsDataRowSample.CE.underlying;
