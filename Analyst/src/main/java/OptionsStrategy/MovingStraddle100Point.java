@@ -8,7 +8,7 @@ import java.util.Set;
 import Constants.StockSymbols;
 import Entities.OptionsChain;
 
-public class MovingStraddle100Point {
+public class MovingStraddle100Point implements IOptionsStrategy {
 
 	private Set<Long> strikesExecuted = new HashSet<Long>();
 
@@ -101,7 +101,7 @@ public class MovingStraddle100Point {
 
 	public static void main(String args[]) {
 		MovingStraddle100Point ms = new MovingStraddle100Point();
-		List<Trade> trades = ms.execute("19-04-2022");
+		List<Trade> trades = ms.execute("20-04-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
 			netProfit += trade.getNetPoints();

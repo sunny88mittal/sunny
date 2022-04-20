@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,6 +50,7 @@ public class OptionsChainDataProvider {
 	}
 
 	private Set<String> filesAlreadyRead = new HashSet<String>();
+	private Set<String> timeAlreadyRead = new HashSet<String>();
 
 	public List<OptionsChainInterpretation> getOptionschainInterpretations(String instrument, String date) {
 		return optionsDataMap.get(date).optionsChainInterpretationsMap.get(instrument);
@@ -71,7 +73,9 @@ public class OptionsChainDataProvider {
 		for (String instrument : instruments) {
 			String dirLocation = FileConstants.OPTIONS_FILE_BASE_PATH + "\\" + date + "\\" + instrument;
 			for (File file : IOHelper.getFilesInDir(dirLocation)) {
-				if (!filesAlreadyRead.contains(file.getAbsolutePath())) {
+				Date fileDate = new Date(file.lastModified());
+				String fileTime = fileDate.getYear() + "-" +  fileDate.getMonth() + "-" + fileDate.getDate() + "-"  + fileDate.getHours() + "-" + fileDate.getMinutes();
+				if (!filesAlreadyRead.contains(file.getAbsolutePath()) && !timeAlreadyRead.contains(fileTime)) {
 					try {
 						String fileContents = IOHelper.readFile(file.getAbsolutePath());
 
@@ -98,6 +102,7 @@ public class OptionsChainDataProvider {
 					}
 
 					filesAlreadyRead.add(file.getAbsolutePath());
+					timeAlreadyRead.add(fileTime);
 				}
 			}
 		}

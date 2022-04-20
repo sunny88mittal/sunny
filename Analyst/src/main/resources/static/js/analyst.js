@@ -76,7 +76,7 @@ var updateData = function() {
 	});
 	
 	if (!isRefreshSet) {
-		setInterval(updateData, 3 * 60 * 1000);
+		setInterval(updateData, 1 * 60 * 1000);
 		isRefreshSet = true;
 	}
 }

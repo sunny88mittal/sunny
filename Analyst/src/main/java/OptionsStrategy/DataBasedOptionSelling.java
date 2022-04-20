@@ -15,7 +15,7 @@ import java.util.List;
 import Constants.StockSymbols;
 import Entities.OptionsChain;
 
-public class DataBasedOptionSelling {
+public class DataBasedOptionSelling implements IOptionsStrategy {
 
 	private List<Trade> trades = new ArrayList<Trade>();
 
@@ -31,7 +31,7 @@ public class DataBasedOptionSelling {
 			double callOIChange = OptionsChainHelper.getOpenInterestChange(optionsChain.callOptions);
 			double putOIChange = OptionsChainHelper.getOpenInterestChange(optionsChain.putOptions);
 			int price = (int) Double.parseDouble(optionsChain.price);
-			
+
 			// Open a trade
 			if (!isTradeOpen && hours >= 9 && minutes >= 30) {
 				int strike = (price / 100) * 100;
@@ -101,8 +101,8 @@ public class DataBasedOptionSelling {
 					trade.exit = price;
 					break;
 				}
-				
-				if (trade.peEntryPrice > 1 && putOIChange < callOIChange &&  trade.entry > price) {
+
+				if (trade.peEntryPrice > 1 && putOIChange < callOIChange && trade.entry > price) {
 					System.out.println("Data reversal");
 					trade.exit = price;
 					trade.peExitPrice = OptionsChainHelper.getCEPrice(optionsChain, trade.strike);
@@ -113,10 +113,10 @@ public class DataBasedOptionSelling {
 
 		return trades;
 	}
-	
+
 	public static void main(String args[]) {
 		DataBasedOptionSelling dbos = new DataBasedOptionSelling();
-		List<Trade> trades = dbos.execute("11-03-2022");
+		List<Trade> trades = dbos.execute("20-04-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
 			netProfit += trade.getNetPoints();
