@@ -7,7 +7,7 @@ import java.util.List;
 import Constants.StockSymbols;
 import Entities.OptionsChain;
 
-public class DataBasedOptionSellingBothSides implements IOptionsStrategy {
+public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 
 	private List<Trade> trades = new ArrayList<Trade>();
 
@@ -130,7 +130,7 @@ public class DataBasedOptionSellingBothSides implements IOptionsStrategy {
 	}
 
 	public static void main(String args[]) {
-		DataBasedOptionSellingBothSides dbos = new DataBasedOptionSellingBothSides();
+		AlgoDataBasedOptionSellingBothSides dbos = new AlgoDataBasedOptionSellingBothSides();
 		List<Trade> trades = dbos.execute("20-04-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {

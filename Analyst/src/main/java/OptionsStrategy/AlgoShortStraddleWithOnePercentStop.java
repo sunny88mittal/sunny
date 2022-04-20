@@ -7,7 +7,7 @@ import java.util.List;
 import Constants.StockSymbols;
 import Entities.OptionsChain;
 
-public class ShortStraddleWithOnePercentStop implements IOptionsStrategy {
+public class AlgoShortStraddleWithOnePercentStop implements IOptionsStrategy {
 
 	private List<Trade> trades = new ArrayList<Trade>();
 
@@ -74,7 +74,7 @@ public class ShortStraddleWithOnePercentStop implements IOptionsStrategy {
 	}
 	
 	public static void main(String args[]) {
-		ShortStraddleWithOnePercentStop sswa = new ShortStraddleWithOnePercentStop();
+		AlgoShortStraddleWithOnePercentStop sswa = new AlgoShortStraddleWithOnePercentStop();
 		List<Trade> trades = sswa.execute("19-04-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
