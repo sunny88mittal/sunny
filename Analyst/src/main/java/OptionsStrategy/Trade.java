@@ -20,20 +20,19 @@ public class Trade {
 
 	public double peStopLoss;
 
+	public boolean isSellTrade = true;
+
 	public double getNetPoints() {
-		return ceEntryPrice - ceExitPrice + peEntryPrice - peExitPrice;
+		int multiplier = isSellTrade == true ? 1 : -1;
+		return multiplier * (ceEntryPrice - ceExitPrice + peEntryPrice - peExitPrice);
 	}
-	
+
 	public String toString() {
 		String tradeString = "";
-		tradeString += "Entry : " + entry + "\r\n" 
-				+ "Exit : " + exit + "\r\n" 
-				+ "Strike : " + strike + "\r\n" 
-				+ "CEEntryPrice : " + ceEntryPrice + "\r\n" 
-				+ "CEExitPrice : " + ceExitPrice + "\r\n" 
-				+ "PEEntryPrice : " + peEntryPrice + "\r\n" 
-				+ "PEEexitPrice : " + peExitPrice + "\r\n"
-				+ "Net Points : " + getNetPoints() + "\r\n";
+		tradeString += "Entry : " + entry + "\r\n" + "Exit : " + exit + "\r\n" + "Strike : " + strike + "\r\n"
+				+ "CEEntryPrice : " + ceEntryPrice + "\r\n" + "CEExitPrice : " + ceExitPrice + "\r\n"
+				+ "PEEntryPrice : " + peEntryPrice + "\r\n" + "PEEexitPrice : " + peExitPrice + "\r\n" + "Net Points : "
+				+ getNetPoints() + "\r\n";
 		return tradeString;
 	}
 }

@@ -101,7 +101,7 @@ public class AlgoMovingStraddle100Point implements IOptionsStrategy {
 
 	public static void main(String args[]) {
 		AlgoMovingStraddle100Point ms = new AlgoMovingStraddle100Point();
-		List<Trade> trades = ms.execute("20-04-2022");
+		List<Trade> trades = ms.execute("22-04-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
 			netProfit += trade.getNetPoints();
