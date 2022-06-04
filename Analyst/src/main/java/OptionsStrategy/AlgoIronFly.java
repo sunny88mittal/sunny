@@ -10,10 +10,10 @@ import Entities.OptionsChain;
 
 public class AlgoIronFly implements IOptionsStrategy {
 
-	private List<Trade> trades = new ArrayList<Trade>();
-
 	@Override
 	public List<Trade> execute(String date) {
+		List<Trade> trades = new ArrayList<Trade>();
+		
 		boolean isTradeOpen = false;
 		Trade shortStraddleTrade = null;
 		List<Trade> longStrangleTrades = null;

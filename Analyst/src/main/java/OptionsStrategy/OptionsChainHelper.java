@@ -26,6 +26,27 @@ public class OptionsChainHelper {
 		}
 		return price;
 	}
+	
+	public static double getCEOIChange(OptionsChain optionsChain, double strike) {
+		double oiChange = 0;
+		for (OptionsDataRow optionsDataRow : optionsChain.callOptions) {
+			if (optionsDataRow.strikePrice == strike) {
+				oiChange = optionsDataRow.openInterestChange;
+			}
+		}
+		return oiChange;
+	}
+
+	public static double getPEOIChange(OptionsChain optionsChain, double strike) {
+		double oiChange = 0;
+		for (OptionsDataRow optionsDataRow : optionsChain.putOptions) {
+			if (optionsDataRow.strikePrice == strike) {
+				oiChange = optionsDataRow.openInterestChange;
+			}
+		}
+		return oiChange;
+	}
+
 
 	public static double getOpenInterestChange(List<OptionsDataRow> options) {
 		double openInerestchange = 0;

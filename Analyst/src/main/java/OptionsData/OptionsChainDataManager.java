@@ -41,7 +41,8 @@ public class OptionsChainDataManager {
 		Collections.sort(localDates);
 
 		// Get last n days
-		localDates = localDates.subList(size - noOfDays, size);
+		int start = size > noOfDays ? size - noOfDays : 0;
+		localDates = localDates.subList(start, size);
 		List<String> dates = new ArrayList<String>();
 		for (LocalDate localDate : localDates) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");

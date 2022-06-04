@@ -9,9 +9,17 @@ import Entities.OptionsChain;
 
 public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 
-	private List<Trade> trades = new ArrayList<Trade>();
-
+	private int stopLoss = 100;
+	
+	private boolean doStrikeDataCheck = false;
+	
+	public AlgoDataBasedOptionSellingBothSides(int stopLoss, boolean doStrikeDataCheck) {
+		this.stopLoss = stopLoss;
+		this.doStrikeDataCheck = doStrikeDataCheck;
+	}
+	
 	public List<Trade> execute(String date) {
+		List<Trade> trades = new ArrayList<Trade>();
 		boolean isTradeOpen = false;
 		boolean isReversalTradeOpen = false;
 
@@ -31,8 +39,10 @@ public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 			// Open a trade at 9:30 AM
 			if (!isTradeOpen && hours >= 9 && minutes >= 30) {
 				Trade trade = initiateTrade(price, optionsChain, callOIChange, putOIChange);
-				trades.add(trade);
-				isTradeOpen = true;
+				if (trade != null) {
+					trades.add(trade);
+					isTradeOpen = true;
+				}
 			}
 
 			Trade newTrade = null;
@@ -59,7 +69,7 @@ public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 				// If stop loss hits
 				if (trade.ceEntryPrice > 1
 						&& trade.ceStopLoss <= OptionsChainHelper.getCEPrice(optionsChain, trade.strike)) {
-					System.out.println("Stop Loss hits");
+					System.out.println(ts.toString() + " Stop Loss hits");
 					trade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, trade.strike);
 					trade.exit = price;
 				}
@@ -67,21 +77,21 @@ public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 				if (trade.peEntryPrice > 1
 						&& trade.peStopLoss <= OptionsChainHelper.getPEPrice(optionsChain, trade.strike)) {
 					trade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, trade.strike);
-					System.out.println("Stop Loss hits");
+					System.out.println(ts.toString() + " Stop Loss hits");
 					trade.exit = price;
 				}
 
 				// If data reversal happens
 				if (trade.ceEntryPrice > 1 && putOIChange > callOIChange && !isReversalTradeOpen) {
-					System.out.println("Data reversal");
+					// System.out.println(ts.toString() + "Data reversal");
 					newTrade = initiateTrade(price, optionsChain, callOIChange, putOIChange);
-					isReversalTradeOpen = true;
+					isReversalTradeOpen = newTrade != null ? true : false;
 				}
 
 				if (trade.peEntryPrice > 1 && putOIChange < callOIChange && !isReversalTradeOpen) {
-					System.out.println("Data reversal");
+					// System.out.println(ts.toString() + "Data reversal");
 					newTrade = initiateTrade(price, optionsChain, callOIChange, putOIChange);
-					isReversalTradeOpen = true;
+					isReversalTradeOpen = newTrade != null ? true : false;
 				}
 			}
 
@@ -105,32 +115,43 @@ public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 		return true;
 	}
 
-	private static Trade initiateTrade(int price, OptionsChain optionsChain, double callOIChange, double putOIChange) {
+	private Trade initiateTrade(int price, OptionsChain optionsChain, double callOIChange, double putOIChange) {
 		int strike = (price / 100) * 100;
 		double sellingPrice = 0;
 		Trade trade = new Trade();
 		trade.entry = price;
+		Timestamp ts = new Timestamp(optionsChain.timeStamp);
 
 		if (callOIChange > putOIChange) {
 			strike = (price / 100) * 100 + 100;
+			double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike);
+			double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike);
+			if (this.doStrikeDataCheck && strikeCEOIchange < strikePEOIchange) {
+				return null;
+			}
 			sellingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
 			trade.ceEntryPrice = sellingPrice;
-			trade.ceStopLoss = sellingPrice + 100;
+			trade.ceStopLoss = sellingPrice + stopLoss;
 			trade.strike = strike;
-			System.out.println("Selling Call : " + strike + " at : " + sellingPrice);
+			System.out.println(ts.toString() + " Selling Call : " + strike + " at : " + sellingPrice);
 		} else {
+			double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike);
+			double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike);
+			if (this.doStrikeDataCheck && strikePEOIchange < strikeCEOIchange) {
+				return null;
+			}
 			sellingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
 			trade.peEntryPrice = sellingPrice;
-			trade.peStopLoss = sellingPrice + 100;
+			trade.peStopLoss = sellingPrice + stopLoss;
 			trade.strike = strike;
-			System.out.println("Selling Put : " + strike + " at : " + sellingPrice);
+			System.out.println(ts.toString() + " Selling Put : " + strike + " at : " + sellingPrice);
 		}
 
 		return trade;
 	}
 
 	public static void main(String args[]) {
-		AlgoDataBasedOptionSellingBothSides dbos = new AlgoDataBasedOptionSellingBothSides();
+		AlgoDataBasedOptionSellingBothSides dbos = new AlgoDataBasedOptionSellingBothSides(100, false);
 		List<Trade> trades = dbos.execute("20-04-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {

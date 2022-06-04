@@ -80,7 +80,7 @@ public class StockPointsChecker {
 				
 			}
 		}*/
-		List<StockPoint> stockPointsList = getMatchingStockPoints(LocalDate.now().minusDays(0), 5);
+		List<StockPoint> stockPointsList = getMatchingStockPoints(LocalDate.now().minusDays(1), 5);
 		for (StockPoint stockPoint : stockPointsList) {
 			System.out.println(stockPoint);
 		}

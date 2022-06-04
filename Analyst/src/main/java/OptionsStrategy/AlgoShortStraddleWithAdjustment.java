@@ -8,11 +8,10 @@ import Constants.StockSymbols;
 import Entities.OptionsChain;
 
 public class AlgoShortStraddleWithAdjustment implements IOptionsStrategy {
-
-	private List<Trade> trades = new ArrayList<Trade>();
-
+	
 	@Override
 	public List<Trade> execute(String date) {
+		List<Trade> trades = new ArrayList<Trade>();
 		boolean isTradeOpen = false;
 		Trade trade = null;
 		
@@ -53,6 +52,7 @@ public class AlgoShortStraddleWithAdjustment implements IOptionsStrategy {
 	}
 	
 	private Trade doShortStraddle(int price, OptionsChain optionsChain) {
+		System.out.println("Initiating Starddle at :" + price);
 		Trade trade = new Trade();
 		
 		int strike = (price / 100) * 100;
