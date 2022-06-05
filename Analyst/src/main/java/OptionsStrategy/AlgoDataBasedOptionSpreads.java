@@ -56,11 +56,12 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 					buyTrade.strike = strike;
 					System.out.println(ts.toString() + " Buying Call : " + strike + " at : " + buyingPrice);
 
-					strike += spreadGap;
-					double sellingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
-					sellTrade.ceEntryPrice = sellingPrice;
-					sellTrade.strike = strike;
-
+					if (spreadGap > 0) {
+						strike += spreadGap;
+						double sellingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
+						sellTrade.ceEntryPrice = sellingPrice;
+						sellTrade.strike = strike;
+					}
 				} else {
 					buyingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
 					buyTrade.peEntryPrice = buyingPrice;
@@ -68,14 +69,18 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 					buyTrade.strike = strike;
 					System.out.println(ts.toString() + " Buying Put : " + strike + " at : " + buyingPrice);
 
-					strike -= spreadGap;
-					double sellingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
-					sellTrade.peEntryPrice = sellingPrice;
-					sellTrade.strike = strike;
+					if (spreadGap > 0) {
+						strike -= spreadGap;
+						double sellingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
+						sellTrade.peEntryPrice = sellingPrice;
+						sellTrade.strike = strike;
+					}
 				}
 
 				trades.add(buyTrade);
-				trades.add(sellTrade);
+				if (sellTrade != null) {
+					trades.add(sellTrade);
+				}
 				isTradeOpen = true;
 			}
 
@@ -88,12 +93,16 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 					sellTrade.exit = price;
 					if (buyTrade.ceEntryPrice > 1) {
 						buyTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike);
-						sellTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, sellTrade.strike);
+						if (sellTrade != null) {
+							sellTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, sellTrade.strike);
+						}
 					}
 
 					if (buyTrade.peEntryPrice > 1) {
 						buyTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike);
-						sellTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, sellTrade.strike);
+						if (sellTrade != null) {
+							sellTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, sellTrade.strike);
+						}
 					}
 
 					break;
@@ -106,8 +115,10 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 						System.out.println(ts.toString() + " Stop Loss hits");
 						buyTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike);
 						buyTrade.exit = price;
-						sellTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, sellTrade.strike);
-						sellTrade.exit = price;
+						if (sellTrade != null) {
+							sellTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, sellTrade.strike);
+							sellTrade.exit = price;
+						}
 						break;
 					}
 				}
@@ -118,8 +129,10 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 						System.out.println(ts.toString() + " Stop Loss hits");
 						buyTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike);
 						buyTrade.exit = price;
-						sellTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, sellTrade.strike);
-						sellTrade.exit = price;
+						if (sellTrade != null) {
+							sellTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, sellTrade.strike);
+							sellTrade.exit = price;
+						}
 						break;
 					}
 				}
