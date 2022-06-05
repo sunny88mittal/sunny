@@ -23,7 +23,8 @@ public class AlgoTester {
 		IOptionsStrategy strategy4 = new AlgoDataBasedOptionSellingBothSides(75, true);
 		IOptionsStrategy strategy5 = new AlgoDataBasedOptionSellingBothSides(100, false);
 		IOptionsStrategy strategy6 = new AlgoDataBasedOptionSellingBothSides(75, false);
-		IOptionsStrategy strategy7 = new AlgoDataBasedOptionSellingWithTrailingSL(100,100);
+		IOptionsStrategy strategy7 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(100, true, 100);
+		IOptionsStrategy strategy8 = new AlgoDataBasedOptionSellingWithTrailingSL(100, 100);
 		List<IOptionsStrategy> optionsStratgeies = new ArrayList<IOptionsStrategy>();
 		optionsStratgeies.add(strategy);
 		optionsStratgeies.add(strategy1);
@@ -33,6 +34,7 @@ public class AlgoTester {
 		optionsStratgeies.add(strategy5);
 		optionsStratgeies.add(strategy6);
 		optionsStratgeies.add(strategy7);
+		optionsStratgeies.add(strategy8);
 
 		Map<String, List<List<Trade>>> stratgeyTradeMap = getTrades(dates, optionsStratgeies);
 		printProfits(stratgeyTradeMap);
