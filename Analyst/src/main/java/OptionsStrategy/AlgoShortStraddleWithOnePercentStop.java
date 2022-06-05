@@ -83,4 +83,9 @@ public class AlgoShortStraddleWithOnePercentStop implements IOptionsStrategy {
 		}
 		System.out.println("Net profit is : " + 25 * netProfit);
 	}
+	
+	@Override
+	public String getName() {
+		return "ShortStraddleWithOnePercentStop";
+	}
 }

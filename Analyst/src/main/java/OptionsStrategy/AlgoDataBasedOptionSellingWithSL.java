@@ -18,11 +18,11 @@ import Entities.OptionsChain;
 public class AlgoDataBasedOptionSellingWithSL implements IOptionsStrategy {
 
 	private int stopLoss = 100;
-	
+
 	public AlgoDataBasedOptionSellingWithSL(int stopLoss) {
 		this.stopLoss = stopLoss;
 	}
-	
+
 	public List<Trade> execute(String date) {
 		List<Trade> trades = new ArrayList<Trade>();
 		boolean isTradeOpen = false;
@@ -43,17 +43,16 @@ public class AlgoDataBasedOptionSellingWithSL implements IOptionsStrategy {
 				double sellingPrice = 0;
 				Trade trade = new Trade();
 				trade.entry = price;
-				
-				
+
 				if (callOIChange > putOIChange) {
 					strike = (price / 100) * 100 + 100;
-					
+
 					double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike);
 					double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike);
 					if (strikeCEOIchange < strikePEOIchange) {
 						continue;
 					}
-					
+
 					sellingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
 					trade.ceEntryPrice = sellingPrice;
 					trade.ceStopLoss = sellingPrice + stopLoss;
@@ -65,7 +64,7 @@ public class AlgoDataBasedOptionSellingWithSL implements IOptionsStrategy {
 					if (strikePEOIchange < strikeCEOIchange) {
 						continue;
 					}
-					
+
 					sellingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
 					trade.peEntryPrice = sellingPrice;
 					trade.peStopLoss = sellingPrice + stopLoss;
@@ -127,5 +126,10 @@ public class AlgoDataBasedOptionSellingWithSL implements IOptionsStrategy {
 			System.out.println(trade);
 		}
 		System.out.println("Net profit is : " + 25 * netProfit);
+	}
+
+	@Override
+	public String getName() {
+		return "DataBasedOptionSellingWithSL" + " WithSL:" + stopLoss;
 	}
 }
