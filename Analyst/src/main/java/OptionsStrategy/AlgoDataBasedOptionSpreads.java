@@ -48,31 +48,30 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 				sellTrade = new Trade();
 				sellTrade.entry = price;
 
-				if (callOIChange > putOIChange) {
+				if (callOIChange < putOIChange) {
 					strike += 500;
 					buyingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
 					buyTrade.ceEntryPrice = buyingPrice;
 					buyTrade.ceStopLoss = buyingPrice - stopLoss;
 					buyTrade.strike = strike;
+					System.out.println(ts.toString() + " Buying Call : " + strike + " at : " + buyingPrice);
 
 					strike += spreadGap;
 					double sellingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
 					sellTrade.ceEntryPrice = sellingPrice;
 					sellTrade.strike = strike;
 
-					System.out.println(ts.toString() + " Buying Call : " + strike + " at : " + buyingPrice);
 				} else {
 					buyingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
 					buyTrade.peEntryPrice = buyingPrice;
 					buyTrade.peStopLoss = buyingPrice - stopLoss;
 					buyTrade.strike = strike;
+					System.out.println(ts.toString() + " Buying Put : " + strike + " at : " + buyingPrice);
 
 					strike -= spreadGap;
 					double sellingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
 					sellTrade.peEntryPrice = sellingPrice;
 					sellTrade.strike = strike;
-
-					System.out.println(ts.toString() + " Buying Put : " + strike + " at : " + buyingPrice);
 				}
 
 				trades.add(buyTrade);
@@ -103,22 +102,26 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 				// If stop loss hits
 				if (buyTrade.ceEntryPrice > 1
 						&& buyTrade.ceStopLoss >= OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike)) {
-					System.out.println(ts.toString() + " Stop Loss hits");
-					buyTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike);
-					buyTrade.exit = price;
-					sellTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, sellTrade.strike);
-					sellTrade.exit = price;
-					break;
+					if (OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike) > .5) {
+						System.out.println(ts.toString() + " Stop Loss hits");
+						buyTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike);
+						buyTrade.exit = price;
+						sellTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, sellTrade.strike);
+						sellTrade.exit = price;
+						break;
+					}
 				}
 
 				if (buyTrade.peEntryPrice > 1
 						&& buyTrade.peStopLoss >= OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike)) {
-					System.out.println(ts.toString() + " Stop Loss hits");
-					buyTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike);
-					buyTrade.exit = price;
-					sellTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, sellTrade.strike);
-					sellTrade.exit = price;
-					break;
+					if (OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike) > .5) {
+						System.out.println(ts.toString() + " Stop Loss hits");
+						buyTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike);
+						buyTrade.exit = price;
+						sellTrade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, sellTrade.strike);
+						sellTrade.exit = price;
+						break;
+					}
 				}
 			}
 		}
@@ -128,7 +131,7 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 	public static void main(String args[]) {
 		AlgoDataBasedOptionSpreads dbos = new AlgoDataBasedOptionSpreads(500, 100, 100);
-		List<Trade> trades = dbos.execute("19-04-2022");
+		List<Trade> trades = dbos.execute("22-04-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
 			netProfit += trade.getNetPoints();
