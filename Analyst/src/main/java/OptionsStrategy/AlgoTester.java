@@ -1,7 +1,7 @@
 package OptionsStrategy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -12,24 +12,26 @@ public class AlgoTester {
 
 	private static final int BNF_LOT_SIZE = 25;
 
-	private static String[] dates = new String[] { "19-04-2022", "20-04-2022", "21-04-2022", "22-04-2022", "25-04-2022",
-			"29-04-2022", "02-06-2022", "03-06-2022" };
+	private static String[] dates = new String[] { "07-06-2022" };
 
 	public static void main(String args[]) {
 		IOptionsStrategy strategy = new AlgoDataBasedOptionSelling();
+		
 		IOptionsStrategy strategy1 = new AlgoDataBasedOptionSellingWithSL(100);
 		IOptionsStrategy strategy2 = new AlgoDataBasedOptionSellingWithSL(75);
-		
-		IOptionsStrategy strategy3 = new AlgoDataBasedOptionSellingBothSides(100, true);
-		IOptionsStrategy strategy4 = new AlgoDataBasedOptionSellingBothSides(75, true);
-		IOptionsStrategy strategy5 = new AlgoDataBasedOptionSellingBothSides(100, false);
-		IOptionsStrategy strategy6 = new AlgoDataBasedOptionSellingBothSides(75, false);
-		IOptionsStrategy strategy7 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(100, true, 100);
-		IOptionsStrategy strategy8 = new AlgoDataBasedOptionSellingWithTrailingSL(100, 100);
-		
+		IOptionsStrategy strategy3 = new AlgoDataBasedOptionSellingWithTrailingSL(100, 100);
+
+		IOptionsStrategy strategy4 = new AlgoDataBasedOptionSellingBothSides(100, false);
+		IOptionsStrategy strategy5 = new AlgoDataBasedOptionSellingBothSides(100, true);
+		IOptionsStrategy strategy6 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(100, true, 100);
+
+		IOptionsStrategy strategy7 = new AlgoDataBasedOptionSellingBothSides(75, false);
+		IOptionsStrategy strategy8 = new AlgoDataBasedOptionSellingBothSides(75, true);
+
 		IOptionsStrategy strategy9 = new AlgoDataBasedOptionSpreads(0, 100, 100);
-		IOptionsStrategy strategy10 = new AlgoDataBasedOptionSpreads(500, 100, 100);
-		IOptionsStrategy strategy11 = new AlgoDataBasedOptionSpreads(1000, 100, 100);
+		IOptionsStrategy strategy10 = new AlgoDataBasedOptionSpreads(1000, 100, 100);
+		IOptionsStrategy strategy11 = new AlgoDataBasedOptionSpreads(500, 100, 100);
+
 		List<IOptionsStrategy> optionsStratgeies = new ArrayList<IOptionsStrategy>();
 		optionsStratgeies.add(strategy);
 		optionsStratgeies.add(strategy1);
@@ -49,7 +51,7 @@ public class AlgoTester {
 	}
 
 	private static Map<String, List<List<Trade>>> getTrades(String[] dates, List<IOptionsStrategy> optionsStrategies) {
-		Map<String, List<List<Trade>>> stratgeyTradesMap = new HashMap<String, List<List<Trade>>>();
+		Map<String, List<List<Trade>>> stratgeyTradesMap = new LinkedHashMap<String, List<List<Trade>>>();
 		for (String date : dates) {
 			long startTime = System.currentTimeMillis();
 			OptionsDataProvider.loadCache(StockSymbols.BANKNIFTY.name, date);
