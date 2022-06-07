@@ -86,6 +86,10 @@ public class ShortStraddleWithStopLoss implements IStrategy {
 			clearCheckPoint();
 		}
 	}
+	
+	public void disconnectedFromBroker() {
+		//Do nothing
+	}
 
 	private void doCheckPointing(int price) {
 		try {

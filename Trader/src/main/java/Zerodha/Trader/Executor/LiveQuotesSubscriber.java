@@ -43,6 +43,7 @@ public class LiveQuotesSubscriber {
 		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
 			public void onDisconnected() {
 				Logger.print(this.getClass(), "Ticker disconnected");
+				strategy.disconnectedFromBroker();
 				while (!tickerProvider.isConnectionOpen()) {
 					try {
 						Thread.sleep(TICKER_RECONNECT_TIME);

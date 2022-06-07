@@ -112,6 +112,16 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		}
 	}
 
+	public void disconnectedFromBroker() {
+		LocalDateTime now = LocalDateTime.now();
+		if (isTradeOpen && now.getHour() == 15 && now.getMinute() >= 29) {
+			tradeOptions(lastTradedAt, Constants.TRANSACTION_TYPE_BUY);
+			isTradeOpen = false;
+			lastTradedAt = 0;
+			clearCheckPoint();
+		}
+	}
+
 	private void doCheckPointing(int price) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(SSWA_CHECK_POINT_FILE));
@@ -140,7 +150,8 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		try {
 			// Trade Put position
 			if ((isBuyOrder && isPositionOpen(putOptionSymbol)) || isSellOrder) {
-				Order order = orderHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
+				Order order = orderHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO,
+						transactionType);
 				Logger.print(this.getClass(), qty + ":" + putOptionSymbol + ":" + transactionType + ":" + order.price);
 			} else {
 				System.out.println("Position already closed for :" + putOptionSymbol);
@@ -148,8 +159,9 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 			// Close call position
 			if ((isBuyOrder && isPositionOpen(callOptionSymbol)) || isSellOrder) {
-				Order order = orderHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO, transactionType);
-				Logger.print(this.getClass(), qty + ":" + callOptionSymbol + ":" + transactionType +  ":" + order.price);
+				Order order = orderHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO,
+						transactionType);
+				Logger.print(this.getClass(), qty + ":" + callOptionSymbol + ":" + transactionType + ":" + order.price);
 			} else {
 				Logger.print(this.getClass(), "Position already closed for :" + callOptionSymbol);
 			}
