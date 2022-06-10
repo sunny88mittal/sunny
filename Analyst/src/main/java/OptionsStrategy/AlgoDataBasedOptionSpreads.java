@@ -155,7 +155,7 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 	@Override
 	public String getName() {
-		return "DataBasedOptionSpreads" + " WithSL:" + stopLoss + " SpreaGap:" + spreadGap + " TrailingSL:"
+		return "DataBasedOptionSpreads" + " WithSL:" + stopLoss + " SpreadGap:" + spreadGap + " TrailingSL:"
 				+ trailingStopLoss;
 	}
 }

@@ -12,7 +12,7 @@ public class AlgoTester {
 
 	private static final int BNF_LOT_SIZE = 25;
 
-	private static String[] dates = new String[] { "07-06-2022" };
+	private static String[] dates = new String[] { "10-06-2022" };
 
 	public static void main(String args[]) {
 		IOptionsStrategy strategy = new AlgoDataBasedOptionSelling();
