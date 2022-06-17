@@ -12,21 +12,21 @@ public class AlgoTester {
 
 	private static final int BNF_LOT_SIZE = 25;
 
-	private static String[] dates = new String[] { "10-06-2022", "13-06-2022", "14-06-2022", "15-06-2022", "16-06-2022", "17-06-2022" };
+	private static String[] dates = new String[] { "10-06-2022", "13-06-2022", "14-06-2022", "15-06-2022", "16-06-2022",
+			"17-06-2022" };
 
 	public static void main(String args[]) {
-		IOptionsStrategy strategy = new AlgoDataBasedOptionSelling();
+		IOptionsStrategy strategy = new AlgoDataBasedOptionSelling(10000, -1, true);
+		IOptionsStrategy strategy1 = new AlgoDataBasedOptionSelling(100, -1, false);
+		IOptionsStrategy strategy2 = new AlgoDataBasedOptionSelling(75, -1, false);
+		IOptionsStrategy strategy3 = new AlgoDataBasedOptionSelling(100, 100, false);
 
-		IOptionsStrategy strategy1 = new AlgoDataBasedOptionSellingWithTrailingSL(100, -1);
-		IOptionsStrategy strategy2 = new AlgoDataBasedOptionSellingWithTrailingSL(75, -1);
-		IOptionsStrategy strategy3 = new AlgoDataBasedOptionSellingWithTrailingSL(100, 100);
+		IOptionsStrategy strategy4 = new AlgoDataBasedOptionSellingBothSides(100, false, -1);
+		IOptionsStrategy strategy5 = new AlgoDataBasedOptionSellingBothSides(100, true, -1);
+		IOptionsStrategy strategy6 = new AlgoDataBasedOptionSellingBothSides(100, true, 100);
 
-		IOptionsStrategy strategy4 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(100, false, -1);
-		IOptionsStrategy strategy5 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(100, true, -1);
-		IOptionsStrategy strategy6 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(100, true, 100);
-
-		IOptionsStrategy strategy7 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(75, false, -1);
-		IOptionsStrategy strategy8 = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(75, true, -1);
+		IOptionsStrategy strategy7 = new AlgoDataBasedOptionSellingBothSides(75, false, -1);
+		IOptionsStrategy strategy8 = new AlgoDataBasedOptionSellingBothSides(75, true, -1);
 
 		IOptionsStrategy strategy9 = new AlgoDataBasedOptionSpreads(0, 100, 100, 0);
 		IOptionsStrategy strategy10 = new AlgoDataBasedOptionSpreads(1000, 100, 100, 0);

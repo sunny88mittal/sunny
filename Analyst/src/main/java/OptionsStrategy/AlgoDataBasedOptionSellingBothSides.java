@@ -7,7 +7,7 @@ import java.util.List;
 import Constants.StockSymbols;
 import Entities.OptionsChain;
 
-public class AlgoDataBasedOptionSellingBothSidesWithTrailingSL implements IOptionsStrategy {
+public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 
 	private int stopLoss = 100;
 
@@ -15,7 +15,7 @@ public class AlgoDataBasedOptionSellingBothSidesWithTrailingSL implements IOptio
 
 	private int trailingStopLoss = -1;
 
-	public AlgoDataBasedOptionSellingBothSidesWithTrailingSL(int stopLoss, boolean doStrikeDataCheck,
+	public AlgoDataBasedOptionSellingBothSides(int stopLoss, boolean doStrikeDataCheck,
 			int trailingStopLoss) {
 		this.stopLoss = stopLoss;
 		this.doStrikeDataCheck = doStrikeDataCheck;
@@ -168,7 +168,7 @@ public class AlgoDataBasedOptionSellingBothSidesWithTrailingSL implements IOptio
 	}
 
 	public static void main(String args[]) {
-		AlgoDataBasedOptionSellingBothSidesWithTrailingSL dbos = new AlgoDataBasedOptionSellingBothSidesWithTrailingSL(
+		AlgoDataBasedOptionSellingBothSides dbos = new AlgoDataBasedOptionSellingBothSides(
 				100, false, 100);
 		List<Trade> trades = dbos.execute("20-04-2022");
 		int netProfit = 0;
