@@ -58,7 +58,7 @@ public class NetworkHelper {
 	}
 
 	public static void main(String args[]) throws IOException {
-		String url = "https://www1.nseindia.com/content/historical/EQUITIES/2021/FEB/cm22FEB2021bhav.csv.zip";
+		String url = "https://www.nseindia.com/api/option-chain-indices?symbol=BANKNIFTY";
 		System.out.println(makeGetRequest(url));
 	}
 }

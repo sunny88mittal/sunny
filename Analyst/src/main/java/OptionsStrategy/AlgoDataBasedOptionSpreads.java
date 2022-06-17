@@ -9,16 +9,23 @@ import Entities.OptionsChain;
 
 public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
-	private int stopLoss = 100;
+	private int stopLoss = 0;
 
-	private int spreadGap = 500;
+	private int spreadGap = 0;
 
 	private int trailingStopLoss = 1000;
+
+	private int distanceFromSpot = 0;
 
 	public AlgoDataBasedOptionSpreads(int spreadGap, int stopLoss, int trailingStopLoss) {
 		this.spreadGap = spreadGap;
 		this.stopLoss = stopLoss;
 		this.trailingStopLoss = trailingStopLoss;
+	}
+
+	public AlgoDataBasedOptionSpreads(int spreadGap, int stopLoss, int trailingStopLoss, int distanceFromSpot) {
+		this(spreadGap, stopLoss, trailingStopLoss);
+		this.distanceFromSpot = distanceFromSpot;
 	}
 
 	public List<Trade> execute(String date) {
@@ -39,7 +46,7 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 			// Open a trade
 			if (!isTradeOpen && hours >= 9 && minutes >= 30) {
-				int strike = (price / 500) * 500;
+				int strike = (price / 100) * 100;
 				double buyingPrice = 0;
 				buyTrade = new Trade();
 				buyTrade.entry = price;
@@ -49,7 +56,7 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 				sellTrade.entry = price;
 
 				if (callOIChange < putOIChange) {
-					strike += 500;
+					strike += 100 + distanceFromSpot;
 					buyingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
 					buyTrade.ceEntryPrice = buyingPrice;
 					buyTrade.ceStopLoss = buyingPrice - stopLoss;
@@ -63,6 +70,7 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 						sellTrade.strike = strike;
 					}
 				} else {
+					strike -= distanceFromSpot;
 					buyingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
 					buyTrade.peEntryPrice = buyingPrice;
 					buyTrade.peStopLoss = buyingPrice - stopLoss;
@@ -143,8 +151,8 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 	}
 
 	public static void main(String args[]) {
-		AlgoDataBasedOptionSpreads dbos = new AlgoDataBasedOptionSpreads(500, 100, 100);
-		List<Trade> trades = dbos.execute("22-04-2022");
+		AlgoDataBasedOptionSpreads dbos = new AlgoDataBasedOptionSpreads(0, 100, 100);
+		List<Trade> trades = dbos.execute("16-06-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
 			netProfit += trade.getNetPoints();
@@ -156,6 +164,6 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 	@Override
 	public String getName() {
 		return "DataBasedOptionSpreads" + " WithSL:" + stopLoss + " SpreadGap:" + spreadGap + " TrailingSL:"
-				+ trailingStopLoss;
+				+ trailingStopLoss + " DistanceFromSpot:" + distanceFromSpot;
 	}
 }

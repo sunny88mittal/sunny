@@ -19,7 +19,7 @@ public class AlgoDataBasedOptionSellingWithTrailingSL implements IOptionsStrateg
 
 	private int stopLoss = 100;
 
-	private int trailingStopLoss = 1000;
+	private int trailingStopLoss = -1;
 
 	public AlgoDataBasedOptionSellingWithTrailingSL(int stopLoss, int trailingStopLoss) {
 		this.stopLoss = stopLoss;
@@ -116,13 +116,13 @@ public class AlgoDataBasedOptionSellingWithTrailingSL implements IOptionsStrateg
 				}
 
 				// Trail the stop loss
-				if (trade.ceEntryPrice > 1
+				if (this.trailingStopLoss > 0 && trade.ceEntryPrice > 1
 						&& (trade.ceStopLoss - OptionsChainHelper.getCEPrice(optionsChain, trade.strike)) >= 2
 								* this.trailingStopLoss) {
 					trade.ceStopLoss = trade.ceStopLoss - this.trailingStopLoss;
 				}
 
-				if (trade.peEntryPrice > 1
+				if (this.trailingStopLoss > 0 && trade.peEntryPrice > 1
 						&& (trade.peStopLoss - OptionsChainHelper.getPEPrice(optionsChain, trade.strike)) >= 2
 								* this.trailingStopLoss) {
 					trade.peStopLoss = trade.peStopLoss - this.trailingStopLoss;

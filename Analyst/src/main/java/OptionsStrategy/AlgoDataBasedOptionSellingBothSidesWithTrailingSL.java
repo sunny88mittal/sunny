@@ -13,7 +13,7 @@ public class AlgoDataBasedOptionSellingBothSidesWithTrailingSL implements IOptio
 
 	private boolean doStrikeDataCheck = false;
 
-	private int trailingStopLoss = 1000;
+	private int trailingStopLoss = -1;
 
 	public AlgoDataBasedOptionSellingBothSidesWithTrailingSL(int stopLoss, boolean doStrikeDataCheck,
 			int trailingStopLoss) {
@@ -86,13 +86,13 @@ public class AlgoDataBasedOptionSellingBothSidesWithTrailingSL implements IOptio
 				}
 
 				// Trail the stop loss
-				if (trade.ceEntryPrice > 1
+				if (this.trailingStopLoss > 0 && trade.ceEntryPrice > 1
 						&& (trade.ceStopLoss - OptionsChainHelper.getCEPrice(optionsChain, trade.strike)) >= 2
 								* this.trailingStopLoss) {
 					trade.ceStopLoss = trade.ceStopLoss - this.trailingStopLoss;
 				}
 
-				if (trade.peEntryPrice > 1
+				if (this.trailingStopLoss > 0 && trade.peEntryPrice > 1
 						&& (trade.peStopLoss - OptionsChainHelper.getPEPrice(optionsChain, trade.strike)) >= 2
 								* this.trailingStopLoss) {
 					trade.peStopLoss = trade.peStopLoss - this.trailingStopLoss;
