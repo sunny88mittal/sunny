@@ -23,10 +23,18 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 
 	private boolean stopOnDataReversal = false;
 
+	private int distanceFromSpot = 0;
+
 	public AlgoDataBasedOptionSelling(int stopLoss, int trailingStopLoss, boolean stopOnDataReversal) {
 		this.stopLoss = stopLoss;
 		this.trailingStopLoss = trailingStopLoss;
 		this.stopOnDataReversal = stopOnDataReversal;
+	}
+
+	public AlgoDataBasedOptionSelling(int stopLoss, int trailingStopLoss, boolean stopOnDataReversal,
+			int distanceFromSpot) {
+		this(stopLoss, trailingStopLoss, stopOnDataReversal);
+		this.distanceFromSpot = distanceFromSpot;
 	}
 
 	public List<Trade> execute(String date) {
@@ -35,7 +43,12 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 
 		for (int i = 0; i < 10000; i++) {
 			OptionsChain optionsChain = OptionsDataProvider.getData(StockSymbols.BANKNIFTY.name, date, i);
+
+			if (optionsChain == null) {
+				continue;
+			}
 			Timestamp ts = new Timestamp(optionsChain.timeStamp);
+
 			int hours = ts.getHours();
 			int minutes = ts.getMinutes();
 
@@ -51,10 +64,10 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 				trade.entry = price;
 
 				if (callOIChange > putOIChange) {
-					strike = (price / 100) * 100 + 100;
+					strike += 100 + distanceFromSpot;
 
-					double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike);
-					double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike);
+					double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike - distanceFromSpot);
+					double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike - distanceFromSpot);
 					if (strikeCEOIchange < strikePEOIchange) {
 						continue;
 					}
@@ -65,8 +78,9 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 					trade.strike = strike;
 					System.out.println(ts.toString() + " Selling Call : " + strike + " at : " + sellingPrice);
 				} else {
-					double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike);
-					double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike);
+					strike -= distanceFromSpot;
+					double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike + distanceFromSpot);
+					double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike + distanceFromSpot);
 					if (strikePEOIchange < strikeCEOIchange) {
 						continue;
 					}
@@ -154,8 +168,8 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 	}
 
 	public static void main(String args[]) {
-		AlgoDataBasedOptionSelling dbos = new AlgoDataBasedOptionSelling(100, 1000, false);
-		List<Trade> trades = dbos.execute("25-04-2022");
+		AlgoDataBasedOptionSelling dbos = new AlgoDataBasedOptionSelling(200, -1, false, -1000);
+		List<Trade> trades = dbos.execute("03-06-2022");
 		int netProfit = 0;
 		for (Trade trade : trades) {
 			netProfit += trade.getNetPoints();
@@ -166,6 +180,7 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 
 	@Override
 	public String getName() {
-		return "DataBasedOptionSellingWithTrailingSL" + " WithSL:" + stopLoss + " TrailingSL:" + trailingStopLoss;
+		return "DataBasedOptionSelling" + " WithSL:" + stopLoss + " TrailingSL:" + trailingStopLoss
+				+ " DistanceFromSpot:" + distanceFromSpot;
 	}
 }

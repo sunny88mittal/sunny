@@ -17,6 +17,8 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 	private int distanceFromSpot = 0;
 
+	private int MINIMUM_SELL_PRICE = 15;
+
 	public AlgoDataBasedOptionSpreads(int spreadGap, int stopLoss, int trailingStopLoss) {
 		this.spreadGap = spreadGap;
 		this.stopLoss = stopLoss;
@@ -66,8 +68,12 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 					if (spreadGap > 0) {
 						strike += spreadGap;
 						double sellingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
-						sellTrade.ceEntryPrice = sellingPrice;
-						sellTrade.strike = strike;
+						if (sellingPrice > MINIMUM_SELL_PRICE) {
+							sellTrade.ceEntryPrice = sellingPrice;
+							sellTrade.strike = strike;
+						} else {
+							sellTrade = null;
+						}
 					}
 				} else {
 					strike -= distanceFromSpot;
@@ -80,8 +86,12 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 					if (spreadGap > 0) {
 						strike -= spreadGap;
 						double sellingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
-						sellTrade.peEntryPrice = sellingPrice;
-						sellTrade.strike = strike;
+						if (sellingPrice > MINIMUM_SELL_PRICE) {
+							sellTrade.peEntryPrice = sellingPrice;
+							sellTrade.strike = strike;
+						} else {
+							sellTrade = null;
+						}
 					}
 				}
 
@@ -98,7 +108,9 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 				if (hours >= 15 && minutes >= 29) {
 					System.out.println("Day ends");
 					buyTrade.exit = price;
-					sellTrade.exit = price;
+					if (sellTrade != null) {
+						sellTrade.exit = price;
+					}
 					if (buyTrade.ceEntryPrice > 1) {
 						buyTrade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike);
 						if (sellTrade != null) {
