@@ -30,13 +30,21 @@ public class AlgoTester {
 		IOptionsStrategy strategy8 = new AlgoDataBasedOptionSellingBothSides(75, false, -1);
 		IOptionsStrategy strategy9 = new AlgoDataBasedOptionSellingBothSides(75, true, -1);
 
-		IOptionsStrategy strategy10 = new AlgoDataBasedOptionSpreads(0, 100, 100, 0);
-		IOptionsStrategy strategy11 = new AlgoDataBasedOptionSpreads(1000, 100, 100, 0);
-		IOptionsStrategy strategy12 = new AlgoDataBasedOptionSpreads(500, 100, 100, 0);
+		IOptionsStrategy strategy10 = new AlgoDataBasedOptionSpreads(0, 100, 0, 0);
+		IOptionsStrategy strategy11 = new AlgoDataBasedOptionSpreads(1000, 100, 0, 0);
+		IOptionsStrategy strategy12 = new AlgoDataBasedOptionSpreads(500, 100, 0, 0);
 
-		IOptionsStrategy strategy13 = new AlgoDataBasedOptionSpreads(0, 100, 100, 400);
-		IOptionsStrategy strategy14 = new AlgoDataBasedOptionSpreads(1000, 100, 100, 400);
-		IOptionsStrategy strategy15 = new AlgoDataBasedOptionSpreads(500, 100, 100, 400);
+		IOptionsStrategy strategy13 = new AlgoDataBasedOptionSpreads(0, 100, 0, 400);
+		IOptionsStrategy strategy14 = new AlgoDataBasedOptionSpreads(1000, 100, 0, 400);
+		IOptionsStrategy strategy15 = new AlgoDataBasedOptionSpreads(500, 100, 0, 400);
+
+		IOptionsStrategy strategy16 = new AlgoDataBasedOptionSpreads(0, 100, 100, 0);
+		IOptionsStrategy strategy17 = new AlgoDataBasedOptionSpreads(1000, 100, 100, 0);
+		IOptionsStrategy strategy18 = new AlgoDataBasedOptionSpreads(500, 100, 100, 0);
+
+		IOptionsStrategy strategy19 = new AlgoDataBasedOptionSpreads(0, 100, 100, 400);
+		IOptionsStrategy strategy20 = new AlgoDataBasedOptionSpreads(1000, 100, 100, 400);
+		IOptionsStrategy strategy21 = new AlgoDataBasedOptionSpreads(500, 100, 100, 400);
 
 		List<IOptionsStrategy> optionsStratgeies = new ArrayList<IOptionsStrategy>();
 		optionsStratgeies.add(strategy);
@@ -55,6 +63,12 @@ public class AlgoTester {
 		optionsStratgeies.add(strategy13);
 		optionsStratgeies.add(strategy14);
 		optionsStratgeies.add(strategy15);
+		optionsStratgeies.add(strategy16);
+		optionsStratgeies.add(strategy17);
+		optionsStratgeies.add(strategy18);
+		optionsStratgeies.add(strategy19);
+		optionsStratgeies.add(strategy20);
+		optionsStratgeies.add(strategy21);
 
 		Map<String, List<List<Trade>>> stratgeyTradeMap = getTrades(dates, optionsStratgeies);
 		printProfits(stratgeyTradeMap);

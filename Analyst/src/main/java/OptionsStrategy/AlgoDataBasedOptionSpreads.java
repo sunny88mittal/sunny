@@ -128,6 +128,19 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 					break;
 				}
 
+				// Trail the stop loss
+				if (this.trailingStopLoss > 0 && buyTrade.ceEntryPrice > 1
+						&& (buyTrade.ceStopLoss - OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike)) >= 2
+								* this.trailingStopLoss) {
+					buyTrade.ceStopLoss = buyTrade.ceStopLoss + this.trailingStopLoss;
+				}
+
+				if (this.trailingStopLoss > 0 && buyTrade.peEntryPrice > 1
+						&& (buyTrade.peStopLoss - OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike)) >= 2
+								* this.trailingStopLoss) {
+					buyTrade.peStopLoss = buyTrade.peStopLoss + this.trailingStopLoss;
+				}
+
 				// If stop loss hits
 				if (buyTrade.ceEntryPrice > 1
 						&& buyTrade.ceStopLoss >= OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike)) {
