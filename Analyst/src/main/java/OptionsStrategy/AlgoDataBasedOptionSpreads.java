@@ -19,6 +19,8 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 	private int MINIMUM_SELL_PRICE = 15;
 
+	private boolean doStrikeDataCheck = false;
+
 	public AlgoDataBasedOptionSpreads(int spreadGap, int stopLoss, int trailingStopLoss) {
 		this.spreadGap = spreadGap;
 		this.stopLoss = stopLoss;
@@ -28,6 +30,12 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 	public AlgoDataBasedOptionSpreads(int spreadGap, int stopLoss, int trailingStopLoss, int distanceFromSpot) {
 		this(spreadGap, stopLoss, trailingStopLoss);
 		this.distanceFromSpot = distanceFromSpot;
+	}
+
+	public AlgoDataBasedOptionSpreads(int spreadGap, int stopLoss, int trailingStopLoss, int distanceFromSpot,
+			boolean doStrikeDataCheck) {
+		this(spreadGap, stopLoss, trailingStopLoss, distanceFromSpot);
+		this.doStrikeDataCheck = doStrikeDataCheck;
 	}
 
 	public List<Trade> execute(String date) {
@@ -59,6 +67,13 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 				if (callOIChange < putOIChange) {
 					strike += 100 + distanceFromSpot;
+
+					double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike - distanceFromSpot);
+					double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike - distanceFromSpot);
+					if (doStrikeDataCheck && strikeCEOIchange > strikePEOIchange) {
+						continue;
+					}
+
 					buyingPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
 					buyTrade.ceEntryPrice = buyingPrice;
 					buyTrade.ceStopLoss = buyingPrice - stopLoss;
@@ -77,6 +92,13 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 					}
 				} else {
 					strike -= distanceFromSpot;
+
+					double strikeCEOIchange = OptionsChainHelper.getCEOIChange(optionsChain, strike + distanceFromSpot);
+					double strikePEOIchange = OptionsChainHelper.getPEOIChange(optionsChain, strike + distanceFromSpot);
+					if (doStrikeDataCheck && strikePEOIchange > strikeCEOIchange) {
+						continue;
+					}
+
 					buyingPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
 					buyTrade.peEntryPrice = buyingPrice;
 					buyTrade.peStopLoss = buyingPrice - stopLoss;
@@ -189,6 +211,6 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 	@Override
 	public String getName() {
 		return "DataBasedOptionSpreads" + " WithSL:" + stopLoss + " SpreadGap:" + spreadGap + " TrailingSL:"
-				+ trailingStopLoss + " DistanceFromSpot:" + distanceFromSpot;
+				+ trailingStopLoss + " DistanceFromSpot:" + distanceFromSpot + " DoStrikeDataCheck:" + doStrikeDataCheck;
 	}
 }
