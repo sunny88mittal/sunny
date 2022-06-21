@@ -46,6 +46,9 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 		for (int i = 0; i < 10000; i++) {
 			OptionsChain optionsChain = OptionsDataProvider.getData(StockSymbols.BANKNIFTY.name, date, i);
+			if (optionsChain == null) {
+				continue;
+			}
 			Timestamp ts = new Timestamp(optionsChain.timeStamp);
 			int hours = ts.getHours();
 			int minutes = ts.getMinutes();
@@ -152,13 +155,13 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 
 				// Trail the stop loss
 				if (this.trailingStopLoss > 0 && buyTrade.ceEntryPrice > 1
-						&& (buyTrade.ceStopLoss - OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike)) >= 2
+						&& (OptionsChainHelper.getCEPrice(optionsChain, buyTrade.strike) - buyTrade.ceStopLoss) >= 2
 								* this.trailingStopLoss) {
 					buyTrade.ceStopLoss = buyTrade.ceStopLoss + this.trailingStopLoss;
 				}
 
 				if (this.trailingStopLoss > 0 && buyTrade.peEntryPrice > 1
-						&& (buyTrade.peStopLoss - OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike)) >= 2
+						&& (OptionsChainHelper.getPEPrice(optionsChain, buyTrade.strike) - buyTrade.peStopLoss) >= 2
 								* this.trailingStopLoss) {
 					buyTrade.peStopLoss = buyTrade.peStopLoss + this.trailingStopLoss;
 				}
@@ -211,6 +214,7 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 	@Override
 	public String getName() {
 		return "DataBasedOptionSpreads" + " WithSL:" + stopLoss + " SpreadGap:" + spreadGap + " TrailingSL:"
-				+ trailingStopLoss + " DistanceFromSpot:" + distanceFromSpot + " DoStrikeDataCheck:" + doStrikeDataCheck;
+				+ trailingStopLoss + " DistanceFromSpot:" + distanceFromSpot + " DoStrikeDataCheck:"
+				+ doStrikeDataCheck;
 	}
 }

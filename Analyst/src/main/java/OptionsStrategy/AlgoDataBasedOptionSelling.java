@@ -181,6 +181,6 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 	@Override
 	public String getName() {
 		return "DataBasedOptionSelling" + " WithSL:" + stopLoss + " TrailingSL:" + trailingStopLoss
-				+ " DistanceFromSpot:" + distanceFromSpot;
+				+ " DistanceFromSpot:" + distanceFromSpot + " StopOnDataReversal:" + stopOnDataReversal;
 	}
 }

@@ -1,34 +1,34 @@
 package OptionsStrategy;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import Constants.FileConstants;
 import Constants.StockSymbols;
 
 public class AlgoTester {
 
 	private static final int BNF_LOT_SIZE = 25;
 
-	private static String[] dates = new String[] { "19-04-2022", "20-04-2022", "21-04-2022", "22-04-2022", "25-04-2022",
-			"29-04-2022", "02-06-2022", "03-06-2022", "07-06-2022", "08-06-2022", "10-06-2022", "13-06-2022",
-			"14-06-2022", "15-06-2022", "16-06-2022", "17-06-2022" };
+	private static String[] dates = new String[] { "21-06-2022" };
 
 	public static void main(String args[]) {
+		// dates = getAllDates();
+
 		IOptionsStrategy strategy = new AlgoDataBasedOptionSelling(100, -1, true);
 		IOptionsStrategy strategy1 = new AlgoDataBasedOptionSelling(100, -1, false);
-		IOptionsStrategy strategy2 = new AlgoDataBasedOptionSelling(75, -1, false);
 		IOptionsStrategy strategy3 = new AlgoDataBasedOptionSelling(100, 100, false);
 		IOptionsStrategy strategy4 = new AlgoDataBasedOptionSelling(200, -1, false, -1000);
 
 		IOptionsStrategy strategy5 = new AlgoDataBasedOptionSellingBothSides(100, false, -1);
 		IOptionsStrategy strategy6 = new AlgoDataBasedOptionSellingBothSides(100, true, -1);
 		IOptionsStrategy strategy7 = new AlgoDataBasedOptionSellingBothSides(100, true, 100);
-
-		IOptionsStrategy strategy8 = new AlgoDataBasedOptionSellingBothSides(75, false, -1);
-		IOptionsStrategy strategy9 = new AlgoDataBasedOptionSellingBothSides(75, true, -1);
 
 		IOptionsStrategy strategy10 = new AlgoDataBasedOptionSpreads(0, 100, 0, 0);
 		IOptionsStrategy strategy11 = new AlgoDataBasedOptionSpreads(1000, 100, 0, 0);
@@ -53,14 +53,11 @@ public class AlgoTester {
 		List<IOptionsStrategy> optionsStratgeies = new ArrayList<IOptionsStrategy>();
 		optionsStratgeies.add(strategy);
 		optionsStratgeies.add(strategy1);
-		optionsStratgeies.add(strategy2);
 		optionsStratgeies.add(strategy3);
 		optionsStratgeies.add(strategy4);
 		optionsStratgeies.add(strategy5);
 		optionsStratgeies.add(strategy6);
 		optionsStratgeies.add(strategy7);
-		optionsStratgeies.add(strategy8);
-		optionsStratgeies.add(strategy9);
 		optionsStratgeies.add(strategy10);
 		optionsStratgeies.add(strategy11);
 		optionsStratgeies.add(strategy12);
@@ -103,6 +100,29 @@ public class AlgoTester {
 		}
 
 		return stratgeyTradesMap;
+	}
+
+	private static String[] getAllDates() {
+		String[] dates = null;
+		;
+		String dirLocation = FileConstants.OPTIONS_FILE_BASE_PATH;
+		File file = new File(dirLocation);
+		File[] files = file.listFiles();
+
+		Arrays.sort(files, new Comparator<File>() {
+			public int compare(File f1, File f2) {
+				return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+			}
+		});
+
+		dates = new String[files.length];
+		int i = 0;
+		for (File file1 : files) {
+			dates[i] = file1.getName();
+			++i;
+		}
+
+		return dates;
 	}
 
 	private static void printProfits(Map<String, List<List<Trade>>> stratgeyTradeMap) {
