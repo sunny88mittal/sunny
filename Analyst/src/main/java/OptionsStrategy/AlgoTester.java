@@ -16,15 +16,17 @@ public class AlgoTester {
 
 	private static final int BNF_LOT_SIZE = 25;
 
-	private static String[] dates = new String[] { "21-06-2022" };
+	private static String[] dates = new String[] { "23-06-2022" };
 
 	public static void main(String args[]) {
 		// dates = getAllDates();
 
 		IOptionsStrategy strategy = new AlgoDataBasedOptionSelling(100, -1, true);
 		IOptionsStrategy strategy1 = new AlgoDataBasedOptionSelling(100, -1, false);
-		IOptionsStrategy strategy3 = new AlgoDataBasedOptionSelling(100, 100, false);
-		IOptionsStrategy strategy4 = new AlgoDataBasedOptionSelling(200, -1, false, -1000);
+		IOptionsStrategy strategy2 = new AlgoDataBasedOptionSelling(100, 100, false);
+
+		IOptionsStrategy strategy3 = new AlgoDataBasedFutureTrading(200, -1, false);
+		IOptionsStrategy strategy4 = new AlgoDataBasedFutureTrading(200, 200, false);
 
 		IOptionsStrategy strategy5 = new AlgoDataBasedOptionSellingBothSides(100, false, -1);
 		IOptionsStrategy strategy6 = new AlgoDataBasedOptionSellingBothSides(100, true, -1);
@@ -53,6 +55,7 @@ public class AlgoTester {
 		List<IOptionsStrategy> optionsStratgeies = new ArrayList<IOptionsStrategy>();
 		optionsStratgeies.add(strategy);
 		optionsStratgeies.add(strategy1);
+		optionsStratgeies.add(strategy2);
 		optionsStratgeies.add(strategy3);
 		optionsStratgeies.add(strategy4);
 		optionsStratgeies.add(strategy5);
