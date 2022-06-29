@@ -42,7 +42,7 @@ public class AlgoShortStraddleWithOnePercentStop implements IOptionsStrategy {
 			}
 			
 			//Closing the trade at market close
-			if (trade != null &&  hours >= 15 && minutes >= 29) {
+			if (trade != null &&  ((hours >= 15 && minutes >= 29) || hours >= 16)) {
 				closeShortStraddle(trade, price, optionsChain);
 				break;
 			}
@@ -50,29 +50,29 @@ public class AlgoShortStraddleWithOnePercentStop implements IOptionsStrategy {
 		
 		return trades;
 	}
-	
+
 	private Trade doShortStraddle(int price, OptionsChain optionsChain) {
 		Trade trade = new Trade();
-		
+
 		int strike = (price / 100) * 100;
 		if (price % 100 > 50) {
 			strike += 100;
 		}
-		
+
 		trade.entry = price;
 		trade.strike = strike;
 		trade.ceEntryPrice = OptionsChainHelper.getCEPrice(optionsChain, strike);
 		trade.peEntryPrice = OptionsChainHelper.getPEPrice(optionsChain, strike);
-		
+
 		return trade;
 	}
-	
+
 	private void closeShortStraddle(Trade trade, int price, OptionsChain optionsChain) {
 		trade.exit = price;
 		trade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, trade.strike);
 		trade.peExitPrice = OptionsChainHelper.getPEPrice(optionsChain, trade.strike);
 	}
-	
+
 	public static void main(String args[]) {
 		AlgoShortStraddleWithOnePercentStop sswa = new AlgoShortStraddleWithOnePercentStop();
 		List<Trade> trades = sswa.execute("19-04-2022");
@@ -83,7 +83,7 @@ public class AlgoShortStraddleWithOnePercentStop implements IOptionsStrategy {
 		}
 		System.out.println("Net profit is : " + 25 * netProfit);
 	}
-	
+
 	@Override
 	public String getName() {
 		return "ShortStraddleWithOnePercentStop";

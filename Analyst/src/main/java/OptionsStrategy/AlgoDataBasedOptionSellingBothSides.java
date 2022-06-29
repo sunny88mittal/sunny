@@ -58,7 +58,7 @@ public class AlgoDataBasedOptionSellingBothSides implements IOptionsStrategy {
 				}
 
 				// If time over close
-				if (hours >= 15 && minutes >= 29) {
+				if ((hours >= 15 && minutes >= 29) || hours >= 16) {
 					System.out.println("Day ends");
 					trade.exit = price;
 					if (trade.ceEntryPrice > 1) {

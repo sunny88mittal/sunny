@@ -130,7 +130,7 @@ public class AlgoDataBasedOptionSpreads implements IOptionsStrategy {
 			// Close the trade
 			if (isTradeOpen) {
 				// If time over close
-				if (hours >= 15 && minutes >= 29) {
+				if ((hours >= 15 && minutes >= 29) || hours >= 16) {
 					System.out.println("Day ends");
 					buyTrade.exit = price;
 					if (sellTrade != null) {

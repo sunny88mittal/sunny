@@ -16,7 +16,7 @@ public class AlgoTester {
 
 	private static final int BNF_LOT_SIZE = 25;
 
-	private static String[] dates = new String[] { "23-06-2022" };
+	private static String[] dates = new String[] { "29-06-2022" };
 
 	public static void main(String args[]) {
 		// dates = getAllDates();

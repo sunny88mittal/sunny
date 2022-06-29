@@ -13,7 +13,7 @@ public class AlgoIronFly implements IOptionsStrategy {
 	@Override
 	public List<Trade> execute(String date) {
 		List<Trade> trades = new ArrayList<Trade>();
-		
+
 		boolean isTradeOpen = false;
 		Trade shortStraddleTrade = null;
 		List<Trade> longStrangleTrades = null;
@@ -42,7 +42,7 @@ public class AlgoIronFly implements IOptionsStrategy {
 			}
 
 			// Closing the trade at market close
-			if (shortStraddleTrade != null && hours >= 15 && minutes >= 29) {
+			if (shortStraddleTrade != null && ((hours >= 15 && minutes >= 29) || hours >= 16)) {
 				for (Trade trade : trades) {
 					closeTrade(trade, price, optionsChain);
 				}
@@ -112,7 +112,7 @@ public class AlgoIronFly implements IOptionsStrategy {
 		}
 		System.out.println("Net profit is : " + 25 * netProfit);
 	}
-	
+
 	@Override
 	public String getName() {
 		return "IronFly";
