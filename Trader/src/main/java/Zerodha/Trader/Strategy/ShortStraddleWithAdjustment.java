@@ -14,8 +14,7 @@ import com.zerodhatech.models.Order;
 import com.zerodhatech.models.Position;
 
 import Zerodha.Trader.Core.AppConstants;
-import Zerodha.Trader.Core.OrderHandler;
-import Zerodha.Trader.Core.PositionsProvider;
+import Zerodha.Trader.Core.KiteHandler;
 import Zerodha.Trader.Core.TradingSymbolHelper;
 import Zerodha.Trader.Logging.Logger;
 
@@ -29,18 +28,14 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	private String optionDateValue;
 
-	private OrderHandler orderHandler;
-
-	private PositionsProvider positionsProvider;
+	private KiteHandler kiteHandler;
 
 	private static String SSWA_CHECK_POINT_FILE = "C:\\Code\\sunny\\Trader\\SSWACheckPointFile.txt";
 
-	public ShortStraddleWithAdjustment(int qty, String optionDateValue, OrderHandler orderHandler,
-			PositionsProvider positionsProvider) {
+	public ShortStraddleWithAdjustment(int qty, String optionDateValue, KiteHandler orderHandler) {
 		this.qty = qty;
 		this.optionDateValue = optionDateValue;
-		this.orderHandler = orderHandler;
-		this.positionsProvider = positionsProvider;
+		this.kiteHandler = orderHandler;
 		this.lastTradedAt = 0.0;
 		this.isTradeOpen = false;
 	}
@@ -150,7 +145,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		try {
 			// Trade Put position
 			if ((isBuyOrder && isPositionOpen(putOptionSymbol)) || isSellOrder) {
-				Order order = orderHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO,
+				Order order = kiteHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO,
 						transactionType);
 				Logger.print(this.getClass(), qty + ":" + putOptionSymbol + ":" + transactionType + ":" + order.price);
 			} else {
@@ -159,7 +154,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 			// Close call position
 			if ((isBuyOrder && isPositionOpen(callOptionSymbol)) || isSellOrder) {
-				Order order = orderHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO,
+				Order order = kiteHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO,
 						transactionType);
 				Logger.print(this.getClass(), qty + ":" + callOptionSymbol + ":" + transactionType + ":" + order.price);
 			} else {
@@ -171,7 +166,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	}
 
 	private boolean isPositionOpen(String tradingSymbol) throws IOException, KiteException {
-		List<Position> positions = positionsProvider.getPositions().get("net");
+		List<Position> positions = kiteHandler.getPositions().get("net");
 		for (Position position : positions) {
 			if (Math.abs(position.netQuantity) > 0 && position.tradingSymbol.equals(tradingSymbol)) {
 				return true;

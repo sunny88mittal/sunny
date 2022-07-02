@@ -10,8 +10,7 @@ import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 
 import Zerodha.Trader.Core.AppConstants;
 import Zerodha.Trader.Core.AuthHandler;
-import Zerodha.Trader.Core.OrderHandler;
-import Zerodha.Trader.Core.PositionsProvider;
+import Zerodha.Trader.Core.KiteHandler;
 import Zerodha.Trader.Executor.LiveQuotesSubscriber;
 import Zerodha.Trader.Strategy.IStrategy;
 import Zerodha.Trader.Strategy.ShortStraddleWithAdjustment;
@@ -23,12 +22,10 @@ public class MainApp {
 				AppConstants.REQUEST_TOKEN);
 		KiteConnect connection = authHandler.doLogin();
 
-		OrderHandler orderHandler = new OrderHandler(connection);
-
-		PositionsProvider positionsProvider = new PositionsProvider(connection);
+		KiteHandler kiteHandler = new KiteHandler(connection);
 
 		IStrategy strategy = new ShortStraddleWithAdjustment(AppConstants.QTY, AppConstants.OPTION_DATE_VALUE,
-				orderHandler, positionsProvider);
+				kiteHandler);
 		strategy.initialize();
 
 		ArrayList<Long> quotes = new ArrayList<Long>();

@@ -12,23 +12,23 @@ import com.zerodhatech.models.Position;
 
 import Zerodha.Trader.Core.AppConstants;
 import Zerodha.Trader.Core.AuthHandler;
-import Zerodha.Trader.Core.OrderHandler;
-import Zerodha.Trader.Core.PositionsProvider;
+import Zerodha.Trader.Core.KiteHandler;
 
-public class OrderTesting {
+public class Testing {
 
 	public static void main(String args[]) throws JSONException, IOException, KiteException, InterruptedException {
 		AuthHandler authHandler = new AuthHandler(AppConstants.USER_ID, AppConstants.API_KEY, AppConstants.API_SECRET,
 				AppConstants.REQUEST_TOKEN);
 		KiteConnect connection = authHandler.doLogin();
 
-		OrderHandler orderHandler = new OrderHandler(connection);
+		KiteHandler kiteHandler = new KiteHandler(connection);
+	}
 
-		orderHandler.placeMarketOrder(25, "BANKNIFTY2191634500PE", Constants.EXCHANGE_NFO, Constants.TRANSACTION_TYPE_SELL);
+	private static void testOrderPlacement(KiteHandler kiteHandler) throws JSONException, IOException, KiteException {
+		kiteHandler.placeMarketOrder(25, "BANKNIFTY2191634500PE", Constants.EXCHANGE_NFO,
+				Constants.TRANSACTION_TYPE_SELL);
 
-		PositionsProvider positionsProvider = new PositionsProvider(connection);
-
-		List<Position> positions = positionsProvider.getPositions().get("net");
+		List<Position> positions = kiteHandler.getPositions().get("net");
 
 		for (Position position : positions) {
 			System.out.println(position.instrumentToken + " " + position.tradingSymbol + " " + position.netQuantity);
