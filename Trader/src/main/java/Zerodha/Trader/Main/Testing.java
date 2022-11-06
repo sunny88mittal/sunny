@@ -1,6 +1,7 @@
 package Zerodha.Trader.Main;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 import org.json.JSONException;
@@ -10,17 +11,20 @@ import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
 import com.zerodhatech.models.Position;
 
-import Zerodha.Trader.Core.AppConstants;
 import Zerodha.Trader.Core.AuthHandler;
 import Zerodha.Trader.Core.KiteHandler;
+import Zerodha.Trader.Core.UserDetails;
+import Zerodha.Trader.Core.UsersProvider;
 
 public class Testing {
 
-	public static void main(String args[]) throws JSONException, IOException, KiteException, InterruptedException {
-		AuthHandler authHandler = new AuthHandler(AppConstants.USER_ID, AppConstants.API_KEY, AppConstants.API_SECRET,
-				AppConstants.REQUEST_TOKEN);
+	public static void main(String args[])
+			throws JSONException, IOException, KiteException, InterruptedException, ParseException {
+		UsersProvider usersProvider = new UsersProvider();
+		List<UserDetails> users = usersProvider.getAllUsers();
+		UserDetails user = users.get(0);
+		AuthHandler authHandler = new AuthHandler(user.USER_ID, user.API_KEY, user.API_SECRET, user.REQUEST_TOKEN);
 		KiteConnect connection = authHandler.doLogin();
-
 		KiteHandler kiteHandler = new KiteHandler(connection);
 	}
 

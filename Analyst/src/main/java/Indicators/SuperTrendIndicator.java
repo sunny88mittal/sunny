@@ -7,6 +7,10 @@ import org.ta4j.core.Bar;
 import org.ta4j.core.TimeSeries;
 import org.ta4j.core.indicators.ATRIndicator;
 import org.ta4j.core.indicators.CachedIndicator;
+import org.ta4j.core.indicators.RSIIndicator;
+import org.ta4j.core.indicators.adx.MinusDIIndicator;
+import org.ta4j.core.indicators.adx.PlusDIIndicator;
+import org.ta4j.core.indicators.helpers.ClosePriceIndicator;
 import org.ta4j.core.num.Num;
 import org.ta4j.core.num.PrecisionNum;
 
@@ -112,12 +116,29 @@ public class SuperTrendIndicator extends CachedIndicator<Num> {
 	}
 
 	public static void main(String args[]) {
-		TimeSeries timeSeries = DataUtil.getTimeSeries(StockSymbols.MARUTI.name, CandleStickInterval.MINUTE_15);
-		SuperTrendIndicator indicator = new SuperTrendIndicator(timeSeries, 7, 3);
+		TimeSeries timeSeries = DataUtil.getTimeSeries(StockSymbols.BANKNIFTY.name, CandleStickInterval.MINUTE_5);
+		ClosePriceIndicator closePriceIndicator = new ClosePriceIndicator(timeSeries);
+
+		SuperTrendIndicator stIndicator = new SuperTrendIndicator(timeSeries, 10, 2);
+		PlusDIIndicator plusDIIndicator = new PlusDIIndicator(timeSeries, 14);
+		MinusDIIndicator minusDIIndicator = new MinusDIIndicator(timeSeries, 14);
+		RSIIndicator rsiIndicator = new RSIIndicator(closePriceIndicator, 14);
+
 		int length = timeSeries.getBarCount();
-		for (int i = length - 2000; i < length; i++) {
-			System.out.println(i + " " + timeSeries.getBar(i).getDateName() + " " + indicator.getValue(i).intValue()
-					+ " " + timeSeries.getBar(i).getClosePrice());
+		for (int i = 200; i < length; i++) {
+			if (stIndicator.getValue(i).intValue() < timeSeries.getBar(i).getClosePrice().intValue()
+					&& rsiIndicator.getValue(i).intValue() > 50
+					&& plusDIIndicator.getValue(i).intValue() > minusDIIndicator.getValue(i).intValue()) {
+				System.out.println(i + " " + timeSeries.getBar(i).getDateName() + " "
+						+ timeSeries.getBar(i).getClosePrice() + ":" + "BUY");
+			}
+
+			if (stIndicator.getValue(i).intValue() > timeSeries.getBar(i).getClosePrice().intValue()
+					&& rsiIndicator.getValue(i).intValue() < 50
+					&& plusDIIndicator.getValue(i).intValue() < minusDIIndicator.getValue(i).intValue()) {
+				System.out.println(i + " " + timeSeries.getBar(i).getDateName() + " "
+						+ timeSeries.getBar(i).getClosePrice() + ":" + "SELL");
+			}
 		}
 	}
 }

@@ -15,12 +15,11 @@ import com.zerodhatech.models.Position;
 
 import Zerodha.Trader.Core.AppConstants;
 import Zerodha.Trader.Core.KiteHandler;
+import Zerodha.Trader.Core.KiteUser;
 import Zerodha.Trader.Core.TradingSymbolHelper;
 import Zerodha.Trader.Logging.Logger;
 
 public class ShortStraddleWithAdjustment implements IStrategy {
-
-	private int qty;
 
 	private boolean isTradeOpen;
 
@@ -28,14 +27,13 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	private String optionDateValue;
 
-	private KiteHandler kiteHandler;
+	private List<KiteUser> kiteUsers;
 
-	private static String SSWA_CHECK_POINT_FILE = "C:\\Code\\sunny\\Trader\\SSWACheckPointFile.txt";
+	private static String SSWA_CHECK_POINT_FILE = "C:\\Code\\Code\\sunny\\Trader\\SSWACheckPointFile.txt";
 
-	public ShortStraddleWithAdjustment(int qty, String optionDateValue, KiteHandler orderHandler) {
-		this.qty = qty;
+	public ShortStraddleWithAdjustment(String optionDateValue, List<KiteUser> kiteUsers) {
 		this.optionDateValue = optionDateValue;
-		this.kiteHandler = orderHandler;
+		this.kiteUsers = kiteUsers;
 		this.lastTradedAt = 0.0;
 		this.isTradeOpen = false;
 	}
@@ -54,7 +52,8 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 					// Confirm if the position is still open
 					String putOptionSymbol = getPutOptionSymbol(strikeTradedAt);
 					String callOptionSymbol = getCallOptionSymbol(strikeTradedAt);
-					boolean hasPosition = isPositionOpen(callOptionSymbol) && isPositionOpen(putOptionSymbol);
+					boolean hasPosition = isPositionOpen(callOptionSymbol, kiteUsers.get(0).kiteHandler)
+							&& isPositionOpen(putOptionSymbol, kiteUsers.get(0).kiteHandler);
 
 					// Initialize class attributes or remove the checkpoint file
 					if (hasPosition) {
@@ -142,30 +141,37 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 		boolean isBuyOrder = Constants.TRANSACTION_TYPE_BUY.equals(transactionType);
 		boolean isSellOrder = Constants.TRANSACTION_TYPE_SELL.equals(transactionType);
 
-		try {
-			// Trade Put position
-			if ((isBuyOrder && isPositionOpen(putOptionSymbol)) || isSellOrder) {
-				Order order = kiteHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO,
-						transactionType);
-				Logger.print(this.getClass(), qty + ":" + putOptionSymbol + ":" + transactionType + ":" + order.price);
-			} else {
-				System.out.println("Position already closed for :" + putOptionSymbol);
-			}
+		for (KiteUser kiteUser : kiteUsers) {
+			KiteHandler kiteHandler = kiteUser.kiteHandler;
+			int qty = kiteUser.qty;
+			String userName = kiteUser.name;
+			try {
+				// Trade Put position
+				if ((isBuyOrder && isPositionOpen(putOptionSymbol, kiteHandler)) || isSellOrder) {
+					Order order = kiteHandler.placeMarketOrder(qty, putOptionSymbol, Constants.EXCHANGE_NFO,
+							transactionType);
+					Logger.print(this.getClass(),
+							userName + ":" + qty + ":" + putOptionSymbol + ":" + transactionType + ":" + order.price);
+				} else {
+					System.out.println("Position already closed for :" + putOptionSymbol);
+				}
 
-			// Close call position
-			if ((isBuyOrder && isPositionOpen(callOptionSymbol)) || isSellOrder) {
-				Order order = kiteHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO,
-						transactionType);
-				Logger.print(this.getClass(), qty + ":" + callOptionSymbol + ":" + transactionType + ":" + order.price);
-			} else {
-				Logger.print(this.getClass(), "Position already closed for :" + callOptionSymbol);
+				// Close call position
+				if ((isBuyOrder && isPositionOpen(callOptionSymbol, kiteHandler)) || isSellOrder) {
+					Order order = kiteHandler.placeMarketOrder(qty, callOptionSymbol, Constants.EXCHANGE_NFO,
+							transactionType);
+					Logger.print(this.getClass(),
+							userName + ":" + qty + ":" + callOptionSymbol + ":" + transactionType + ":" + order.price);
+				} else {
+					Logger.print(this.getClass(), "Position already closed for :" + callOptionSymbol);
+				}
+			} catch (Throwable e) {
+				e.printStackTrace();
 			}
-		} catch (Throwable e) {
-			e.printStackTrace();
 		}
 	}
 
-	private boolean isPositionOpen(String tradingSymbol) throws IOException, KiteException {
+	private boolean isPositionOpen(String tradingSymbol, KiteHandler kiteHandler) throws IOException, KiteException {
 		List<Position> positions = kiteHandler.getPositions().get("net");
 		for (Position position : positions) {
 			if (Math.abs(position.netQuantity) > 0 && position.tradingSymbol.equals(tradingSymbol)) {

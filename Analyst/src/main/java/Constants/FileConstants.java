@@ -2,7 +2,7 @@ package Constants;
 
 public class FileConstants {
 
-	private static String FILE_BASE_PATH = "C:\\Users\\sunmitta\\Desktop\\Perosnal\\Stocks\\";
+	private static String FILE_BASE_PATH = "C:\\Users\\sunmitta\\Desktop\\Personal\\Stocks\\";
 
 	private static String DATA_FILE_BASE_PATH = FILE_BASE_PATH + "Data\\";
 

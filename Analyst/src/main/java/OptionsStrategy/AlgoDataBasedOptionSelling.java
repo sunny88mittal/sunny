@@ -135,7 +135,7 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 				// If data reversal happens
 				if (this.stopOnDataReversal && trade.ceEntryPrice > 1 && putOIChange > callOIChange
 						&& trade.entry < price) {
-					System.out.println("Data reversal");
+					System.out.println(ts.toString() + " Data reversal");
 					trade.ceExitPrice = OptionsChainHelper.getCEPrice(optionsChain, trade.strike);
 					trade.exit = price;
 					break;
@@ -143,7 +143,7 @@ public class AlgoDataBasedOptionSelling implements IOptionsStrategy {
 
 				if (this.stopOnDataReversal && trade.peEntryPrice > 1 && putOIChange < callOIChange
 						&& trade.entry > price) {
-					System.out.println("Data reversal");
+					System.out.println(ts.toString() + " Data reversal");
 					trade.exit = price;
 					trade.peExitPrice = OptionsChainHelper.getCEPrice(optionsChain, trade.strike);
 					break;
