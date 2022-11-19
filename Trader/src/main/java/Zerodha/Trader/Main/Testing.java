@@ -11,10 +11,10 @@ import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
 import com.zerodhatech.models.Position;
 
-import Zerodha.Trader.Core.AuthHandler;
-import Zerodha.Trader.Core.KiteHandler;
 import Zerodha.Trader.Core.UserDetails;
-import Zerodha.Trader.Core.UsersProvider;
+import Zerodha.Trader.Services.AuthHandler;
+import Zerodha.Trader.Services.KiteHandler;
+import Zerodha.Trader.Services.UsersProvider;
 
 public class Testing {
 
@@ -26,11 +26,12 @@ public class Testing {
 		AuthHandler authHandler = new AuthHandler(user.USER_ID, user.API_KEY, user.API_SECRET, user.REQUEST_TOKEN);
 		KiteConnect connection = authHandler.doLogin();
 		KiteHandler kiteHandler = new KiteHandler(connection);
+		testOrderPlacement(kiteHandler);
 	}
 
 	private static void testOrderPlacement(KiteHandler kiteHandler) throws JSONException, IOException, KiteException {
-		kiteHandler.placeMarketOrder(25, "BANKNIFTY2191634500PE", Constants.EXCHANGE_NFO,
-				Constants.TRANSACTION_TYPE_SELL);
+		/*kiteHandler.placeMarketOrder(25, "BANKNIFTY2191634500PE", Constants.EXCHANGE_NFO,
+				Constants.TRANSACTION_TYPE_SELL);*/
 
 		List<Position> positions = kiteHandler.getPositions().get("net");
 

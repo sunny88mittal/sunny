@@ -1,5 +1,7 @@
 package Zerodha.Trader.Core;
 
+import Zerodha.Trader.Services.KiteHandler;
+
 public class KiteUser {
 
 	public int qty;

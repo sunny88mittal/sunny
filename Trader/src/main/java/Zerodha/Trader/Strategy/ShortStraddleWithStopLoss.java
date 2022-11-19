@@ -15,9 +15,9 @@ import com.zerodhatech.models.Order;
 import com.zerodhatech.models.Position;
 
 import Zerodha.Trader.Core.AppConstants;
-import Zerodha.Trader.Core.KiteHandler;
 import Zerodha.Trader.Core.TradingSymbolHelper;
 import Zerodha.Trader.Logging.Logger;
+import Zerodha.Trader.Services.KiteHandler;
 
 public class ShortStraddleWithStopLoss implements IStrategy {
 

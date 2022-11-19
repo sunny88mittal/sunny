@@ -12,12 +12,12 @@ import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 
 import Zerodha.Trader.Core.AppConstants;
-import Zerodha.Trader.Core.AuthHandler;
-import Zerodha.Trader.Core.KiteHandler;
 import Zerodha.Trader.Core.KiteUser;
 import Zerodha.Trader.Core.UserDetails;
-import Zerodha.Trader.Core.UsersProvider;
 import Zerodha.Trader.Executor.LiveQuotesSubscriber;
+import Zerodha.Trader.Services.AuthHandler;
+import Zerodha.Trader.Services.KiteHandler;
+import Zerodha.Trader.Services.UsersProvider;
 import Zerodha.Trader.Strategy.IStrategy;
 import Zerodha.Trader.Strategy.ShortStraddleWithAdjustment;
 

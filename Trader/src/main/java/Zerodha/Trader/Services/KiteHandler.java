@@ -1,4 +1,4 @@
-package Zerodha.Trader.Core;
+package Zerodha.Trader.Services;
 
 import java.io.IOException;
 import java.util.List;

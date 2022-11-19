@@ -14,10 +14,10 @@ import com.zerodhatech.models.Order;
 import com.zerodhatech.models.Position;
 
 import Zerodha.Trader.Core.AppConstants;
-import Zerodha.Trader.Core.KiteHandler;
 import Zerodha.Trader.Core.KiteUser;
 import Zerodha.Trader.Core.TradingSymbolHelper;
 import Zerodha.Trader.Logging.Logger;
+import Zerodha.Trader.Services.KiteHandler;
 
 public class ShortStraddleWithAdjustment implements IStrategy {
 
@@ -29,8 +29,6 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	private List<KiteUser> kiteUsers;
 
-	private static String SSWA_CHECK_POINT_FILE = "C:\\Code\\Code\\sunny\\Trader\\SSWACheckPointFile.txt";
-
 	public ShortStraddleWithAdjustment(String optionDateValue, List<KiteUser> kiteUsers) {
 		this.optionDateValue = optionDateValue;
 		this.kiteUsers = kiteUsers;
@@ -39,7 +37,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 	}
 
 	public void initialize() {
-		File file = new File(SSWA_CHECK_POINT_FILE);
+		File file = new File(AppConstants.SSWA_CHECK_POINT_FILE);
 		if (file.exists()) {
 			try {
 				Scanner sc = new Scanner(file);
@@ -118,7 +116,7 @@ public class ShortStraddleWithAdjustment implements IStrategy {
 
 	private void doCheckPointing(int price) {
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(SSWA_CHECK_POINT_FILE));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(AppConstants.SSWA_CHECK_POINT_FILE));
 			String toWrite = price > 0 ? price + "" : "";
 			writer.write(toWrite);
 			writer.close();
