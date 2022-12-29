@@ -76,3 +76,6 @@
 /TopKFrequentElements.class
 /TopKFrequentElements$Pair.class
 /MinimumOperationsToHalveArraySum.class
+/NetworkDelayTime.class
+/NetworkDelayTime$GraphAdjacenyList.class
+/NetworkDelayTime$GraphNode.class
