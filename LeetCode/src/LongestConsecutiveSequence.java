@@ -26,8 +26,16 @@ public class LongestConsecutiveSequence {
 		for (int i = 0; i < nums.length; i++) {
 			SequenceBuilder seq = map.get(nums[i]);
 			if (seq != null) {
-				mergeSeq(map, nums[i] - 1, seq, -1);
-				mergeSeq(map, nums[i] + 1, seq, 1);
+				while (map.containsKey(seq.min - 1)) {
+					map.remove(seq.min - 1);
+					--seq.min;
+				}
+
+				while (map.containsKey(seq.max + 1)) {
+					map.remove(seq.max + 1);
+					++seq.max;
+				}
+
 				int count = seq.max - seq.min + 1;
 				if (count > longestSequence) {
 					longestSequence = count;
@@ -36,18 +44,5 @@ public class LongestConsecutiveSequence {
 		}
 
 		return longestSequence;
-	}
-
-	private void mergeSeq(Map<Integer, SequenceBuilder> map, int startAt, SequenceBuilder inputSeq, int direction) {
-		while (map.containsKey(startAt)) {
-			map.remove(startAt);
-			if (direction == -1) {
-				inputSeq.min = startAt;
-				--startAt;
-			} else {
-				inputSeq.max = startAt;
-				++startAt;
-			}
-		}
 	}
 }
