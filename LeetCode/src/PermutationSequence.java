@@ -1,8 +1,16 @@
 
 public class PermutationSequence {
 
+	private int[] factotrialTable = new int[10];
+
 	public String getPermutation(int n, int k) {
 		Integer s = 0;
+
+		factotrialTable[1] = 1;
+		for (int i = 2; i <= 9; i++) {
+			factotrialTable[i] = i * factotrialTable[i - 1];
+		}
+
 		for (int i = 1; i <= n; i++) {
 			s = s * 10 + i;
 		}
@@ -17,7 +25,7 @@ public class PermutationSequence {
 
 		int length = s.length();
 		int i = 0;
-		int factorial = getFactorial(length - 1);
+		int factorial = factotrialTable[length - 1];
 
 		if (k > factorial) {
 			i = k / factorial;
@@ -30,14 +38,6 @@ public class PermutationSequence {
 		s = s.charAt(i) + getPermutation(s.substring(0, i) + s.substring(i + 1, s.length()), k);
 
 		return s;
-	}
-
-	private int getFactorial(int n) {
-		int factorial = 1;
-		for (int i = 1; i <= n; i++) {
-			factorial *= i;
-		}
-		return factorial;
 	}
 
 	public static void main(String args[]) {
