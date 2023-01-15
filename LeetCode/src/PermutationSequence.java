@@ -18,9 +18,13 @@ public class PermutationSequence {
 		int length = s.length();
 		int i = 0;
 		int factorial = getFactorial(length - 1);
-		while (factorial < k) {
-			i++;
-			k = k - factorial;
+
+		if (k > factorial) {
+			i = k / factorial;
+			if (k % factorial == 0) {
+				--i;
+			}
+			k = k - (i * factorial);
 		}
 
 		s = s.charAt(i) + getPermutation(s.substring(0, i) + s.substring(i + 1, s.length()), k);
