@@ -125,19 +125,24 @@ public class SuperTrendIndicator extends CachedIndicator<Num> {
 		RSIIndicator rsiIndicator = new RSIIndicator(closePriceIndicator, 14);
 
 		int length = timeSeries.getBarCount();
+		String previousSignal = null;
 		for (int i = 200; i < length; i++) {
 			if (stIndicator.getValue(i).intValue() < timeSeries.getBar(i).getClosePrice().intValue()
 					&& rsiIndicator.getValue(i).intValue() > 50
-					&& plusDIIndicator.getValue(i).intValue() > minusDIIndicator.getValue(i).intValue()) {
+					&& plusDIIndicator.getValue(i).intValue() > minusDIIndicator.getValue(i).intValue()
+					&& (previousSignal == null || previousSignal.equals("SELL")) ) {
 				System.out.println(i + " " + timeSeries.getBar(i).getDateName() + " "
 						+ timeSeries.getBar(i).getClosePrice() + ":" + "BUY");
+				previousSignal = "BUY";
 			}
 
 			if (stIndicator.getValue(i).intValue() > timeSeries.getBar(i).getClosePrice().intValue()
 					&& rsiIndicator.getValue(i).intValue() < 50
-					&& plusDIIndicator.getValue(i).intValue() < minusDIIndicator.getValue(i).intValue()) {
+					&& plusDIIndicator.getValue(i).intValue() < minusDIIndicator.getValue(i).intValue()
+					&& (previousSignal == null || previousSignal.equals("BUY"))) {
 				System.out.println(i + " " + timeSeries.getBar(i).getDateName() + " "
 						+ timeSeries.getBar(i).getClosePrice() + ":" + "SELL");
+				previousSignal = "SELL";
 			}
 		}
 	}

@@ -8,7 +8,7 @@ public class AppConstants {
 
 	public static String INDEX_BANKNIFTY = "BANKNIFTY";
 
-	public static String OPTION_DATE_VALUE = "22N10";
+	public static String OPTION_DATE_VALUE = "22D08";
 
 	public static long BANKNIFTY_QUOTE = 260105;
 

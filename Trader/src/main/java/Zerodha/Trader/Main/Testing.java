@@ -8,7 +8,6 @@ import org.json.JSONException;
 
 import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
-import com.zerodhatech.kiteconnect.utils.Constants;
 import com.zerodhatech.models.Position;
 
 import Zerodha.Trader.Core.UserDetails;
