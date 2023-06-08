@@ -19,6 +19,7 @@ import Zerodha.Trader.Core.AppConstants;
 import Zerodha.Trader.Core.KiteUser;
 import Zerodha.Trader.Core.TradingSymbolHelper;
 import Zerodha.Trader.Logging.Logger;
+import Zerodha.Trader.Messaging.TelegramService;
 import Zerodha.Trader.Services.KiteHandler;
 
 public class ShortStraddleWithFixedStopLoss implements IStrategy {
@@ -70,15 +71,19 @@ public class ShortStraddleWithFixedStopLoss implements IStrategy {
 			if (now.getMinute() % 15 == 0 && now.getSecond() == 0) {
 				Logger.print(this.getClass(), "Price is :" + price);
 			}
+			
 			if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
 				tradeOptions(price, Constants.TRANSACTION_TYPE_SELL);
 				isTradeOpen = true;
 				lastTradedAt = price;
 				doCheckPointing((int) lastTradedAt);
+				TelegramService.sendMessage("Traded short starddle at strike " + getStrikeToTrade((int)price));
 			} else if (isTradeOpen && (now.getHour() == 15 && now.getMinute() >= 29)) {
 				closeTrades();
+				TelegramService.sendMessage("Closing short starddle as time is over");
 			} else if (isTradeOpen && now.getSecond() % 15 == 0 && getTotalLoss() >= maxAllowedLoss) {
 				closeTrades();
+				TelegramService.sendMessage("Hit maximum loss for the day, closing all trades");
 			}
 		} catch (Throwable ex) {
 			Logger.print(this.getClass(), "Error processing the tick");
@@ -107,7 +112,15 @@ public class ShortStraddleWithFixedStopLoss implements IStrategy {
 	}
 
 	public void disconnectedFromBroker() {
-		// Do nothing
+		LocalDateTime now = LocalDateTime.now();
+		TelegramService.sendMessage("Disconnected from broker");
+		if (isTradeOpen && now.getHour() == 15 && now.getMinute() >= 29) {
+			TelegramService.sendMessage("Closing short starddle as time is over");
+			tradeOptions(lastTradedAt, Constants.TRANSACTION_TYPE_BUY);
+			isTradeOpen = false;
+			lastTradedAt = 0;
+			clearCheckPoint();
+		}
 	}
 
 	private void doCheckPointing(int price) {
