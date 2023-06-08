@@ -71,13 +71,13 @@ public class ShortStraddleWithFixedStopLoss implements IStrategy {
 			if (now.getMinute() % 15 == 0 && now.getSecond() == 0) {
 				Logger.print(this.getClass(), "Price is :" + price);
 			}
-			
+
 			if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
 				tradeOptions(price, Constants.TRANSACTION_TYPE_SELL);
 				isTradeOpen = true;
 				lastTradedAt = price;
 				doCheckPointing((int) lastTradedAt);
-				TelegramService.sendMessage("Traded short starddle at strike " + getStrikeToTrade((int)price));
+				TelegramService.sendMessage("Traded short starddle at strike " + getStrikeToTrade((int) price));
 			} else if (isTradeOpen && (now.getHour() == 15 && now.getMinute() >= 29)) {
 				closeTrades();
 				TelegramService.sendMessage("Closing short starddle as time is over");
@@ -86,6 +86,7 @@ public class ShortStraddleWithFixedStopLoss implements IStrategy {
 				TelegramService.sendMessage("Hit maximum loss for the day, closing all trades");
 			}
 		} catch (Throwable ex) {
+			TelegramService.sendMessage("Error processing the tick");
 			Logger.print(this.getClass(), "Error processing the tick");
 		}
 	}
