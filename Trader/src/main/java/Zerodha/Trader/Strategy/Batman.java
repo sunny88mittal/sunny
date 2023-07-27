@@ -96,12 +96,16 @@ public class Batman implements IStrategy {
 		int totalProfit = 0;
 		Map<String, List<Position>> positions = kiteUsers.get(0).kiteHandler.getPositions();
 		List<Position> intradayPositions = positions.get("net");
-		int upperRange = lastTradedAt + range;
-		int lowerRange = lastTradedAt - range;
+
+		String straddleCESymbol = StrategyUtil.getCallOptionSymbol(lastTradedAt, optionDateValue);
+		String straddlePESymbol = StrategyUtil.getPutOptionSymbol(lastTradedAt, optionDateValue);
+		String strangleCESymbol = StrategyUtil.getCallOptionSymbol(lastTradedAt + range, optionDateValue);
+		String stranglePESymbol = StrategyUtil.getPutOptionSymbol(lastTradedAt - range, optionDateValue);
 
 		for (Position position : intradayPositions) {
-			if (position.tradingSymbol.contains("" + lastTradedAt) || position.tradingSymbol.contains("" + upperRange)
-					|| position.tradingSymbol.contains("" + lowerRange)) {
+			String symbol = position.tradingSymbol;
+			if (symbol.contains(straddleCESymbol) || symbol.contains(straddlePESymbol)
+					|| symbol.contains(strangleCESymbol) || symbol.contains(stranglePESymbol)) {
 				totalProfit += position.pnl;
 			}
 		}
