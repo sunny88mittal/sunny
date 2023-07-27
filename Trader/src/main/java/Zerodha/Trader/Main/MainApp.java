@@ -18,8 +18,8 @@ import Zerodha.Trader.Executor.LiveQuotesSubscriber;
 import Zerodha.Trader.Services.AuthHandler;
 import Zerodha.Trader.Services.KiteHandler;
 import Zerodha.Trader.Services.UsersProvider;
+import Zerodha.Trader.Strategy.Batman;
 import Zerodha.Trader.Strategy.IStrategy;
-import Zerodha.Trader.Strategy.ShortStraddleWithFixedStopLoss;
 
 public class MainApp {
 
@@ -32,7 +32,7 @@ public class MainApp {
 		List<KiteUser> kiteUsers = getKiteUsers();
 
 		// Create strategy instance
-		IStrategy strategy = new ShortStraddleWithFixedStopLoss(AppConstants.OPTION_DATE_VALUE, kiteUsers);
+		IStrategy strategy = new Batman(AppConstants.OPTION_DATE_VALUE, kiteUsers);
 		strategy.initialize();
 
 		// Start listening to the quotes and trade

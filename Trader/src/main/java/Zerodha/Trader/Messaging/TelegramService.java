@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class TelegramService {
 
-	private static String MESSAGE_HTTP_URL = "https://api.telegram.org/bot<token>/sendMessage?chat_id=-677540835&text=MESSAGE";
+	private static String MESSAGE_HTTP_URL = "https://api.telegram.org/bot6268726424:AAHqqtIw8GDwv3tAlDHN3okS-eUszlbyhic/sendMessage?chat_id=-677540835&text=MESSAGE";
 	
 	public static void sendMessage(String message) {
 		String finalURL = MESSAGE_HTTP_URL.replace("MESSAGE", message);
