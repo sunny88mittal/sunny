@@ -72,33 +72,7 @@ public class Batman implements IStrategy {
 			}
 
 			if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
-				int strike = StrategyUtil.getStrikeToTrade(price);
-				KiteUser user = kiteUsers.get(0);
-
-				// Buy straddle
-				String ceSymbol = StrategyUtil.getCallOptionSymbol(strike, optionDateValue);
-				String peSymbol = StrategyUtil.getPutOptionSymbol(strike, optionDateValue);
-				Order ceOrder = StrategyUtil.placeNRMLOrders(user, user.qty, ceSymbol, Constants.TRANSACTION_TYPE_BUY,
-						false);
-				Order peOrder = StrategyUtil.placeNRMLOrders(user, user.qty, peSymbol, Constants.TRANSACTION_TYPE_BUY,
-						false);
-
-				// Sell strangle
-				float straddlePrice = Float.parseFloat(ceOrder.averagePrice) + Float.parseFloat(peOrder.averagePrice);
-				int range = (int) (100 * (straddlePrice / 100));
-				ceSymbol = StrategyUtil.getCallOptionSymbol(strike + range, optionDateValue);
-				peSymbol = StrategyUtil.getPutOptionSymbol(strike - range, optionDateValue);
-				ceOrder = StrategyUtil.placeNRMLOrders(user, 2 * user.qty, ceSymbol, Constants.TRANSACTION_TYPE_SELL,
-						false);
-				peOrder = StrategyUtil.placeNRMLOrders(user, 2 * user.qty, peSymbol, Constants.TRANSACTION_TYPE_SELL,
-						false);
-
-				isTradeOpen = true;
-				lastTradedAt = strike;
-				this.range = range;
-				StrategyUtil.doCheckPointing(strike + "," + range, CHECK_POINT_FILE);
-
-				TelegramService.sendMessage("Traded Batman at strike " + strike + "  with range " + range);
+				openTrades(price);
 			} else if (isTradeOpen && (now.getHour() == 15 && now.getMinute() >= 29)) {
 				closeTrades();
 				TelegramService.sendMessage("Closing strategy as time is over");
@@ -133,6 +107,32 @@ public class Batman implements IStrategy {
 		}
 
 		return totalProfit;
+	}
+
+	private void openTrades(double price) throws Throwable {
+		int strike = StrategyUtil.getStrikeToTrade(price);
+		KiteUser user = kiteUsers.get(0);
+
+		// Buy straddle
+		String ceSymbol = StrategyUtil.getCallOptionSymbol(strike, optionDateValue);
+		String peSymbol = StrategyUtil.getPutOptionSymbol(strike, optionDateValue);
+		Order ceOrder = StrategyUtil.placeNRMLOrders(user, user.qty, ceSymbol, Constants.TRANSACTION_TYPE_BUY, false);
+		Order peOrder = StrategyUtil.placeNRMLOrders(user, user.qty, peSymbol, Constants.TRANSACTION_TYPE_BUY, false);
+
+		// Sell strangle
+		float straddlePrice = Float.parseFloat(ceOrder.averagePrice) + Float.parseFloat(peOrder.averagePrice);
+		int range = (int) (100 * (straddlePrice / 100));
+		ceSymbol = StrategyUtil.getCallOptionSymbol(strike + range, optionDateValue);
+		peSymbol = StrategyUtil.getPutOptionSymbol(strike - range, optionDateValue);
+		ceOrder = StrategyUtil.placeNRMLOrders(user, 2 * user.qty, ceSymbol, Constants.TRANSACTION_TYPE_SELL, false);
+		peOrder = StrategyUtil.placeNRMLOrders(user, 2 * user.qty, peSymbol, Constants.TRANSACTION_TYPE_SELL, false);
+
+		isTradeOpen = true;
+		lastTradedAt = strike;
+		this.range = range;
+		StrategyUtil.doCheckPointing(strike + "," + range, CHECK_POINT_FILE);
+
+		TelegramService.sendMessage("Traded Batman at strike " + strike + "  with range " + range);
 	}
 
 	private void closeTrades() throws Throwable {
