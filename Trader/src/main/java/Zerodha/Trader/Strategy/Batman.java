@@ -113,13 +113,13 @@ public class Batman implements IStrategy {
 		int strike = StrategyUtil.getStrikeToTrade(price);
 		KiteUser user = kiteUsers.get(0);
 
-		// Buy straddle
+		// Sell straddle
 		String ceSymbol = StrategyUtil.getCallOptionSymbol(strike, optionDateValue);
 		String peSymbol = StrategyUtil.getPutOptionSymbol(strike, optionDateValue);
 		Order ceOrder = StrategyUtil.placeNRMLOrders(user, user.qty, ceSymbol, Constants.TRANSACTION_TYPE_BUY, false);
 		Order peOrder = StrategyUtil.placeNRMLOrders(user, user.qty, peSymbol, Constants.TRANSACTION_TYPE_BUY, false);
 
-		// Sell strangle
+		// Buy strangle
 		float straddlePrice = Float.parseFloat(ceOrder.averagePrice) + Float.parseFloat(peOrder.averagePrice);
 		int range = (int) (100 * (straddlePrice / 100));
 		ceSymbol = StrategyUtil.getCallOptionSymbol(strike + range, optionDateValue);
