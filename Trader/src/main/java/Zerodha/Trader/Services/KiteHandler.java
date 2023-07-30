@@ -1,6 +1,7 @@
 package Zerodha.Trader.Services;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
 import com.zerodhatech.models.Instrument;
+import com.zerodhatech.models.LTPQuote;
 import com.zerodhatech.models.Order;
 import com.zerodhatech.models.OrderParams;
 import com.zerodhatech.models.Position;
@@ -48,21 +50,37 @@ public class KiteHandler {
 		orderParams.transactionType = orderType;
 		orderParams.validity = Constants.VALIDITY_DAY;
 		return kiteConnect.placeOrder(orderParams, Constants.VARIETY_REGULAR);
-	}	
+	}
 
 	public Map<String, List<Position>> getPositions() throws KiteException, IOException {
 		return kiteConnect.getPositions();
 	}
-	
-	public List<Instrument> getInstruments(String exchange, String name, int expiryYear,
-			int expiryMonth, int expiryDate) throws JSONException, IOException, KiteException {
-		return kiteConnect.getInstruments()
-				.stream()
-				.filter(i -> i.exchange.equals(exchange))
-				.filter(i -> i.name.equals(name))
-				.filter(i -> (i.expiry.getYear() == expiryYear - 1900))
-				.filter(i -> (i.expiry.getMonth() == expiryMonth - 1))
-				.filter(i -> (i.expiry.getDate() == expiryDate))
+
+	public List<Instrument> getInstruments(String exchange, String name, int expiryYear, int expiryMonth,
+			int expiryDate) throws JSONException, IOException, KiteException {
+		return kiteConnect.getInstruments().stream().filter(i -> i.exchange.equals(exchange))
+				.filter(i -> i.name.equals(name)).filter(i -> (i.expiry.getYear() == expiryYear - 1900))
+				.filter(i -> (i.expiry.getMonth() == expiryMonth - 1)).filter(i -> (i.expiry.getDate() == expiryDate))
 				.collect(Collectors.toList());
+	}
+
+	public Map<String, Double> getNFOOptionsPrice(List<String> instruments)
+			throws JSONException, IOException, KiteException {
+		String[] instruemntsToPass = new String[instruments.size()];
+		int i = 0;
+		for (String instrument : instruments) {
+			instruemntsToPass[i] = "NFO:" + instrument;
+			++i;
+		}
+		Map<String, LTPQuote> lastPriceMap = kiteConnect.getLTP(instruemntsToPass);
+
+		Map<String, Double> prices = new HashMap<>();
+		for (String key : lastPriceMap.keySet()) {
+			double price = lastPriceMap.get(key).lastPrice;
+			String instrument = key.replace("NFO:", "");
+			prices.put(instrument, price);
+		}
+
+		return prices;
 	}
 }

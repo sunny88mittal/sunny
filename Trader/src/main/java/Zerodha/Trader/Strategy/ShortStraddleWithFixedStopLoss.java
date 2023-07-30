@@ -32,7 +32,7 @@ public class ShortStraddleWithFixedStopLoss implements IStrategy {
 
 	private List<KiteUser> kiteUsers;
 
-	private int MAX_LOSS_PER_UNIT = 160;
+	private int MAX_LOSS_PER_UNIT = 100;
 
 	private static String SSWSL_CHECK_POINT_FILE = "..\\SSWFSLCheckPointFile.txt";
 

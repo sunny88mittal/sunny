@@ -4,6 +4,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+
+import org.json.JSONException;
 
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
@@ -56,6 +59,11 @@ public class StrategyUtil {
 			}
 		}
 		return false;
+	}
+
+	public static Map<String, Double> getLTP(List<String> insturments, KiteHandler kiteHandler)
+			throws JSONException, IOException, KiteException {
+		return kiteHandler.getNFOOptionsPrice(insturments);
 	}
 
 	public static String getPutOptionSymbol(int strike, String optionDateValue) {
