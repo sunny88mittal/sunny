@@ -3,16 +3,23 @@ package Zerodha.Trader.Strategy;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
+
+import org.ta4j.core.BaseTimeSeries;
+import org.ta4j.core.TimeSeries;
 
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.kiteconnect.utils.Constants;
 import com.zerodhatech.models.Order;
 import com.zerodhatech.models.Position;
 
+import Zerodha.Trader.Core.AppConstants;
 import Zerodha.Trader.Core.KiteUser;
 import Zerodha.Trader.Logging.Logger;
 import Zerodha.Trader.Messaging.TelegramService;
@@ -31,7 +38,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 
 	private int MAX_LOSS_PER_UNIT = 69;
 
-	private static String CHECK_POINT_FILE = "..\\ShortStrangleWithFixedSL.txt";
+	private IndicatorsBasedStrategy indicatorBasedStrategy;
 
 	public ShortStrangleWithFixedStopLoss(String optionDateValue, List<KiteUser> kiteUsers) {
 		this.optionDateValue = optionDateValue;
@@ -39,10 +46,12 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 		this.lastTradedAt = 0;
 		this.range = 0;
 		this.isTradeOpen = false;
+		TimeSeries series = new BaseTimeSeries.SeriesBuilder().withName("ABC").build();
+		this.indicatorBasedStrategy = new IndicatorsBasedStrategy(series, 10, 2);
 	}
 
 	public void initialize() {
-		File file = new File(CHECK_POINT_FILE);
+		File file = new File(AppConstants.ShortStrangleWithFixedSL_CHECK_POINT_FILE);
 		if (file.exists()) {
 			try (Scanner sc = new Scanner(file)) {
 				if (sc.hasNextLine()) {
@@ -65,37 +74,72 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 
 	public void doNext(double price) {
 		try {
-			LocalDateTime now = LocalDateTime.now();
+			// Get the current time
+			LocalTime currentTime = LocalTime.now();
+
+			// Define the start and end times for the range
+			LocalTime startTime = LocalTime.of(9, 19, 30);
+			LocalTime endTime = LocalTime.of(15, 29, 30);
+
 			int maxAllowedLoss = -kiteUsers.get(0).qty * MAX_LOSS_PER_UNIT;
 
-			if (now.getMinute() % 15 == 0 && now.getSecond() == 0) {
+			if (currentTime.getMinute() % 15 == 0 && currentTime.getSecond() == 0) {
 				Logger.print(this.getClass(), "Price is :" + price);
 			}
 
-			if (!isTradeOpen && now.getHour() == 9 && now.getMinute() >= 20) {
+			if (!isTradeOpen && currentTime.isAfter(startTime)) {
 				openTrades(price);
-			} else if (isTradeOpen && (now.getHour() == 15 && now.getMinute() >= 29)) {
+			} else if (isTradeOpen && currentTime.isAfter(endTime)) {
 				closeTrades();
 				TelegramService.sendMessage("Closing strategy as time is over");
-			} else if (isTradeOpen && now.getSecond() % 15 == 0) {
+			} else if (isTradeOpen && currentTime.getSecond() % 15 == 0) {
 				int totalProfit = getTotalProfit();
-				if (totalProfit >= maxAllowedLoss) {
+				if (totalProfit <= maxAllowedLoss) {
 					closeTrades();
 					TelegramService.sendMessage("Hit maximum loss for the day, closed all trades");
 				}
-				if (now.getMinute() % 15 == 0 && now.getSecond() == 0) {
+				if (currentTime.getMinute() % 15 == 0 && currentTime.getSecond() == 0) {
 					Logger.print(this.getClass(), "Net profit at present is : " + totalProfit);
 				}
 			}
+
+			generateIndicatorStrategySignal((float) price);
+
 		} catch (Throwable ex) {
 			TelegramService.sendMessage("Error processing the tick");
 			Logger.print(this.getClass(), "Error processing the tick");
 		}
 	}
 
+	private void generateIndicatorStrategySignal(float price) {
+		// Get the current time
+		LocalTime currentTime = LocalTime.now();
+
+		// Define the start and end times for the range
+		LocalTime startTime = LocalTime.of(9, 15, 0);
+		LocalTime endTime = LocalTime.of(15, 30, 0);
+
+		Set<String> timeStrings = new HashSet<String>();
+		if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
+			this.indicatorBasedStrategy.createOrUpdateBar(price);
+			String time = currentTime.getHour() + ":" + currentTime.getMinute();
+			if (currentTime.getMinute() % 5 == 0 && !timeStrings.contains(time)) {
+				this.indicatorBasedStrategy.flushBar(time);
+				String signal = this.indicatorBasedStrategy.getSignal();
+				if (signal != null) {
+					TelegramService.sendMessage(signal + " at " + price);
+				}
+				timeStrings.add(time);
+			}
+		} else if (currentTime.equals(endTime)) {
+			this.indicatorBasedStrategy.flushBar(currentTime.getHour() + "" + currentTime.getMinute());
+		}
+	}
+
 	private int getTotalProfit() throws IOException, KiteException {
 		int totalProfit = 0;
 		Map<String, List<Position>> positions = kiteUsers.get(0).kiteHandler.getPositions();
+		int qty = kiteUsers.get(0).qty;
 		List<Position> intradayPositions = positions.get("net");
 
 		String strangleCESymbol = StrategyUtil.getCallOptionSymbol(lastTradedAt + range, optionDateValue);
@@ -104,7 +148,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 		for (Position position : intradayPositions) {
 			String symbol = position.tradingSymbol;
 			if (symbol.contains(strangleCESymbol) || symbol.contains(stranglePESymbol)) {
-				totalProfit += position.pnl;
+				totalProfit += qty * (position.averagePrice - position.lastPrice);
 			}
 		}
 
@@ -114,6 +158,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 	private List<Order> openTrades(double price) throws Throwable {
 		KiteUser user = kiteUsers.get(0);
 		int strike = StrategyUtil.getStrikeToTrade(price);
+		Logger.print(this.getClass(), "Straddle Strike is : " + strike);
 		String ceSymbol = StrategyUtil.getCallOptionSymbol(strike, optionDateValue);
 		String peSymbol = StrategyUtil.getPutOptionSymbol(strike, optionDateValue);
 		List<String> symbols = new ArrayList<>();
@@ -122,6 +167,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 		Map<String, Double> straddlePrices = StrategyUtil.getLTP(symbols, user.kiteHandler);
 		int preimumSum = (int) (straddlePrices.get(ceSymbol) + straddlePrices.get(peSymbol));
 		int range = 100 * (preimumSum / 100);
+		Logger.print(this.getClass(), "Range is : " + range);
 
 		// Sell strangle
 		ceSymbol = StrategyUtil.getCallOptionSymbol(strike + range, optionDateValue);
@@ -131,12 +177,10 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 		isTradeOpen = true;
 		lastTradedAt = strike;
 		this.range = range;
-		StrategyUtil.doCheckPointing(strike + "," + range, CHECK_POINT_FILE);
+		StrategyUtil.doCheckPointing(strike + "," + range, AppConstants.ShortStrangleWithFixedSL_CHECK_POINT_FILE);
 
 		// Messaging
 		String message = String.format("Traded strangle at strike : %s-%s", strike + range, strike - range);
-		TelegramService.sendMessage(message);
-		message = String.format("Got total premium : %s", ceOrder.averagePrice + peOrder.averagePrice);
 		TelegramService.sendMessage(message);
 
 		List<Order> orders = new ArrayList<Order>();
@@ -155,7 +199,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 		StrategyUtil.placeNRMLOrders(user, user.qty, peSymbol, Constants.TRANSACTION_TYPE_BUY, true);
 		isTradeOpen = false;
 		lastTradedAt = 0;
-		StrategyUtil.doCheckPointing("", CHECK_POINT_FILE);
+		StrategyUtil.doCheckPointing("", AppConstants.ShortStrangleWithFixedSL_CHECK_POINT_FILE);
 	}
 
 	public void disconnectedFromBroker() {
@@ -170,7 +214,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 			}
 			isTradeOpen = false;
 			lastTradedAt = 0;
-			StrategyUtil.doCheckPointing("", CHECK_POINT_FILE);
+			StrategyUtil.doCheckPointing("", AppConstants.ShortStrangleWithFixedSL_CHECK_POINT_FILE);
 		}
 	}
 }

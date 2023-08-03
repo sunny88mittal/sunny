@@ -8,7 +8,7 @@ import org.json.JSONException;
 
 import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
-import com.zerodhatech.models.Position;
+import com.zerodhatech.models.Order;
 
 import Zerodha.Trader.Core.UserDetails;
 import Zerodha.Trader.Services.AuthHandler;
@@ -29,13 +29,7 @@ public class Testing {
 	}
 
 	private static void testOrderPlacement(KiteHandler kiteHandler) throws JSONException, IOException, KiteException {
-		/*kiteHandler.placeMarketOrder(25, "BANKNIFTY2191634500PE", Constants.EXCHANGE_NFO,
-				Constants.TRANSACTION_TYPE_SELL);*/
-
-		List<Position> positions = kiteHandler.getPositions().get("net");
-
-		for (Position position : positions) {
-			System.out.println(position.instrumentToken + " " + position.tradingSymbol + " " + position.netQuantity);
-		}
+		Order order = kiteHandler.placeMarketOrder(25, "BANKNIFTY2380346000CE", "NFO", "SELL");
+		System.out.println(order);
 	}
 }
