@@ -40,7 +40,9 @@ public class IndicatorsBasedStrategy extends CachedIndicator<Num> {
 
 	private String signal = null;
 
-	private Set<String> timestamps = new HashSet<String>();
+	private Set<String> barTimestamps = new HashSet<String>();
+
+	private Set<String> signalTimestamps = new HashSet<String>();
 
 	private OHLC currentCandle = null;
 
@@ -83,7 +85,8 @@ public class IndicatorsBasedStrategy extends CachedIndicator<Num> {
 	}
 
 	public void flushBar(String time) {
-		if (currentCandle != null) {
+		if (currentCandle != null && !barTimestamps.contains(time)) {
+			barTimestamps.add(time);
 			float[] ohlc = new float[4];
 			ohlc[0] = currentCandle.open;
 			ohlc[1] = currentCandle.high;
@@ -107,30 +110,27 @@ public class IndicatorsBasedStrategy extends CachedIndicator<Num> {
 				ohlc[3] = Float.parseFloat(values[3]);
 				addBar(i + "", ohlc, false);
 			}
-			System.out.println("Bar count is :" + series.getBarCount());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void addBar(String time, float[] ohlc, boolean writeData) {
-		if (!timestamps.contains(time)) {
-			ZonedDateTime barTime = ZonedDateTime.now();
-			Number open = (Number) ohlc[0];
-			Number high = (Number) ohlc[1];
-			Number low = (Number) ohlc[2];
-			Number close = (Number) ohlc[3];
-			Number volume = (Number) 0;
-			series.addBar(barTime, open, high, low, close, volume);
+	private void addBar(String time, float[] ohlc, boolean writeData) {
+		ZonedDateTime barTime = ZonedDateTime.now();
+		Number open = (Number) ohlc[0];
+		Number high = (Number) ohlc[1];
+		Number low = (Number) ohlc[2];
+		Number close = (Number) ohlc[3];
+		Number volume = (Number) 0;
+		series.addBar(barTime, open, high, low, close, volume);
 
-			if (writeData) {
-				try (BufferedWriter bw = new BufferedWriter(new FileWriter(AppConstants.BANKNIFTY_PRICES_FILE, true))) {
-					bw.newLine();
-					String data = ohlc[0] + "," + ohlc[1] + "," + ohlc[2] + "," + ohlc[3];
-					bw.write(data + "");
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+		if (writeData) {
+			try (BufferedWriter bw = new BufferedWriter(new FileWriter(AppConstants.BANKNIFTY_PRICES_FILE, true))) {
+				bw.newLine();
+				String data = ohlc[0] + "," + ohlc[1] + "," + ohlc[2] + "," + ohlc[3];
+				bw.write(data + "");
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -213,6 +213,14 @@ public class IndicatorsBasedStrategy extends CachedIndicator<Num> {
 		}
 
 		return superTrend[count - 1];
+	}
+
+	public String getSignal(String time) {
+		if (!signalTimestamps.contains(time)) {
+			signalTimestamps.add(time);
+			return getSignal();
+		}
+		return null;
 	}
 
 	public String getSignal() {

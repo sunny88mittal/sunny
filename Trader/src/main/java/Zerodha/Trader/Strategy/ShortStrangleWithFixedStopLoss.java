@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 import org.ta4j.core.BaseTimeSeries;
 import org.ta4j.core.TimeSeries;
@@ -69,6 +67,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 				Logger.print(this.getClass(), "Error in initializing");
 			}
 		}
+		this.indicatorBasedStrategy.loadData();
 		Logger.print(this.getClass(), "Initialization Complete");
 	}
 
@@ -106,6 +105,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 			generateIndicatorStrategySignal((float) price);
 
 		} catch (Throwable ex) {
+			ex.printStackTrace();
 			TelegramService.sendMessage("Error processing the tick");
 			Logger.print(this.getClass(), "Error processing the tick");
 		}
@@ -119,17 +119,15 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 		LocalTime startTime = LocalTime.of(9, 15, 0);
 		LocalTime endTime = LocalTime.of(15, 30, 0);
 
-		Set<String> timeStrings = new HashSet<String>();
 		if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
 			this.indicatorBasedStrategy.createOrUpdateBar(price);
 			String time = currentTime.getHour() + ":" + currentTime.getMinute();
-			if (currentTime.getMinute() % 5 == 0 && !timeStrings.contains(time)) {
+			if (currentTime.getMinute() % 5 == 0) {
 				this.indicatorBasedStrategy.flushBar(time);
-				String signal = this.indicatorBasedStrategy.getSignal();
+				String signal = this.indicatorBasedStrategy.getSignal(time);
 				if (signal != null) {
 					TelegramService.sendMessage(signal + " at " + price);
 				}
-				timeStrings.add(time);
 			}
 		} else if (currentTime.equals(endTime)) {
 			this.indicatorBasedStrategy.flushBar(currentTime.getHour() + "" + currentTime.getMinute());
