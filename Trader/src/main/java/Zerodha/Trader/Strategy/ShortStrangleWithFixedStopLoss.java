@@ -38,6 +38,8 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 
 	private IndicatorsBasedStrategy indicatorBasedStrategy;
 
+	private boolean doneForTheDay = false;
+
 	public ShortStrangleWithFixedStopLoss(String optionDateValue, List<KiteUser> kiteUsers) {
 		this.optionDateValue = optionDateValue;
 		this.kiteUsers = kiteUsers;
@@ -72,43 +74,45 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 	}
 
 	public void doNext(double price) {
-		try {
-			// Get the current time
-			LocalTime currentTime = LocalTime.now();
+		if (!doneForTheDay) {
+			try {
+				// Get the current time
+				LocalTime currentTime = LocalTime.now();
 
-			// Define the start and end times for the range
-			LocalTime startTime = LocalTime.of(9, 19, 30);
-			LocalTime endTime = LocalTime.of(15, 29, 30);
+				// Define the start and end times for the range
+				LocalTime startTime = LocalTime.of(9, 19, 30);
+				LocalTime endTime = LocalTime.of(15, 29, 30);
 
-			int maxAllowedLoss = -kiteUsers.get(0).qty * MAX_LOSS_PER_UNIT;
+				int maxAllowedLoss = -kiteUsers.get(0).qty * MAX_LOSS_PER_UNIT;
 
-			if (currentTime.getMinute() % 15 == 0 && currentTime.getSecond() == 0) {
-				Logger.print(this.getClass(), "Price is :" + price);
-			}
-
-			if (!isTradeOpen && currentTime.isAfter(startTime)) {
-				openTrades(price);
-			} else if (isTradeOpen && currentTime.isAfter(endTime)) {
-				closeTrades();
-				TelegramService.sendMessage("Closing strategy as time is over");
-			} else if (isTradeOpen && currentTime.getSecond() % 15 == 0) {
-				int totalProfit = getTotalProfit();
-				if (totalProfit <= maxAllowedLoss) {
-					closeTrades();
-					TelegramService.sendMessage("Hit maximum loss for the day, closed all trades");
-				}
 				if (currentTime.getMinute() % 15 == 0 && currentTime.getSecond() == 0) {
-					Logger.print(this.getClass(), "Net profit at present is : " + totalProfit);
+					Logger.print(this.getClass(), "Price is :" + price);
 				}
+
+				if (!isTradeOpen && currentTime.isAfter(startTime)) {
+					openTrades(price);
+				} else if (isTradeOpen && currentTime.isAfter(endTime)) {
+					closeTrades();
+					TelegramService.sendMessage("Closing strategy as time is over");
+				} else if (isTradeOpen && currentTime.getSecond() % 15 == 0) {
+					int totalProfit = getTotalProfit();
+					if (totalProfit <= maxAllowedLoss) {
+						closeTrades();
+						TelegramService.sendMessage("Hit maximum loss for the day, closed all trades");
+					}
+					if (currentTime.getMinute() % 15 == 0 && currentTime.getSecond() == 0) {
+						Logger.print(this.getClass(), "Net profit at present is : " + totalProfit);
+					}
+				}
+
+			} catch (Throwable ex) {
+				ex.printStackTrace();
+				TelegramService.sendMessage("Error processing the tick");
+				Logger.print(this.getClass(), "Error processing the tick");
 			}
-
-			generateIndicatorStrategySignal((float) price);
-
-		} catch (Throwable ex) {
-			ex.printStackTrace();
-			TelegramService.sendMessage("Error processing the tick");
-			Logger.print(this.getClass(), "Error processing the tick");
 		}
+
+		generateIndicatorStrategySignal((float) price);
 	}
 
 	private void generateIndicatorStrategySignal(float price) {
@@ -197,6 +201,7 @@ public class ShortStrangleWithFixedStopLoss implements IStrategy {
 		StrategyUtil.placeNRMLOrders(user, user.qty, peSymbol, Constants.TRANSACTION_TYPE_BUY, true);
 		isTradeOpen = false;
 		lastTradedAt = 0;
+		doneForTheDay = true;
 		StrategyUtil.doCheckPointing("", AppConstants.ShortStrangleWithFixedSL_CHECK_POINT_FILE);
 	}
 
