@@ -1,6 +1,7 @@
+package solution400to500;
 import java.util.Stack;
 
-public class RemoveKDigits {
+public class Solution402 {
 
 	public String removeKdigits(String num, int k) {
 		char[] nums = num.toCharArray();
