@@ -16,17 +16,19 @@ public class Solution130 {
 					if (board[i][j] == 'O') {
 						Queue<int[]> queue = new LinkedList<>();
 						queue.add(new int[] { i, j });
+						visited[i][j] = true;
+						board[i][j] = '.';
 						while (!queue.isEmpty()) {
 							int[] cell = queue.remove();
 							int p = cell[0];
 							int q = cell[1];
-							board[p][q] = '.';
-							visited[p][q] = true;
 							for (int[] visit : visits) {
 								int x = p + visit[0];
 								int y = q + visit[1];
 								if (x >= 0 && x < m && y >= 0 && y < n && board[x][y] == 'O' && !visited[x][y]) {
 									queue.add(new int[] { x, y });
+									visited[x][y] = true;
+									board[x][y] = '.';
 								}
 							}
 						}
