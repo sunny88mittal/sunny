@@ -1,11 +1,9 @@
-package solution1100to1200;
+package solution2500to2600;
 
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class Solution1162 {
+public class Solution2583 {
 
 	public class TreeNode {
 		int val;
@@ -26,28 +24,31 @@ public class Solution1162 {
 		}
 	}
 
-	public long kthLargestLevelSum(TreeNode root, int k) {
+	public int maxLevelSum(TreeNode root) {
+		int maxSum = Integer.MIN_VALUE;
+		int maxLevel = -1;
 		TreeNode sentinelNode = new TreeNode();
 		Queue<TreeNode> queue = new LinkedList<>();
 		queue.add(root);
 		queue.add(sentinelNode);
 
-		long currentLevelSum = 0;
-		PriorityQueue<Long> pq = new PriorityQueue<>();
+		int currentLevel = 1;
+		int currentLevelSum = 0;
 
 		while (!queue.isEmpty()) {
 			TreeNode node = queue.remove();
 			if (node == sentinelNode) {
-				pq.add(currentLevelSum);
-				if (pq.size() > k) {
-					pq.poll();
+				if (currentLevelSum > maxSum) {
+					maxSum = currentLevelSum;
+					maxLevel = currentLevel;
 				}
+				++currentLevel;
 				currentLevelSum = 0;
 				if (!queue.isEmpty()) {
 					queue.add(sentinelNode);
 				}
 			} else {
-				currentLevelSum += (long) node.val;
+				currentLevelSum += node.val;
 				if (node.left != null) {
 					queue.add(node.left);
 				}
@@ -57,9 +58,6 @@ public class Solution1162 {
 			}
 		}
 
-		if (pq.size() < k) {
-			return -1;
-		}
-		return (long) pq.toArray()[0];
+		return maxLevel;
 	}
 }
