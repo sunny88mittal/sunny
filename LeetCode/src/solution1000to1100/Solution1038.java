@@ -23,16 +23,12 @@ public class Solution1038 {
 	int globalValue = 0;
 
 	public TreeNode bstToGst(TreeNode root) {
-		if (root.right != null) {
+		if (root != null) {
 			bstToGst(root.right);
-		}
-		root.val += globalValue;
-		globalValue = root.val;
-
-		if (root.left != null) {
+			root.val += globalValue;
+			globalValue = root.val;
 			bstToGst(root.left);
 		}
-
 		return root;
 	}
 }
