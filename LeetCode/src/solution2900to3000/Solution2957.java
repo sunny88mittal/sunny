@@ -3,10 +3,6 @@ package solution2900to3000;
 public class Solution2957 {
 	public int removeAlmostEqualCharacters(String word) {
 		int count = 0;
-		if (word.length() == 1) {
-			return count;
-		}
-
 		int i = 1;
 		while (i < word.length()) {
 			boolean leftEqual = Math.abs(word.charAt(i - 1) - word.charAt(i)) <= 1 ? true : false;
